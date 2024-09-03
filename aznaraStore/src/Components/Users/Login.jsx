@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../Redux/Actions/actions';
 import { useNavigate } from 'react-router-dom';
 
-const Login = ({ history }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userLogin = useSelector((state) => state.userLogin);
-  console.log(userLogin)
   const { loading, error, userInfo } = userLogin;
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(login(email, password));
-   
   };
 
-  if (userInfo) {
-    navigate('/');
-  }
+  // Redirect if user is logged in
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/');
+    }
+  }, [userInfo, navigate]);
 
   return (
     <div className="container mx-auto px-4">
@@ -29,9 +30,7 @@ const Login = ({ history }) => {
         <h2 className="text-2xl mb-6 text-center">Iniciar Sesión</h2>
         {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error}</div>}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
           <input
             type="email"
             id="email"
@@ -41,9 +40,7 @@ const Login = ({ history }) => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Contraseña
-          </label>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Contraseña</label>
           <input
             type="password"
             id="password"
