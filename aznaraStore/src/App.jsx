@@ -14,7 +14,7 @@ import UpdateProduct from "./Components/Product/UpdateProduct";
 import CreateCategory from "./Components/Product/CreateCategory";
 import Footer from "./Components/Footer";
 import WhatsAppButton from "./Components/WhatsappButton";
-import Header from "./Components/Header";
+import Landing from "./Components/Landing";
 
   function App() {
     return (
@@ -26,7 +26,7 @@ import Header from "./Components/Header";
             <Route exact path="/register" element={<Register/>}/>
             <Route exact path="/login" element={<Login/>}/>
             <Route exact path="/products" element={<ProductsList />} />
-            <Route exact path="/" element={<Header />} />
+            <Route exact path="/" element={<Landing />} />
             
             <Route exact path="/product/:id" element={<ProductDetails />} />
             <Route exact path="/myOrders/:n_document" element={<OrdersDetails />} />

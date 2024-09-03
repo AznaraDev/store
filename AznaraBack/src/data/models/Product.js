@@ -10,15 +10,15 @@ module.exports = (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      account_group: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+      // code: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      //   unique: true,
+      // },
+      // account_group: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      // },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
