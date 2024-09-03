@@ -13,7 +13,7 @@ export default function Header() {
       </div> */}
       
       <div className="absolute inset-0 flex justify-end items-center">
-        <Link to="/" className="cursor-pointer">
+        <Link to="/products" className="cursor-pointer">
           <img 
             src={logo} 
             alt="Logo" 

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
 
 const navigation = [
-  { name: 'Tienda', href: '/', current: true },
+  { name: 'Tienda', href: '/products', current: true },
   { name: 'Colecciones', href: '#', current: false },
   { name: 'Contactanos', href: '#', current: false },
   { name: 'Ofertas', href: '#', current: false },
@@ -201,7 +201,7 @@ export default function Navbar() {
           <Menu.Item>
             {({ active }) => (
               <Link
-                to="/header"
+                to="/"
                 onClick={handleLogout}
                 className={classNames(
                   active ? 'bg-gray-100' : '',

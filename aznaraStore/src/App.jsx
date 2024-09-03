@@ -25,8 +25,8 @@ import Header from "./Components/Header";
         
             <Route exact path="/register" element={<Register/>}/>
             <Route exact path="/login" element={<Login/>}/>
-            <Route exact path="/" element={<ProductsList />} />
-            <Route exact path="/header" element={<Header />} />
+            <Route exact path="/products" element={<ProductsList />} />
+            <Route exact path="/" element={<Header />} />
             
             <Route exact path="/product/:id" element={<ProductDetails />} />
             <Route exact path="/myOrders/:n_document" element={<OrdersDetails />} />
