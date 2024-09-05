@@ -8,7 +8,7 @@ module.exports = {
     DB_PORT : process.env.DB_PORT,
     PORT : process.env.PORT,
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
-    EVENTS_SECRET_KEY: process.env.EVENTS_SECRET_KEY,
+    WOMPI_EVENT_KEY: process.env.EVENTS_SECRET_KEY,
     USERNAME: process.env.USERNAME,
     ACCESS_KEY: process.env.ACCESS_KEY,
     PARTNER_ID: process.env.PARTNER_ID

@@ -22,10 +22,10 @@ const CardsAnimated = () => {
     initial4: { scale: 1, opacity: 80, x: 230, y: 100 },
   
     // Posiciones finales: después de la animación
-    animate1: { scale: 1.3, opacity: 1, x: 0, y: 0, rotate: 10, transition: { duration: 1 } },
-    animate2: { scale: 1.2, opacity: 1, x: 0, y: 0, rotate: -10, transition: { duration: 1.5 } },
-    animate3: { scale: 1.1, opacity: 1, x: 0, y: 0, transition: { duration: 1.2 } },
-    animate4: { scale: 1.1, opacity: 1, x: 0, y: 0, transition: { duration: 1 } },
+    animate1: { scale: 1.3, opacity: 1, x: 70, y: -50, rotate: 10, transition: { duration: 1 } },
+    animate2: { scale: 1.2, opacity: 1, x: 70, y: 100, rotate: -10, transition: { duration: 1.5 } },
+    animate3: { scale: 1.1, opacity: 1, x: 180, y: -80, transition: { duration: 1.2 } },
+    animate4: { scale: 1.1, opacity: 1, x: 180, y: 80, transition: { duration: 1 } },
   };
 
 
@@ -33,7 +33,7 @@ const CardsAnimated = () => {
     <div className="grid grid-cols-3 gap-8 p-60">
       {/* Columna izquierda: Texto */}
       <div className="flex flex-col justify-center">
-        <h2 className="text-3xl font-bold mb-4">Por qué comprar nuestros accesorios</h2>
+        <h2 className="text-3xl font-nunito font-bold mb-4">Por qué comprar nuestros accesorios</h2>
         <div className="flex items-start mb-6">
           <div>
             <p className="text-lg font-semibold">Productos de calidad</p>
