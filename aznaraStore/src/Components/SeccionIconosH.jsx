@@ -1,8 +1,8 @@
 import React from 'react';
-import anillo1 from '../assets/img/anillo1.png';
-import anillo2 from '../assets/img/anillo2.png';
-import dije1 from '../assets/img/dije1.png';
-import reloj1 from '../assets/img/reloj1.png'
+import anillo1 from '../assets/img/seccionManilla.png';
+import anillo2 from '../assets/img/seccionAnillo.png';
+import dije1 from '../assets/img/seccionCadena.png';
+import reloj1 from '../assets/img/seccionReloj.png'
 
 
 const SeccionIconosH = () => {
