@@ -34,21 +34,32 @@ const CardsAnimated = () => {
     <div className="grid grid-cols-3 gap-8 p-60">
       {/* Columna izquierda: Texto */}
       <div className="flex flex-col justify-center">
-        <h2 className="text-4xl font-nunito font-bold mb-4">Por qué comprar nuestros accesorios</h2>
-        <div className="flex items-start mb-6">
-          <div>
-            <p className="text-lg font-semibold">Productos de calidad</p>
-            <p className="text-sm">
-              Sabemos que necesitas accesorios de alta calidad y nosotros te ofrecemos un producto
-              que puedes gozar de una garantía dándote tranquilidad.
-            </p>
-          </div>
-        </div>
-        <div>
-          <p className="text-lg font-semibold">$ Precios a tu medida</p>
-          <p className="text-sm">En Aznara Store encontrarás el precio indicado</p>
-        </div>
-      </div>
+  <h2 className="text-4xl font-nunito font-semibold mb-4 text-center">Por qué comprar nuestros<br></br> accesorios</h2>
+
+  {/* logo manitoDiamante*/}
+  <div className="flex items-center justify-center mb-6">
+    <div>
+      <p className="text-lg font-nunito font-semibold justify-center  text-center">
+        Productos de calidad
+       Sabemos que necesitas accesorios
+       de alta calidad y nosotros te
+        ofrecemos un producto que
+        puedes gozar de una garantía
+        dándote tranquilidad.<br></br>
+         {/* logo pesos */}
+        Precios a tu medida<br></br>
+     En Aznara Store encontrarás el<br></br>
+      precio indicado
+      </p>
+    </div>
+  </div>
+
+  <div>
+   
+   
+  </div>
+</div>
+
 
       {/* Columna derecha: Tarjetas con animación */}
       <div className="relative flex justify-center items-center">
