@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, fetchFilteredProducts, addToCart, deleteProduct } from '../../Redux/Actions/actions';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiEdit, FiTrash } from "react-icons/fi";
-import imgFondo from '../../assets/img/banner.png'
 import Swal from 'sweetalert2';
 
 const ProductsList = () => {
@@ -57,30 +56,27 @@ const ProductsList = () => {
       }
     });
   };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="min-h-screen flex items-center justify-center">Error: {error}</div>;
   }
 
   if (!products || products.length === 0) {
-    return <div>No hay productos disponibles.</div>;
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-colorFooter py-16">
+        <p className="text-white text-lg">No hay productos disponibles.</p>
+      </div>
+    );
   }
 
   return (
     <div 
-    className="min-h-screen flex flex-col justify-center items-center bg-cover bg-center " 
-    style={{ backgroundImage: `url(${imgFondo})` }}
-  >
-     
-      <div className="relative z-20 text-center text-white px-6 mt-24">
-  {/* <h2 className="text-green-500 text-4xl md:text-4xl font-bold mt-8 sm:text-3xl">
-    Registrate, comprá, te llega gratis a domicilio.
-  </h2> */}
-</div>
-
+      className="min-h-screen flex flex-col justify-center items-center bg-colorFooter py-16"
+    >
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {currentProducts.map((product) => (
@@ -163,6 +159,7 @@ const ProductsList = () => {
 };
 
 export default ProductsList;
+
 
 
 
