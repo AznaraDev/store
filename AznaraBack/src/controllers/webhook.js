@@ -1,4 +1,4 @@
-const { OrderDetail } = require("../../data");
+const { OrderDetail } = require("../data");
 
 module.exports = async (req, res) => {
   try {
@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
       const transaction = data.transaction;
 
       // Encuentra la orden en la base de datos usando el campo 'integritySignature'
-      const orderDetail = await OrderDetail.findOne({ where: { integritySignature: transaction.reference } });
+      const orderDetail = await OrderDetail.findOne({ where: { integritySignature: transaction.id_orderDetail } });
 
       if (!orderDetail) {
         return res.status(404).json({ error: 'Order not found' });
@@ -17,11 +17,11 @@ module.exports = async (req, res) => {
 
       // Actualiza el estado de la orden basado en el estado de la transacción
       if (transaction.status === 'APPROVED') {
-        orderDetail.state_order = 'Aprobado'; // Cambia el estado a 'Aprobado'
+        orderDetail.transaction_status = 'Aprobado'; // Cambia el estado a 'Aprobado'
       } else if (transaction.status === 'DECLINED') {
-        orderDetail.state_order = 'Rechazado'; // Cambia el estado a 'Rechazado'
+        orderDetail.transaction_status = 'Rechazado'; // Cambia el estado a 'Rechazado'
       } else if (transaction.status === 'PENDING') {
-        orderDetail.state_order = 'Pendiente'; // Cambia el estado a 'Pendiente'
+        orderDetail.transaction_status = 'Pendiente'; // Cambia el estado a 'Pendiente'
       }
 
       // Guarda los cambios en la base de datos

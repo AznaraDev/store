@@ -10,15 +10,7 @@ module.exports = (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      // code: {
-      //   type: DataTypes.STRING,
-      //   allowNull: false,
-      //   unique: true,
-      // },
-      // account_group: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: false,
-      // },
+      
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -61,6 +53,10 @@ module.exports = (sequelize) => {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  section:{
+    type: DataTypes.ENUM('Caballero', 'Dama', 'Unisex' ),
+      allowNull: true,
+    },
   tax_classification: {
     type: DataTypes.STRING,
     defaultValue: 'Taxed',

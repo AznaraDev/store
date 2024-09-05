@@ -9,6 +9,7 @@ const CreateProduct = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
+  const [section, setSection] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [images, setImages] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -52,7 +53,7 @@ const CreateProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !description || !price || !stock || !categoryId || images.length === 0) {
+    if (!name || !section || !description || !price || !stock || !categoryId || images.length === 0) {
       setAlertMessage('Por favor complete todos los campos y seleccione al menos una imagen.');
       return;
     }
@@ -62,6 +63,7 @@ const CreateProduct = () => {
       description,
       price,
       stock,
+      section,
       id_category: categoryId,
       images,
       sizes,
@@ -86,6 +88,7 @@ const CreateProduct = () => {
       setImages([]);
       setSizes([]);
       setColors([]);
+      setSection('');
 
       setTimeout(() => {
         navigate('/');
@@ -171,6 +174,24 @@ const CreateProduct = () => {
                     {category.name_category}
                   </option>
                 ))}
+              </select>
+              <div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="section" className="block text-sm font-medium text-gray-700">
+                Sección
+              </label>
+              <select
+                value={section}
+                onChange={(e) => setSection(e.target.value)}
+                className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+              >
+                <option value="">Seleccionar sección</option>
+                <option value="Dama">Dama</option>
+                <option value="Caballero">Caballero</option>
+                <option value="Unisex">Unisex</option>
               </select>
             </div>
             <div>

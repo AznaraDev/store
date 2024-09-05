@@ -66,6 +66,7 @@ export const createProduct = (productData) => async (dispatch) => {
     formData.append('price', productData.price);
     formData.append('stock', productData.stock);
     formData.append('id_category', productData.id_category);
+    formData.append('section', productData.section)
 
     if (productData.sizes) {
       formData.append('sizes', JSON.stringify(productData.sizes));
@@ -273,16 +274,18 @@ export const setCategoryFilter = (category) => ({
   payload: category,
 });
 
-export const fetchFilteredProducts = (searchTerm, priceFilter, categoryFilter) => async (dispatch) => {
+export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName) => async (dispatch) => {
   dispatch({ type: FETCH_PRODUCTS_REQUEST });
 
   try {
     let url = `${BASE_URL}/product?search=${searchTerm}`;
+    
     if (priceFilter && priceFilter.min !== null && priceFilter.max !== null) {
       url += `&minPrice=${priceFilter.min}&maxPrice=${priceFilter.max}`;
     }
-    if (categoryFilter) {
-      url += `&categoryId=${categoryFilter}`;
+    
+    if (categoryName) {
+      url += `&categoryName=${categoryName}`;
     }
 
     const response = await fetch(url);
@@ -297,6 +300,8 @@ export const fetchFilteredProducts = (searchTerm, priceFilter, categoryFilter) =
     dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
   }
 };
+
+
 
 
 export const fetchOrdersByDocument = (n_document) => async (dispatch) => {

@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-      const { name, description, price, stock, id_category, sizes, colors } = req.body;
+      const { name, description, price, stock, id_category, sizes, colors, section } = req.body;
 
       if (!name || !description || !price) {
         return response(res, 400, { error: 'Missing required fields' });
@@ -46,6 +46,7 @@ module.exports = async (req, res) => {
         id_category,
         sizes: sizes ? JSON.parse(sizes) : null,
         colors: colors ? JSON.parse(colors) : null,
+        section
       });
 
       if (images && images.length > 0) {

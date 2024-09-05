@@ -7,5 +7,6 @@ router.use("/category", require("./categoryRouter"));
 router.use("/order", require('./orderDetailRouter'))
 router.use("/user", require("./userRouter"))
 router.use("/auth", require("./authRouter"))
+router.use("/eventos", require("./webhookRouter"))
 
 module.exports = router;

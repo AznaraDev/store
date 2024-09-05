@@ -71,8 +71,11 @@ const Checkout = () => {
         publicKey: "pub_test_udFLMPgs8mDyKqs5bRCWhpwDhj2rGgFw",
         redirectUrl: "http://localhost:5173/pago",
         integritySignature: latestOrder.data.integritySignature,
+        
       });
+      console.log(checkout)
 
+      
       checkout.open((result) => {
         const transaction = result.transaction;
         if (transaction.status === "APPROVED") {
