@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../Redux/Actions/actions';
 import { useNavigate } from 'react-router-dom';
+import imgFondo from '../../assets/img/banner.png'
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -45,8 +46,11 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+    <div 
+    className="min-h-screen flex flex-col justify-center items-center bg-cover bg-center " 
+    style={{ backgroundImage: `url(${imgFondo})` }}
+  >
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md mt-24 mb-4">
         <h2 className="text-2xl font-bold mb-4 text-center">Registro de Cliente</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -154,7 +158,7 @@ const Register = () => {
           )}
           <button
             type="submit"
-            className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+            className="w-full bg-colorFooter text-white py-2 px-4 rounded-md hover:bg-gray-700"
             disabled={loading}
           >
             {loading ? 'Registrando...' : 'Registrar'}

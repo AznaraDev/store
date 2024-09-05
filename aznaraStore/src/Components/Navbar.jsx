@@ -218,7 +218,7 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-gray-800 text-white'}`}>
+    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'}`}>
       <div className="max-w-full px-2 sm:px-4 lg:px-8 py-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
