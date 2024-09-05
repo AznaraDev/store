@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, fetchFilteredProducts, addToCart, deleteProduct } from '../../Redux/Actions/actions';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiEdit, FiTrash } from "react-icons/fi";
-import Animation from '../Animation';
+import imgFondo from '../../assets/img/banner.png'
 import Swal from 'sweetalert2';
 
 const ProductsList = () => {
@@ -70,19 +70,22 @@ const ProductsList = () => {
   }
 
   return (
-    <div className="bg-yellow-50">
-      <Animation/>
-      <div className="relative z-20 text-center text-white px-6">
-  <h2 className="text-green-500 text-4xl md:text-4xl font-bold mt-8 sm:text-3xl">
+    <div 
+    className="min-h-screen flex flex-col justify-center items-center bg-cover bg-center " 
+    style={{ backgroundImage: `url(${imgFondo})` }}
+  >
+     
+      <div className="relative z-20 text-center text-white px-6 mt-24">
+  {/* <h2 className="text-green-500 text-4xl md:text-4xl font-bold mt-8 sm:text-3xl">
     Registrate, comprá, te llega gratis a domicilio.
-  </h2>
+  </h2> */}
 </div>
 
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {currentProducts.map((product) => (
             <div key={product.id_product} className="group relative max-w-xs border rounded-lg overflow-hidden shadow-md">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200">
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200 p-2">
                 <img
                   src={product.Images.length > 0 ? product.Images[0].url : 'https://via.placeholder.com/150'}
                   alt={product.name}
@@ -91,23 +94,23 @@ const ProductsList = () => {
               </div>
               <div className="mt-4 flex justify-between px-4">
                 <div>
-                  <h3 className="text-sm text-blue-950">
+                  <h3 className="text-sm text-white">
                     <Link to={`/product/${product.id_product}`}>
                       {product.name}
                     </Link>
                   </h3>
                 </div>
-                <p className="text-sm font-medium text-gray-900">${product.price}</p>
+                <p className="text-sm font-medium text-white">${product.price}</p>
               </div>
               <div className="mt-4 mb-4 flex justify-between px-4">
                 <Link
                   to={`/product/${product.id_product}`}
-                  className="text-white hover:text-green-700 bg-green-500 px-4 py-2 rounded-lg"
+                  className="text-gray-700 hover:text-gray-200 bg-gray-100 px-4 py-2 rounded-lg"
                 >
                   Ver más
                 </Link>
                 <button
-                  className="text-green-700 px-3 py-1 rounded-lg hover:bg-green-500"
+                  className="text-gray-200 px-3 py-1 rounded-lg hover:bg-gray-200"
                   onClick={() => handleAddToCart(product)}
                 >
                   <FiShoppingCart />
@@ -116,7 +119,7 @@ const ProductsList = () => {
               {userInfo && userInfo.role === 'Admin' && (
                 <div className="absolute top-2 right-2">
                   <button
-                    className="bg-green-500 text-white p-2 rounded-full hover:bg-green-700"
+                    className="bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-200"
                     onClick={() => handleEditProduct(product.id_product)}
                   >
                     <FiEdit size={20} />

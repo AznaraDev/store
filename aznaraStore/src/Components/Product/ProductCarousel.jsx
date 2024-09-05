@@ -9,7 +9,7 @@ const ProductCarousel = () => {
       <img
         src="https://via.placeholder.com/150"
         alt="Placeholder"
-        className="w-full h-60 object-cover rounded-lg"
+        className="w-full h-72 object-cover rounded-2xl mb-4"
       />
       <h3 className="mt-2 text-lg font-semibold">Producto no disponible</h3>
       <p className="text-gray-500">$0.00</p>
@@ -28,7 +28,7 @@ const ProductCarousel = () => {
                 <img
                   src={product.Images[0]?.url || 'https://via.placeholder.com/150'}
                   alt={product.name}
-                  className="w-full h-72 object-cover rounded-lg"
+                  className="w-full h-72 object-cover rounded-2xl mb-4"
                 />
                 <h3 className="mt-2 text-lg font-semibold">{product.name}</h3>
                 <p className="text-gray-500">${product.price}</p>
