@@ -24,9 +24,9 @@ const Footer = () => {
 
         {/* Sección de Preguntas Frecuentes */}
         <div className="bg-gray-100 text-gray-800 w-full max-w-md p-6 rounded-lg ">
-          <h3 className="text-xl font-semibold mb-4 text-orange-600">Preguntas Frecuentes</h3>
+          <h3 className="text-xl font-semibold mb-4 text-colorLogo font-nunito">Preguntas Frecuentes</h3>
           {faqs.map((faq, index) => (
-            <div key={index} className="mb-4 border-b border-gray-300 pb-4">
+            <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-nunito">
               <button
                 onClick={() => toggleFAQ(index)}
                 className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
@@ -47,25 +47,25 @@ const Footer = () => {
 
         {/* Suscripción */}
         <div className="text-center mt-16">
-          <h4 className="text-xl font-semibold mb-2">Suscríbete y obtén un 10% de descuento</h4>
-          <p className="mb-2 text-gray-600">en tu próxima compra</p>
+          <h4 className="text-xl font-semibold mb-2 font-nunito">Suscríbete y obtén un 10% de descuento</h4>
+          <p className="mb-2 text-gray-600 font-nunito">en tu próxima compra</p>
           <input
             type="email"
             placeholder="Correo"
-            className="p-2 border border-gray-300 rounded w-full mb-2"
+            className="p-2 border border-gray-300 rounded w-full mb-2 font-nunito"
           />
-          <button className="bg-orange-600 text-white p-2 rounded w-full">Suscribirse</button>
+          <button className="bg-colorLogo text-colorFooter p-2 rounded w-full font-nunito">SUSCRIBETE</button>
         </div>
       </div>
 
       {/* Links de navegación */}
       <div className="bg-white text-gray-700 py-4 text-center">
         <div className="flex justify-center space-x-8">
-          <a href="#" className="hover:underline">Lo nuevo</a>
-          <a href="#" className="hover:underline">Colecciones</a>
-          <a href="#" className="hover:underline">Categorías</a>
-          <a href="#" className="hover:underline">Ofertas</a>
-          <a href="#" className="hover:underline">Términos y Condiciones</a>
+          <a href="#" className="hover:underline font-nunito">Lo nuevo</a>
+          <a href="#" className="hover:underline font-nunito">Colecciones</a>
+          <a href="#" className="hover:underline font-nunito">Categorías</a>
+          <a href="#" className="hover:underline font-nunito">Ofertas</a>
+          <a href="#" className="hover:underline font-nunito">Términos y Condiciones</a>
           <div className="flex space-x-4">
          
          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">

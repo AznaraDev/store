@@ -6,7 +6,7 @@ export default {
       colors:{
         colorFooter:"#2B2B2B",
         colorPreguntas:"#cccccc",
-        colorLogo:"#e99900",
+        colorLogo:"#ffb422",
       },
       fontFamily: {
         nunito: ['Nunito', 'sans-serif'], 

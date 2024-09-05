@@ -11,9 +11,9 @@ const About = () => {
     <div className="relative bg-cover bg-center h-[64rem]" style={{ backgroundImage: `url(${aboutimg})` }}>
       <div className="absolute inset-0 bg-black opacity-50"></div> {/* Sombra oscura sobre la imagen */}
       <div className="relative max-w-4xl mx-auto h-full flex items-center p-8 -ml-2 mt-16">
-        <div className="text-white mt-20">
-          <h2 className="text-6xl font-bold mb-4">Sobre Nosotros</h2>
-          <span className="text-2xl leading-relaxed">
+        <div className="text-gray-400 mt-20">
+          <h2 className="text-6xl font-bold mb-4 font-nunito">Sobre Nosotros</h2>
+          <span className="text-2xl font-semibold leading-relaxed font-nunito">
           Durante los últimos 3 años, el equipo de Aznara Store<br></br> se 
           ha dedicado a brindar un servicio excepcional,<br></br> asegurándonos
            de satisfacer las necesidades de nuestros clientes
@@ -28,9 +28,9 @@ const About = () => {
     <img
       src={aznara}
       alt="Logo 1"
-      className="w-24 h-24 object-cover mx-auto"
+      className="w-32 h-32 object-cover mx-auto"
     />
-    <p className="text-white mt-2">Marca Tu Estilo</p>
+    <p className="text-white mt-2 font-nunito font-semibold">Marca Tu Estilo</p>
     </a>
   </div>
   <div className="text-center">
@@ -38,9 +38,9 @@ const About = () => {
     <img
       src={reloj1}
       alt="Logo 2"
-      className="w-24 h-24  object-cover mx-auto"
+      className="w-32 h-32  object-cover mx-auto"
     />
-    <p className="text-white mt-2">Relojes</p>
+    <p className="text-white mt-2 font-nunito font-semibold">Relojes</p>
     </a>
   </div>
   <div className="text-center">
@@ -48,9 +48,9 @@ const About = () => {
     <img
       src={manillas}
       alt="Logo 3"
-      className="w-24 h-24 rounded-full object-cover mx-auto"
+      className="w-32 h-32 rounded-full object-cover mx-auto"
     />
-    <p className="text-white mt-2">Manillas</p>
+    <p className="text-white mt-2 font-nunito font-semibold">Manillas</p>
     </a>
   </div>
   <div className="text-center">
@@ -58,9 +58,9 @@ const About = () => {
     <img
       src={anillos}
       alt="Logo 4"
-      className="w-24 h-24  object-cover mx-auto"
+      className="w-32 h-32  object-cover mx-auto"
     />
-    <p className="text-white mt-2">Anillos</p>
+    <p className="text-white mt-2 font-nunito font-semibold">Anillos</p>
     </a>
   </div>
   <div className="text-center">
@@ -68,9 +68,9 @@ const About = () => {
     <img
       src={cadenas}
       alt="Logo 5"
-      className="w-24 h-24 rounded-full object-cover mx-auto"
+      className="w-32 h-32 rounded-full object-cover mx-auto"
     />
-    <p className="text-white mt-2">Cadenas</p>
+    <p className="text-white mt-2 font-nunito font-semibold">Cadenas</p>
     </a>
   </div>
 </div>
