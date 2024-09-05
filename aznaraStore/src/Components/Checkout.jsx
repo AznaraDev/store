@@ -1,123 +1,146 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { createOrder, clearOrderState, fetchLatestOrder} from '../Redux/Actions/actions';
-import Swal from 'sweetalert2';
-
-
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  createOrder,
+  clearOrderState,
+  fetchLatestOrder,
+} from "../Redux/Actions/actions";
+import Swal from "sweetalert2";
 
 const Checkout = () => {
-  const [address, setAddress] = useState('Retira en local');
-  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const currentDate = new Date().toISOString().split("T")[0];
+  const [address, setAddress] = useState("Retira en local");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
- 
- const userLogin = useSelector((state) => state.userLogin);
+
+  const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const cart = useSelector((state) => state.cart);
   const orderCreate = useSelector((state) => state.order);
   const latestOrder = useSelector((state) => state.latestOrder);
- 
- const [orderData, setOrderData] = useState({
-  date: new Date().toISOString().split('T')[0],
-  amount: cart.totalPrice,
-  quantity: cart.totalItems,
-  state_order: 'Pedido Realizado',
-  n_document: userInfo ? userInfo.n_document : '',
-  id_product: cart.items.map(item => item.id_product),
-  address,
-  deliveryAddress: address === 'Envio a domicilio' ? deliveryAddress : null,
+
+  const [orderData, setOrderData] = useState({
+    date: currentDate,
+    amount: cart.totalPrice,
+    quantity: cart.totalItems,
+    state_order: "Pedido Realizado",
+    n_document: userInfo ? userInfo.n_document : "",
+    id_product: cart.items.map((item) => item.id_product),
+    address,
+    deliveryAddress: address === "Envio a domicilio" ? deliveryAddress : null,
   });
- 
- useEffect(() => {
-  if (orderCreate.success) {
-  dispatch(fetchLatestOrder());
-  Swal.fire({
-  title: 'Success',
-  text: '¡Compra exitosa!',
-  icon: 'success',
-  confirmButtonText: 'OK'
-  }).then(() => {
-  dispatch(clearOrderState());
-  setOrderData({
-  date: new Date().toISOString().split('T')[0],
-  amount: 0,
-  quantity: 0,
-  state_order: 'Pedido Realizado',
-  n_document: '',
-  id_product: [],
-  address: 'Retira en local',
-  deliveryAddress: null,
-  });
-  });
-  }
-  }, [orderCreate.success, dispatch]);
- 
+
+  // Manejar creación de orden exitosa
   useEffect(() => {
-    if (latestOrder.success) {
-    const { amount, id_orderDetail } = latestOrder.data.orderDetail;
-    const checkout = new WidgetCheckout({
-    currency: 'COP',
-    amountInCents: amount * 100, 
-    reference: String(id_orderDetail), 
-    publicKey: 'pub_test_udFLMPgs8mDyKqs5bRCWhpwDhj2rGgFw',
-    redirectUrl: 'http://localhost:5173/pago', 
-    integritySignature: latestOrder.data.integritySignature 
-   
-    });
-   
-   checkout.open((result) => {
-    const transaction = result.transaction;
-    if (transaction.status === 'APPROVED') {
-    Swal.fire('Success', 'Payment successful', 'success');
-    } else {
-    Swal.fire('Error', 'Payment failed', 'error');
+    if (orderCreate.success && !orderCreate.loading && !orderCreate.error) {
+      dispatch(fetchLatestOrder());
+      Swal.fire({
+        title: "Success",
+        text: "¡Compra exitosa!",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        dispatch(clearOrderState());
+        // Restablecer datos de la orden
+        setOrderData({
+          date: currentDate,
+          amount: 0,
+          quantity: 0,
+          state_order: "Pedido Realizado",
+          n_document: "",
+          id_product: [],
+          address: "Retira en local",
+          deliveryAddress: null,
+        });
+       
+        navigate("/gracias"); //deberiamos hacer un componente explicando los pasos siguientes, como que va a recibir un mail y que luego puede revisar en el perfil y bla bla bla
+      });
     }
-    });
+  }, [orderCreate.success, dispatch, navigate]);
+
+  // Manejar el widget de Wompi después de la creación de la orden
+  useEffect(() => {
+    if (latestOrder.success && !latestOrder.loading && !latestOrder.error) {
+      const { amount, id_orderDetail } = latestOrder.data.orderDetail;
+      const checkout = new WidgetCheckout({
+        currency: "COP",
+        amountInCents: amount * 100,
+        reference: String(id_orderDetail),
+        publicKey: "pub_test_udFLMPgs8mDyKqs5bRCWhpwDhj2rGgFw",
+        redirectUrl: "http://localhost:5173/pago",
+        integritySignature: latestOrder.data.integritySignature,
+      });
+
+      checkout.open((result) => {
+        const transaction = result.transaction;
+        if (transaction.status === "APPROVED") {
+          Swal.fire("Success", "Payment successful", "success");
+        } else {
+          Swal.fire("Error", "Payment failed", "error");
+        }
+      });
     }
-   }, [latestOrder]);
- 
- useEffect(() => {
-  setOrderData((prevData) => ({
-  ... prevData,
-  id_product: cart.items.map(item => item.id_product),
-  amount: cart.totalPrice,
-  quantity: cart.totalItems,
-  }));
+  }, [latestOrder]);
+
+  // Actualizar datos de la orden cuando cambian los artículos del carrito
+  useEffect(() => {
+    setOrderData((prevData) => ({
+      ...prevData,
+      id_product: cart.items.map((item) => item.id_product),
+      amount: cart.totalPrice,
+      quantity: cart.totalItems,
+    }));
   }, [cart]);
- 
- useEffect(() => {
-  setOrderData((prevData) => ({
-  ... prevData,
-  address,
-  deliveryAddress: address === 'Envio a domicilio' ? deliveryAddress : null,
-  }));
+
+  // Actualizar dirección de entrega
+  useEffect(() => {
+    setOrderData((prevData) => ({
+      ...prevData,
+      address,
+      deliveryAddress: address === "Envio a domicilio" ? deliveryAddress : null,
+    }));
   }, [address, deliveryAddress]);
- 
- const handleAddressChange = (e) => {
-  setAddress(e.target.value);
+
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
   };
- 
- const handleDeliveryAddressChange = (e) => {
-  setDeliveryAddress(e.target.value);
+
+  const handleDeliveryAddressChange = (e) => {
+    setDeliveryAddress(e.target.value);
   };
- 
- const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setOrderData((prevData) => ({
-  ... prevData,
-  [name]: value,
-  }));
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setOrderData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
- 
- const handleSubmit = (e) => {
-  e.preventDefault();
-  dispatch(createOrder(orderData));
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validar dirección de entrega si es necesario
+    if (address === "Envio a domicilio" && !deliveryAddress) {
+      Swal.fire("Error", "Por favor ingresa la dirección de envío", "error");
+      return;
+    }
+    dispatch(createOrder(orderData));
   };
+
   return (
-    
     <div className="max-w-lg mx-auto p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center"  style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 900, color: 'rgb(34, 197, 94)' }}>Finalizar Compra</h2>
+      <h2
+        className="text-2xl font-bold mb-4 text-center"
+        style={{
+          fontFamily: "Roboto, sans-serif",
+          fontWeight: 900,
+          color: "rgb(34, 197, 94)",
+        }}
+      >
+        Finalizar Compra
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Fecha</label>
@@ -131,7 +154,9 @@ const Checkout = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Tipo de entrega:</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Tipo de entrega:
+          </label>
           <select
             id="address"
             value={address}
@@ -143,9 +168,11 @@ const Checkout = () => {
             <option value="Envio a domicilio">Envio a domicilio</option>
           </select>
         </div>
-        {address === 'Envio a domicilio' && (
+        {address === "Envio a domicilio" && (
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Dirección de envío:</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Dirección de envío:
+            </label>
             <input
               id="deliveryAddress"
               type="text"
@@ -157,13 +184,24 @@ const Checkout = () => {
           </div>
         )}
         <div className="mb-4">
-          <h3 className="text-xl font-bold mb-2"  style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 900, color: 'rgb(34, 197, 94)' }}>Resumen del Pedido</h3>
+          <h3
+            className="text-xl font-bold mb-2"
+            style={{
+              fontFamily: "Roboto, sans-serif",
+              fontWeight: 900,
+              color: "rgb(34, 197, 94)",
+            }}
+          >
+            Resumen del Pedido
+          </h3>
           <ul className="divide-y divide-gray-200">
             {cart.items.map((item) => (
               <li key={item.id_product} className="py-2">
                 <div className="flex justify-between">
                   <span>{item.name}</span>
-                  <span>{item.quantity} x ${item.price}</span>
+                  <span>
+                    {item.quantity} x ${item.price}
+                  </span>
                 </div>
               </li>
             ))}
@@ -182,9 +220,11 @@ const Checkout = () => {
           className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
           disabled={orderCreate.loading}
         >
-          {orderCreate.loading ? 'Procesando...' : 'Finalizar Compra'}
+          {orderCreate.loading ? "Procesando..." : "Finalizar Compra"}
         </button>
-        {orderCreate.error && <div className="text-red-500 mt-2">{orderCreate.error}</div>}
+        {orderCreate.error && (
+          <div className="text-red-500 mt-2">{orderCreate.error}</div>
+        )}
       </form>
     </div>
   );
