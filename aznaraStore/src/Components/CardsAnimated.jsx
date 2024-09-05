@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+//<FontAwesomeIcon icon="fa-thin fa-gem" />
 
 import card1 from "../assets/img/an1.png";
 import card2 from "../assets/img/an2.png";
@@ -33,7 +34,7 @@ const CardsAnimated = () => {
     <div className="grid grid-cols-3 gap-8 p-60">
       {/* Columna izquierda: Texto */}
       <div className="flex flex-col justify-center">
-        <h2 className="text-3xl font-nunito font-bold mb-4">Por qué comprar nuestros accesorios</h2>
+        <h2 className="text-4xl font-nunito font-bold mb-4">Por qué comprar nuestros accesorios</h2>
         <div className="flex items-start mb-6">
           <div>
             <p className="text-lg font-semibold">Productos de calidad</p>

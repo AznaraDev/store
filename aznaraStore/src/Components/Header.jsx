@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; 
 import { Disclosure } from '@headlessui/react';
 import backgroundImage from '../assets/img/banner.png';
-import bannerCompras from '../assets/img/bannerCompras.png'; 
+
 
 
 export default function Header() {

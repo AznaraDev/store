@@ -17,8 +17,8 @@ const ProductCarousel = () => {
   );
 
   return (
-    <div className="carousel-container p-4 flex justify-center">
-      <div className="grid grid-cols-4 gap-4">
+    <div className="carousel-container p-4 flex justify-center mt-10">
+      <div className="grid grid-cols-4 gap-12 ">
         {products.length > 0
           ? products.map((product) => (
               <div

@@ -13,28 +13,28 @@ const SeccionIconosH = () => {
             <img
               src={reloj1}
               alt="Section 1"
-              className="w-full h-auto object-cover rounded-lg shadow-lg hover:opacity-75 transition duration-300"
+              className="w-full h-auto object-cover rounded-full shadow-lg hover:opacity-75 transition duration-300"
             />
           </a>
           <a href="#section2" className="block mx-auto">
             <img
               src={anillo1}
               alt="Section 2"
-              className="w-full h-auto object-cover rounded-lg shadow-lg hover:opacity-75 transition duration-300"
+              className="w-full h-auto object-cover rounded-full shadow-lg hover:opacity-75 transition duration-300"
             />
           </a>
           <a href="#section3" className="block mx-auto">
             <img
               src={anillo2}
               alt="Section 3"
-              className="w-full h-auto object-cover rounded-lg shadow-lg hover:opacity-75 transition duration-300"
+              className="w-full h-auto object-cover rounded-full shadow-lg hover:opacity-75 transition duration-300"
             />
           </a>
           <a href="#section4" className="block mx-auto">
             <img
               src={dije1}
               alt="Section 4"
-              className="w-full h-auto object-cover rounded-lg shadow-lg hover:opacity-75 transition duration-300"
+              className="w-full h-auto object-cover rounded-full shadow-lg hover:opacity-75 transition duration-300"
             />
           </a>
         </div>
