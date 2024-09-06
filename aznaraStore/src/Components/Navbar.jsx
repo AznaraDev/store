@@ -223,11 +223,13 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
+             <Link to="/">
             <img
               alt="Your Company"
               src={logo}
               className="h-52 w-auto object-contain" 
             />
+            </Link>
           </div>
 
           {/* Enlaces de navegación para pantallas grandes */}

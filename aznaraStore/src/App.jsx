@@ -17,6 +17,7 @@ import WhatsAppButton from "./Components/WhatsappButton";
 import Landing from "./Components/Landing";
 import CardsAnimated from "./Components/CardsAnimated";
 import ThankYouPage from "./Components/ThankYouPage";
+import FilteredProducts from "./Components/Product/FilteredProducts";
 
 
   function App() {
@@ -40,7 +41,8 @@ import ThankYouPage from "./Components/ThankYouPage";
             <Route exact path="/checkout" element={<Checkout />} />  
             <Route exact path="/gracias" element={<ThankYouPage />} /> 
             <Route path="/updateProduct/:id" element={<UpdateProduct />} /> 
-            <Route path="/category" element={<CreateCategory/>}/>       
+            <Route path="/category" element={<CreateCategory/>}/>  
+            <Route path="/productsCat/:categoryName" element={<FilteredProducts />} />     
           </Routes>
         </div>
         <Footer/>
