@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, fetchFilteredProducts, addToCart, deleteProduct } from '../../Redux/Actions/actions';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProducts,
+  fetchFilteredProducts,
+  addToCart,
+  deleteProduct,
+} from "../../Redux/Actions/actions";
+import { Link, useNavigate } from "react-router-dom";
 import { FiShoppingCart, FiEdit, FiTrash } from "react-icons/fi";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const ProductsList = () => {
   const dispatch = useDispatch();
@@ -26,43 +31,54 @@ const ProductsList = () => {
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product));
-    navigate('/cart');
+    navigate("/cart");
   };
 
   const handleEditProduct = (id_product) => {
     navigate(`/updateProduct/${id_product}`);
   };
-  
+
   const handleDeleteProduct = (id_product) => {
     Swal.fire({
-      title: '¿Eliminar producto?',
-      text: 'Esta acción no se puede deshacer',
-      icon: 'warning',
+      title: "¿Eliminar producto?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(deleteProduct(id_product));
-        Swal.fire('¡Eliminado!', 'El producto ha sido eliminado.', 'success');
+        Swal.fire("¡Eliminado!", "El producto ha sido eliminado.", "success");
       }
     });
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Cargando...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="min-h-screen flex items-center justify-center">Error: {error}</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Error: {error}
+      </div>
+    );
   }
 
   if (!products || products.length === 0) {
@@ -80,13 +96,22 @@ const ProductsList = () => {
           {currentProducts.map((product) => (
             <div key={product.id_product} className="group relative max-w-xs">
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden">
-              <Link to={`/product/${product.id_product}`}>
-                <img
-                  src={product.Images.length > 0 ? product.Images[0].url : 'https://via.placeholder.com/150'}
-                  alt={product.name}
-                  className="h-full w-full object-cover object-center rounded-lg"
-                />
-                 </Link>
+                <Link to={`/product/${product.id_product}`}>
+                  <img
+                    src={
+                      product.Images.length > 0
+                        ? product.Images[0].url
+                        : "https://via.placeholder.com/150"
+                    }
+                    alt={product.name}
+                    className="h-full w-full object-cover object-center rounded-lg"
+                  />
+                </Link>
+                {product.isOffer && (
+                  <span className="absolute top-2 left-2 bg-gray-500 text-colorLogo text-xl px-2 py-0 rounded-md">
+                    OFERTA
+                  </span>
+                )}
               </div>
               <div className="mt-4 px-4">
                 <h3 className="text-2xl font-semibold font-nunito text-white">
@@ -94,15 +119,11 @@ const ProductsList = () => {
                     {product.name}
                   </Link>
                 </h3>
-                <p className="text-lg font-medium font-nunito text-white">${product.price}</p>
+                <p className="text-lg font-medium font-nunito text-white">
+                  ${product.price}
+                </p>
               </div>
               <div className="mt-4 mb-4 px-4 flex justify-between items-center">
-                {/* <Link
-                  to={`/product/${product.id_product}`}
-                  className="bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                >
-                  Ver más
-                </Link> */}
                 <button
                   onClick={() => handleAddToCart(product)}
                   className="mt-4 flex items-center justify-center w-full bg-colorLogo text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300"
@@ -110,7 +131,7 @@ const ProductsList = () => {
                   <FiShoppingCart className="mr-2" /> Añadir al carrito
                 </button>
               </div>
-              {userInfo && userInfo.role === 'Admin' && (
+              {userInfo && userInfo.role === "Admin" && (
                 <div className="absolute top-2 right-2 flex space-x-2">
                   <button
                     className="bg-gray-100 text-gray-700 p-2 rounded-full hover:bg-gray-200"
@@ -134,20 +155,23 @@ const ProductsList = () => {
         <div className="mt-8 flex justify-center">
           <nav className="block">
             <ul className="flex pl-0 rounded list-none flex-wrap">
-              {Array.from({ length: Math.ceil(products.length / productsPerPage) }, (_, i) => (
-                <li key={i}>
-                  <button
-                    className={`${
-                      currentPage === i + 1
-                        ? 'bg-gray-600 text-white hover:bg-gray-400'
-                        : 'bg-gray-700 text-gray-200 hover:bg-gray-300'
-                    } px-3 py-2 ml-1 rounded`}
-                    onClick={() => paginate(i + 1)}
-                  >
-                    {i + 1}
-                  </button>
-                </li>
-              ))}
+              {Array.from(
+                { length: Math.ceil(products.length / productsPerPage) },
+                (_, i) => (
+                  <li key={i}>
+                    <button
+                      className={`${
+                        currentPage === i + 1
+                          ? "bg-gray-600 text-white hover:bg-gray-400"
+                          : "bg-gray-700 text-gray-200 hover:bg-gray-300"
+                      } px-3 py-2 ml-1 rounded`}
+                      onClick={() => paginate(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  </li>
+                )
+              )}
             </ul>
           </nav>
         </div>
@@ -156,7 +180,3 @@ const ProductsList = () => {
   );
 };
 export default ProductsList;
-
-
-
-

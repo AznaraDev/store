@@ -46,7 +46,7 @@ const ProductCarousel = () => {
                 <Link to={`/product/${product.id_product}`}>
                 <div className="w-80 mb-14 p-4 bg-colorFooter rounded-lg shadow-lg text-center ml-12">
                   {product.isOffer && (
-                    <span className="absolute top-2 left-2 bg-red-500 text-white text-sm px-2 py-1 rounded-lg">
+                    <span className="absolute  font-semibold top-0 left-8 bg-gray-500 text-colorLogo text-xl px-2 py-0 rounded-md">
                       OFERTA
                     </span>
                   )}
