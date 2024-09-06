@@ -16,7 +16,7 @@ const CreateProduct = () => {
   const [newSize, setNewSize] = useState('');
   const [colors, setColors] = useState([]);
   const [newColor, setNewColor] = useState('');
-  const [isOffer, setIsOffer] = useState(); 
+  const [isOffer, setIsOffer] = useState(false); 
   const [alertMessage, setAlertMessage] = useState('');
 
   const dispatch = useDispatch();
@@ -107,212 +107,214 @@ const CreateProduct = () => {
   };
 
   return (
-    <div>
-      <form className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
+    <div className="bg-colorFooter min-h-screen pt-16"> {/* Asegúrate de que haya suficiente espacio para el navbar */}
+    
+      <form className="max-w-4xl mx-auto mt-10 p-6 bg-gray-300 rounded-lg shadow-xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        
         <div className="space-y-6">
+        <h2 className="text-3xl font-bold font-nunito bg-yellow-600 p-4 rounded mb-4 text-center text-gray-600">
+              Crear nuevo producto
+            </h2>
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-2xl font-bold mb-4 text-center">Crear nuevo producto</h2>
+           
           </div>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Nombre
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Name"
-                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Descripción
-              </label>
-              <input
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Description"
-                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                Precio
-              </label>
-              <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Price"
-                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="stock" className="block text-sm font-medium text-gray-700">
-                Stock
-              </label>
-              <input
-                type="number"
-                value={stock}
-                onChange={(e) => setStock(e.target.value)}
-                placeholder="Stock"
-                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
-                Categoría
-              </label>
-              <select
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
-              >
-                <option value="">Seleccionar categoría</option>
-                {categories.map((category) => (
-                  <option key={category.id_category} value={category.id_category}>
-                    {category.name_category}
-                  </option>
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Nombre
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Name"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              Descripción
+            </label>
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Description"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              Precio
+            </label>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="Price"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="stock" className="block text-sm font-medium text-gray-700">
+              Stock
+            </label>
+            <input
+              type="number"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              placeholder="Stock"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="section" className="block text-sm font-medium text-gray-700">
+              Sección
+            </label>
+            <select
+              value={section}
+              onChange={(e) => setSection(e.target.value)}
+              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+            >
+              <option value="">Seleccionar sección</option>
+              <option value="Dama">Dama</option>
+              <option value="Caballero">Caballero</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="images" className="block text-sm font-medium text-gray-700">
+              Imágenes
+            </label>
+            <input
+              type="file"
+              multiple
+              onChange={handleImageChange}
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+            />
+          </div>
+          {images.length > 0 && (
+            <div className="mt-2">
+              <p className="text-sm font-medium">Imágenes seleccionadas:</p>
+              <div className="flex space-x-2 mt-1">
+                {images.map((image, index) => (
+                  <div key={index} className="relative w-16 h-16">
+                    <img
+                      src={URL.createObjectURL(image)}
+                      alt={`Imagen ${index}`}
+                      className="object-cover w-full h-full rounded-md"
+                    />
+                    <button
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center -mt-1 -mr-1 hover:bg-red-600"
+                    >
+                      X
+                    </button>
+                  </div>
                 ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="section" className="block text-sm font-medium text-gray-700">
-                Sección
-              </label>
-              <select
-                value={section}
-                onChange={(e) => setSection(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
-              >
-                <option value="">Seleccionar sección</option>
-                <option value="Dama">Dama</option>
-                <option value="Caballero">Caballero</option>
-                <option value="Unisex">Unisex</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="images" className="block text-sm font-medium text-gray-700">
-                Imágenes
-              </label>
-              <input
-                type="file"
-                multiple
-                onChange={handleImageChange}
-                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
-              />
-            </div>
-            {images.length > 0 && (
-              <div className="mt-2">
-                <p className="text-sm font-medium">Imágenes seleccionadas:</p>
-                <div className="flex space-x-2 mt-1">
-                  {images.map((image, index) => (
-                    <div key={index} className="relative w-16 h-16">
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt={`Imagen ${index}`}
-                        className="object-cover w-full h-full rounded-md"
-                      />
-                      <button
-                        onClick={() => handleRemoveImage(index)}
-                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center -mt-1 -mr-1 hover:bg-red-600"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-                </div>
               </div>
-            )}
-            <div>
-              <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">
-                Talles
-              </label>
-              <select
-                multiple
-                value={sizes}
-                onChange={(e) => setSizes(Array.from(e.target.selectedOptions, option => option.value))}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
-              >
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-              </select>
-              <input
-                type="text"
-                value={newSize}
-                onChange={(e) => setNewSize(e.target.value)}
-                placeholder="Nuevo tamaño"
-                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
-              />
-              <button
-                type="button"
-                onClick={handleAddSize}
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-              >
-                Agregar Tamaño
-              </button>
             </div>
-            <div>
-              <label htmlFor="colors" className="block text-sm font-medium text-gray-700">
-                Colores
-              </label>
-              <select
-                multiple
-                value={colors}
-                onChange={(e) => setColors(Array.from(e.target.selectedOptions, option => option.value))}
-                className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
-              >
-                <option value="Rojo">Rojo</option>
-                <option value="Azul">Azul</option>
-                <option value="Verde">Verde</option>
-                <option value="Negro">Negro</option>
-              </select>
-              <input
-                type="text"
-                value={newColor}
-                onChange={(e) => setNewColor(e.target.value)}
-                placeholder="Nuevo color"
-                className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
-              />
-              <button
-                type="button"
-                onClick={handleAddColor}
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-              >
-                Agregar Color
-              </button>
-            </div>
-            <div>
-              <label htmlFor="isOffer" className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="isOffer"
-                  checked={isOffer}
-                  onChange={(e) => setIsOffer(e.target.checked)}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium text-gray-700">En oferta</span>
-              </label>
-            </div>
-            {alertMessage && (
-              <div className="text-red-500 text-sm mt-2">{alertMessage}</div>
-            )}
-            <div className="flex justify-end mt-6">
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-              >
-                Crear Producto
-              </button>
-            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
+              Categoría
+            </label>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+            >
+              <option value="">Seleccionar categoría</option>
+              {categories.map((category) => (
+                <option key={category.id_category} value={category.id_category}>
+                  {category.name_category}
+                </option>
+              ))}
+            </select>
           </div>
+          <div>
+            <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">
+              Talles
+            </label>
+            <select
+              multiple
+              value={sizes}
+              onChange={(e) => setSizes(Array.from(e.target.selectedOptions, option => option.value))}
+              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+            >
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+            <input
+              type="text"
+              value={newSize}
+              onChange={(e) => setNewSize(e.target.value)}
+              placeholder="Agregar nuevo talle"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+            />
+            <button
+              type="button"
+              onClick={handleAddSize}
+              className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded-md"
+            >
+              Agregar talle
+            </button>
+          </div>
+          <div>
+            <label htmlFor="colors" className="block text-sm font-medium text-gray-700">
+              Colores
+            </label>
+            <select
+              multiple
+              value={colors}
+              onChange={(e) => setColors(Array.from(e.target.selectedOptions, option => option.value))}
+              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+            >
+              <option value="Rojo">Rojo</option>
+              <option value="Azul">Azul</option>
+              <option value="Verde">Verde</option>
+              <option value="Negro">Negro</option>
+            </select>
+            <input
+              type="text"
+              value={newColor}
+              onChange={(e) => setNewColor(e.target.value)}
+              placeholder="Agregar nuevo color"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+            />
+            <button
+              type="button"
+              onClick={handleAddColor}
+              className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded-md"
+            >
+              Agregar color
+            </button>
+          </div>
+          <div>
+            <label htmlFor="isOffer" className="flex items-center font-nunito text-xl">
+              <input
+                type="checkbox"
+                checked={isOffer}
+                onChange={() => setIsOffer(!isOffer)}
+                className="mr-2"
+              />
+              <span>Oferta</span>
+            </label>
+          </div>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="col-span-2 text-center px-4 py-2 bg-yellow-600 text-white rounded-md"
+          >
+            Crear Producto
+          </button>
+          {alertMessage && (
+            <div className="col-span-2 text-red-600">{alertMessage}</div>
+          )}
         </div>
       </form>
     </div>
@@ -320,6 +322,16 @@ const CreateProduct = () => {
 };
 
 export default CreateProduct;
+
+
+
+
+
+
+
+
+
+
 
 
 
