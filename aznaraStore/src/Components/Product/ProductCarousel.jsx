@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchFilteredProducts } from '../../Redux/Actions/actions';
-import { setCategoryFilter } from '../../Redux/Actions/actions';
+import { fetchFilteredProducts, setCategoryFilter } from '../../Redux/Actions/actions';
 
 const ProductCarousel = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products || []);
   const categoryFilter = useSelector((state) => state.products.categoryFilter || '');
 
-  // Limpiar el filtro y obtener todos los productos al montar el componente
   useEffect(() => {
     // Limpiar el filtro de categoría
     dispatch(setCategoryFilter(''));
@@ -41,8 +39,13 @@ const ProductCarousel = () => {
           ? filteredProducts.map((product) => (
               <div
                 key={product.id_product}
-                className="w-64 p-4 bg-white rounded-lg shadow-lg"
+                className="w-64 p-4 bg-white rounded-lg shadow-lg relative"
               >
+                {product.isOffer && (
+                  <span className="absolute font-nunito font-semiboldtop-2 left-2 bg-colorLogo text-white text-xl px-2 py-1 rounded-lg">
+                    OFERTA
+                  </span>
+                )}
                 <img
                   src={product.Images[0]?.url || 'https://via.placeholder.com/150'}
                   alt={product.name}
@@ -59,6 +62,7 @@ const ProductCarousel = () => {
 };
 
 export default ProductCarousel;
+
 
 
 

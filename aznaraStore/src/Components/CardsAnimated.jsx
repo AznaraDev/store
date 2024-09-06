@@ -21,7 +21,7 @@ const CardsAnimated = () => {
           setIsInView(false); // El componente está fuera de vista
         }
       },
-      { threshold: 0.8 } // Se activará cuando el 20% del componente esté visible
+      { threshold: 0.8 } // Se activará cuando el 80% del componente esté visible
     );
 
     if (ref.current) {
@@ -36,44 +36,46 @@ const CardsAnimated = () => {
     };
   }, []);
 
+  // Variants con ajustes para dispositivos grandes y pequeños
   const variants = {
-    initial1: { scale: 1.6, opacity: 100, x: 60, y: -120 },
-    initial2: { scale: 1.6, opacity: 100, x: 20, y: 210 },
-    initial3: { scale: 1.4, opacity: 100, x: 320, y: -190 },
-    initial4: { scale: 1.9, opacity: 80, x: 330, y: 125 },
-  
-    animate1: { 
-      scale: 1.6, 
-      opacity: 1, 
-      x: 70, 
-      y: -50, 
-      transition: { duration: 1.2, yoyo: Infinity } 
+    initial1: { scale: 1.6, opacity: 1, x: 60, y: -120 },
+    initial2: { scale: 1.6, opacity: 1, x: 20, y: 210 },
+    initial3: { scale: 1.4, opacity: 1, x: 320, y: -190 },
+    initial4: { scale: 1.9, opacity: 0.8, x: 330, y: 125 },
+
+    // Ajustes para animaciones más lentas y adaptables a pantallas pequeñas
+    animate1: {
+      scale: 1.6,
+      opacity: 1,
+      x: 0,
+      y: -30,
+      transition: { duration: 3, yoyo: Infinity },
     },
-    animate2: { 
-      scale: 1.3, 
-      opacity: 1, 
-      x: 70, 
-      y: 100, 
-      transition: { duration: 1.5, yoyo: Infinity } 
+    animate2: {
+      scale: 1.3,
+      opacity: 1,
+      x: 0,
+      y: 50,
+      transition: { duration: 3, yoyo: Infinity },
     },
-    animate3: { 
-      scale: 1.4, 
-      opacity: 1, 
-      x: 180, 
-      y: -80, 
-      transition: { duration: 1.2, yoyo: Infinity } 
+    animate3: {
+      scale: 1.4,
+      opacity: 1,
+      x: 120,
+      y: -50,
+      transition: { duration: 3, yoyo: Infinity },
     },
-    animate4: { 
-      scale: 1.3, 
-      opacity: 1, 
-      x: 180, 
-      y: 80, 
-      transition: { duration: 1, yoyo: Infinity } 
+    animate4: {
+      scale: 1.3,
+      opacity: 1,
+      x: 120,
+      y: 50,
+      transition: { duration: 3, yoyo: Infinity },
     },
   };
 
   return (
-    <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 md:p-60">
+    <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 p-6 md:p-60">
       {/* Columna izquierda: Texto */}
       <div className="flex flex-col justify-center">
         <h2 className="text-3xl md:text-4xl font-nunito font-semibold mb-4 text-center">
@@ -155,6 +157,8 @@ const CardsAnimated = () => {
 };
 
 export default CardsAnimated;
+
+
 
 
 

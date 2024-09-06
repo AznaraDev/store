@@ -24,14 +24,14 @@ const SeccionIconosH = () => {
             className="w-full h-auto object-cover rounded-full shadow-lg hover:opacity-75 transition duration-300"
           />
         </a>
-        <a href="#section2" className="block mx-auto" onClick={() => handleCategoryClick('Anillos')}>
+        <a href="#section2" className="block mx-auto" onClick={() => handleCategoryClick('Manillas')}>
           <img
             src={anillo1}
             alt="Anillos"
             className="w-full h-auto object-cover rounded-full shadow-lg hover:opacity-75 transition duration-300"
           />
         </a>
-        <a href="#section3" className="block mx-auto" onClick={() => handleCategoryClick('Manillas')}>
+        <a href="#section3" className="block mx-auto" onClick={() => handleCategoryClick('Anillos')}>
           <img
             src={anillo2}
             alt="Manillas"

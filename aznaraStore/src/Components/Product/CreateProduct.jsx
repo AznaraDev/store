@@ -16,6 +16,7 @@ const CreateProduct = () => {
   const [newSize, setNewSize] = useState('');
   const [colors, setColors] = useState([]);
   const [newColor, setNewColor] = useState('');
+  const [isOffer, setIsOffer] = useState(); 
   const [alertMessage, setAlertMessage] = useState('');
 
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const CreateProduct = () => {
       images,
       sizes,
       colors,
+      isOffer, // Incluye isOffer en los datos del producto
     };
 
     try {
@@ -89,6 +91,7 @@ const CreateProduct = () => {
       setSizes([]);
       setColors([]);
       setSection('');
+      setIsOffer(false); // Reinicia el estado de isOffer
 
       setTimeout(() => {
         navigate('/');
@@ -175,8 +178,6 @@ const CreateProduct = () => {
                   </option>
                 ))}
               </select>
-              <div>
-              </div>
             </div>
 
             <div>
@@ -246,15 +247,15 @@ const CreateProduct = () => {
                 type="text"
                 value={newSize}
                 onChange={(e) => setNewSize(e.target.value)}
-                placeholder="Agregar nuevo talle"
+                placeholder="Nuevo tamaño"
                 className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
               />
               <button
                 type="button"
                 onClick={handleAddSize}
-                className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-md"
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
               >
-                Agregar Talle
+                Agregar Tamaño
               </button>
             </div>
             <div>
@@ -276,29 +277,41 @@ const CreateProduct = () => {
                 type="text"
                 value={newColor}
                 onChange={(e) => setNewColor(e.target.value)}
-                placeholder="Agregar nuevo color"
+                placeholder="Nuevo color"
                 className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
               />
               <button
                 type="button"
                 onClick={handleAddColor}
-                className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-md"
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
               >
                 Agregar Color
               </button>
             </div>
-          </div>
-          {alertMessage && (
-            <div className="mt-4 text-red-500 text-sm">{alertMessage}</div>
-          )}
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md"
-            >
-              Subir Producto
-            </button>
+            <div>
+              <label htmlFor="isOffer" className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="isOffer"
+                  checked={isOffer}
+                  onChange={(e) => setIsOffer(e.target.checked)}
+                  className="mr-2"
+                />
+                <span className="text-sm font-medium text-gray-700">En oferta</span>
+              </label>
+            </div>
+            {alertMessage && (
+              <div className="text-red-500 text-sm mt-2">{alertMessage}</div>
+            )}
+            <div className="flex justify-end mt-6">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              >
+                Crear Producto
+              </button>
+            </div>
           </div>
         </div>
       </form>
@@ -307,5 +320,6 @@ const CreateProduct = () => {
 };
 
 export default CreateProduct;
+
 
 

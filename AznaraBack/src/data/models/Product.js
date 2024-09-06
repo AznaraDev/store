@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      
+
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -49,42 +49,46 @@ module.exports = (sequelize) => {
       stock: {
         type: DataTypes.INTEGER,
       },
-      stock_control: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  section:{
-    type: DataTypes.ENUM('Caballero', 'Dama', 'Unisex' ),
-      allowNull: true,
+      isOffer: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
-  tax_classification: {
-    type: DataTypes.STRING,
-    defaultValue: 'Taxed',
-  },
-  tax_included: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  tax_consumption_value: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
-  taxes_id: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  prices_currency_code: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  prices_price_list_position: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  unit: {
-    type: DataTypes.STRING,
-    defaultValue: '94',
-  },
+      stock_control: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      section: {
+        type: DataTypes.ENUM("Caballero", "Dama", "Unisex"),
+        allowNull: true,
+      },
+      tax_classification: {
+        type: DataTypes.STRING,
+        defaultValue: "Taxed",
+      },
+      tax_included: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      tax_consumption_value: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      taxes_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      prices_currency_code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      prices_price_list_position: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      unit: {
+        type: DataTypes.STRING,
+        defaultValue: "94",
+      },
 
       deletedAt: {
         type: DataTypes.DATE,

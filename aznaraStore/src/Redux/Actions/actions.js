@@ -67,6 +67,7 @@ export const createProduct = (productData) => async (dispatch) => {
     formData.append('stock', productData.stock);
     formData.append('id_category', productData.id_category);
     formData.append('section', productData.section)
+    formData.append('isOffer', productData.isOffer)
 
     if (productData.sizes) {
       formData.append('sizes', JSON.stringify(productData.sizes));
