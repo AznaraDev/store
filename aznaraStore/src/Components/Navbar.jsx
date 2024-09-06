@@ -8,8 +8,8 @@ import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter
 
 const navigation = [
   { name: 'Tienda', href: '/products', current: true },
-  { name: 'Colecciones', href: '#', current: false },
-  { name: 'Contactanos', href: '#', current: false },
+  { name: 'Colecciones', href: '#about', current: false },
+  { name: 'Contactanos', href: '#footer', current: false },
   { name: 'Ofertas', href: '#', current: false },
   { name: 'Damas', href: '#', current: false },
 ];
@@ -234,17 +234,17 @@ export default function Navbar() {
 
           {/* Enlaces de navegación para pantallas grandes */}
           <div className="hidden sm:flex flex-1 justify-center space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
-                aria-current={item.current ? 'page' : undefined}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
+        {navigation.map((item) => (
+          <a
+            key={item.name}
+            href={item.href} // Usa <a> para enlaces de anclaje
+            className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
+            aria-current={item.current ? 'page' : undefined}
+          >
+            {item.name}
+          </a>
+        ))}
+      </div>
 
           {/* Barra de búsqueda */}
           <div className="flex-1 flex justify-center mt-4 px-2 lg:ml-6 lg:mr-6">

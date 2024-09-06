@@ -37,7 +37,7 @@ const About = () => {
           </div>
         </div>
       </div>
-      <div className="bg-colorFooter h-[16rem] mt-10 flex justify-around items-center">
+      <div id="about"   className="bg-colorFooter h-[16rem] mt-10 flex justify-around items-center">
         <div className="text-center">
           <a href="#section1" className="block mx-auto">
             <img src={aznara} alt="Logo 1" className="w-32 h-32 object-cover mx-auto" />

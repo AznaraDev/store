@@ -23,7 +23,7 @@ const Footer = () => {
        
 
         {/* Sección de Preguntas Frecuentes */}
-        <div className="bg-gray-100 text-gray-800 w-full max-w-md p-6 rounded-lg ">
+        <div id="footer" className="bg-gray-100 text-gray-800 w-full max-w-md p-6 rounded-lg ">
           <h3 className="text-xl font-semibold mb-4 text-colorLogo font-nunito">Preguntas Frecuentes</h3>
           {faqs.map((faq, index) => (
             <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-nunito">
