@@ -74,48 +74,46 @@ const ProductsList = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen flex flex-col justify-center items-center bg-colorFooter py-16"
-    >
+    <div className="min-h-screen flex flex-col justify-center items-center bg-colorFooter py-16">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {currentProducts.map((product) => (
-            <div key={product.id_product} className="group relative max-w-xs border rounded-lg overflow-hidden shadow-md">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200 p-2">
+            <div key={product.id_product} className="group relative max-w-xs">
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden">
+              <Link to={`/product/${product.id_product}`}>
                 <img
                   src={product.Images.length > 0 ? product.Images[0].url : 'https://via.placeholder.com/150'}
                   alt={product.name}
-                  className="h-full w-full object-cover object-center"
+                  className="h-full w-full object-cover object-center rounded-lg"
                 />
+                 </Link>
               </div>
-              <div className="mt-4 flex justify-between px-4">
-                <div>
-                  <h3 className="text-sm text-white">
-                    <Link to={`/product/${product.id_product}`}>
-                      {product.name}
-                    </Link>
-                  </h3>
-                </div>
-                <p className="text-sm font-medium text-white">${product.price}</p>
+              <div className="mt-4 px-4">
+                <h3 className="text-2xl font-semibold font-nunito text-white">
+                  <Link to={`/product/${product.id_product}`}>
+                    {product.name}
+                  </Link>
+                </h3>
+                <p className="text-lg font-medium font-nunito text-white">${product.price}</p>
               </div>
-              <div className="mt-4 mb-4 flex justify-between px-4">
-                <Link
+              <div className="mt-4 mb-4 px-4 flex justify-between items-center">
+                {/* <Link
                   to={`/product/${product.id_product}`}
-                  className="text-gray-700 hover:text-gray-200 bg-gray-100 px-4 py-2 rounded-lg"
+                  className="bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-lg"
                 >
                   Ver más
-                </Link>
+                </Link> */}
                 <button
-                  className="text-gray-200 px-3 py-1 rounded-lg hover:bg-gray-200"
                   onClick={() => handleAddToCart(product)}
+                  className="mt-4 flex items-center justify-center w-full bg-colorLogo text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300"
                 >
-                  <FiShoppingCart />
+                  <FiShoppingCart className="mr-2" /> Añadir al carrito
                 </button>
               </div>
               {userInfo && userInfo.role === 'Admin' && (
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-2 right-2 flex space-x-2">
                   <button
-                    className="bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-200"
+                    className="bg-gray-100 text-gray-700 p-2 rounded-full hover:bg-gray-200"
                     onClick={() => handleEditProduct(product.id_product)}
                   >
                     <FiEdit size={20} />
@@ -141,9 +139,9 @@ const ProductsList = () => {
                   <button
                     className={`${
                       currentPage === i + 1
-                        ? 'bg-green-500 text-white hover:bg-green-500'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    } px-3 py-2 border border-gray-300 ml-1 rounded`}
+                        ? 'bg-gray-600 text-white hover:bg-gray-400'
+                        : 'bg-gray-700 text-gray-200 hover:bg-gray-300'
+                    } px-3 py-2 ml-1 rounded`}
                     onClick={() => paginate(i + 1)}
                   >
                     {i + 1}
@@ -157,7 +155,6 @@ const ProductsList = () => {
     </div>
   );
 };
-
 export default ProductsList;
 
 
