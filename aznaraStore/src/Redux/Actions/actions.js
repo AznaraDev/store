@@ -275,7 +275,7 @@ export const setCategoryFilter = (category) => ({
   payload: category,
 });
 
-export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName) => async (dispatch) => {
+export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName, isOffer) => async (dispatch) => {
   dispatch({ type: FETCH_PRODUCTS_REQUEST });
 
   try {
@@ -287,6 +287,9 @@ export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName) => 
     
     if (categoryName) {
       url += `&categoryName=${categoryName}`;
+    }
+    if (isOffer) {
+      url += `&isOffer=true`;
     }
 
     const response = await fetch(url);
