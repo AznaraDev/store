@@ -62,7 +62,7 @@ const ProductDetails = () => {
 
       {/* Contenedor principal */}
       <div className="relative min-h-screen flex items-center justify-center pt-16">
-        <div className="bg-gray-900 rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl mx-4 sm:mx-6 lg:mx-8 flex flex-col lg:flex-row">
+        <div className="bg-colorDetalle rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl mx-4 sm:mx-6 lg:mx-8 flex flex-col lg:flex-row">
           {/* Imagen del producto */}
           <div className="w-full lg:w-1/2 p-4">
             <img
@@ -85,7 +85,7 @@ const ProductDetails = () => {
 
           {/* Detalles del producto */}
           <div className="w-full lg:w-1/2 p-4">
-            <h2 className="text-3xl font-bold text-yellow-600 mb-2 font-nunito">{product.name}</h2>
+            <h2 className="text-3xl font-bold text-yellow-600 mb-2 font-nunito bg-slate-600 p-2 rounded">{product.name}</h2>
             <p className="text-lg text-gray-300 mb-4 font-nunito font-semibold">Descripción: {product.description}</p>
             <p className="text-2xl font-semibold font-nunito text-yellow-600 mb-6">Precio: ${product.price}</p>
             
@@ -95,7 +95,7 @@ const ProductDetails = () => {
                 <select
                   value={selectedSize}
                   onChange={(e) => setSelectedSize(e.target.value)}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300 font-nunito"
+                  className="w-full bg-slate-600 border border-gray-600 rounded-lg py-2 px-4 text-gray-300 font-nunito"
                 >
                   <option value="">Seleccionar talle</option>
                   {product.sizes.map((size, index) => (
