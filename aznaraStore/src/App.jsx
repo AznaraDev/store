@@ -18,7 +18,7 @@ import Landing from "./Components/Landing";
 import CardsAnimated from "./Components/CardsAnimated";
 import ThankYouPage from "./Components/ThankYouPage";
 import FilteredProducts from "./Components/Product/FilteredProducts";
-
+import PrivateRoute from './Components/PrivateRoute';
 
   function App() {
     return (
@@ -34,13 +34,21 @@ import FilteredProducts from "./Components/Product/FilteredProducts";
             <Route exact path="/" element={<ProductsList />} />
             <Route exact path="/cardsanimated" element={<CardsAnimated />} />
             <Route exact path="/product/:id" element={<ProductDetails />} />
-            <Route exact path="/myOrders/:n_document" element={<OrdersDetails />} />
-            <Route exact path="/allOrders" element={<OrdersList/>}/>
-            <Route exact path="/createProducts" element={<CreateProduct />} />
+            <Route exact path="/myOrders/:n_document" element={ <PrivateRoute>
+              <OrdersDetails />
+            </PrivateRoute>} />
+            <Route exact path="/allOrders" element={ <PrivateRoute>
+              <OrdersList/>
+            </PrivateRoute>}/>
+            <Route exact path="/createProducts" element={<PrivateRoute>
+              <CreateProduct />
+            </PrivateRoute>} />
             <Route exact path="/cart" element={<Cart />} />
             <Route exact path="/checkout" element={<Checkout />} />  
             <Route exact path="/gracias" element={<ThankYouPage />} /> 
-            <Route path="/updateProduct/:id" element={<UpdateProduct />} /> 
+            <Route path="/updateProduct/:id" element={<PrivateRoute>
+              <UpdateProduct />
+            </PrivateRoute>} /> 
             <Route path="/category" element={<CreateCategory/>}/>  
             <Route path="/productsCat/:categoryName" element={<FilteredProducts />} />     
           </Routes>
