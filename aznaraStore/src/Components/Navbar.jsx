@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Disclosure, Menu } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Agrega useNavigate para la redirección
 import logo from '../assets/img/logoNombre.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
@@ -22,11 +22,28 @@ export default function Navbar() {
   const [isTransparent, setIsTransparent] = useState(true);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Asegúrate de tener esto para redireccionar
   const searchTerm = useSelector(state => state.searchTerm);
   const priceFilter = useSelector(state => state.priceFilter);
   const categoryFilter = useSelector(state => state.categoryFilter);
-  const categories = useSelector((state) => state.categories.data);
-  const userInfo = useSelector((state) => state.userLogin.userInfo);
+  const categories = useSelector(state => state.categories.data);
+  const userInfo = useSelector(state => state.userLogin.userInfo);
+
+ 
+    const publicRoutes = ['/login', '/', '/register', '/products','/productsCat/:categoryName']; // Añadir rutas públicas aquí
+
+    useEffect(() => {
+      const currentPath = window.location.pathname;
+      const isPublicRoute = publicRoutes.some(route => 
+        new RegExp(`^${route.replace(':categoryName', '[^/]+')}$`).test(currentPath)
+      );
+    
+      if (!userInfo && !isPublicRoute) {
+        navigate('/login');
+      }
+    }, [userInfo, navigate]);
+
+  
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -96,6 +113,7 @@ export default function Navbar() {
               </Link>
             )}
           </Menu.Item>
+          
         </>
       );
     } else if (userInfo.role === 'User') {
@@ -223,34 +241,34 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-             <Link to="/">
-            <img
-              alt="Your Company"
-              src={logo}
+            <Link to="/">
+              <img
+                alt="Your Company"
+                src={logo}
               className="h-52 w-auto object-contain" 
-            />
+              />
             </Link>
           </div>
 
           {/* Enlaces de navegación para pantallas grandes */}
           <div className="hidden sm:flex flex-1 justify-center space-x-8">
-        {navigation.map((item) => (
+            {navigation.map((item) => (
           <a
-            key={item.name}
+                key={item.name}
             href={item.href} // Usa <a> para enlaces de anclaje
             className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
             aria-current={item.current ? 'page' : undefined}
-          >
-            {item.name}
+              >
+                {item.name}
           </a>
-        ))}
-      </div>
+            ))}
+          </div>
 
-          {/* Barra de búsqueda */}
-          <div className="flex-1 flex justify-center mt-4 px-2 lg:ml-6 lg:mr-6">
+          {/* Search bar */}
+          <div className="flex-1 flex justify-center px-2 lg:ml-6 lg:mr-6">
             <div className="relative w-full max-w-lg">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-200" aria-hidden="true" />
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </div>
               <input
                 type="text"
@@ -267,61 +285,47 @@ export default function Navbar() {
             <Link to="/cart" className="relative p-2 text-gray-200 hover:text-gray-400">
               <ShoppingBagIcon className="h-8 w-8" aria-hidden="true" />
             </Link>
+
+            {/* User dropdown */}
             <Menu as="div" className="relative ml-3">
               <Menu.Button className="bg-transparent text-white px-3 py-2 rounded-md text-xl font-medium">
                 Menu
-              </Menu.Button>
+                </Menu.Button>
               <Menu.Items className="absolute right-0 z-10 mt-2 w-48 py-1 bg-white text-gray-900 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
                 {renderMenuItems()}
               </Menu.Items>
             </Menu>
           </div>
-
-          {/* Menú móvil */}
-          <div className="-mr-2 flex items-center sm:hidden">
-            <Disclosure.Button className="inline-flex items-center justify-center p-2 text-gray-200 hover:text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-              <span className="sr-only">Open main menu</span>
-              {open ? (
-                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-              )}
-            </Disclosure.Button>
-          </div>
         </div>
 
-        <Disclosure.Panel className="sm:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {navigation.map((item) => (
-              <Disclosure.Button
-                key={item.name}
-                as={Link}
-                to={item.href}
-                className={`block px-3 py-2 text-base font-medium ${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
-                aria-current={item.current ? 'page' : undefined}
-              >
-                {item.name}
-              </Disclosure.Button>
-            ))}
-            <div className="relative px-2 pt-2 pb-3">
-              <input
-                type="text"
-                placeholder="Buscar productos"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-transparent text-gray-200 placeholder-gray-200 focus:outline-none focus:ring-0 sm:text-sm"
-              />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-200" aria-hidden="true" />
-              </div>
-            </div>
-            <Link to="/cart" className="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-              <ShoppingBagIcon className="h-6 w-6 inline-block mr-2" aria-hidden="true" /> Carrito
-            </Link>
-            {renderMenuItems()}
-          </div>
-        </Disclosure.Panel>
+        {/* Mobile menu button */}
+        <div className="-mr-2 flex sm:hidden">
+          <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+            <span className="sr-only">Abrir menú</span>
+            {open ? (
+              <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+            )}
+          </Disclosure.Button>
+        </div>
       </div>
+
+      {/* Mobile navigation */}
+      <Disclosure.Panel className="sm:hidden">
+        <div className="space-y-1 px-2 pt-2 pb-3">
+          {navigation.map((item) => (
+            <Disclosure.Button
+              key={item.name}
+              as={Link}
+              to={item.href}
+              className={`block px-3 py-2 rounded-md text-base font-medium ${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
+            >
+              {item.name}
+            </Disclosure.Button>
+          ))}
+        </div>
+      </Disclosure.Panel>
     </Disclosure>
   );
 }

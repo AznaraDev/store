@@ -10,10 +10,11 @@ const Footer = () => {
   };
 
   const faqs = [
-    { question: "¿Cuál es el proceso de compra con AZNARA STORE?", answer: "El proceso es simple: seleccionas tu producto, lo agregas al carrito y sigues el proceso de pago." },
-    { question: "¿Cuántos días se tarda la transportadora en entregar mi pedido?", answer: "Dependiendo de tu ubicación, la entrega puede tardar entre 2 y 5 días hábiles." },
-    { question: "¿Sus productos tienen empaque?", answer: "Sí, todos nuestros productos vienen en un empaque de alta calidad." },
-    { question: "¿Puedo cambiar los productos que adquiera?", answer: "Ofrecemos una política de cambios dentro de los primeros 30 días." },
+    { question: "¿Cuál es el proceso de compra con AZNARA STORE?", answer: "Proceso de compra: 1. Debes identificar el producto de tu interés.2. Verifica el precio y las características.3. Añade el producto al carrito.4. Procede a ingresar tus datos. 5. Paga el producto por medio de PayU: cuenta de ahorros, débito, tarjeta de crédito o selecciona Pago Contraentrega.6. Te llegará un correo electrónico de confirmación.7. Después de máximo dos días hábiles te llegará un correo electrónico con el numero de guía de tu pedido." },
+    { question: "¿Cuántos días se tarda la transportadora en entregar mi pedido?", answer: "Ciudades principales: 4 a 7 días hábiles.Ciudades intermedias: 4 a 10 días hábiles. Los días hábiles excluyen los domingos y festivos. Los tiempos de entrega dependen de nuestras transportadoras aliadas, Envía, Interrapidísimo y Servientrega. Nuestras bodegas principales se encuentran ubicadas en la ciudad de Villavicencio" },
+    { question: "¿Sus productos tienen empaque?", answer: "Si, contamos con empaques especiales para todos nuestros productos" },
+    { question: "¿Puedo cambiar los productos que adquiera?", answer: "Sí puedes. Debes enviarnos un correo electrónico a aznarastore@gmail.com Después te indicaremos los pasos a seguir." },
+    { question:"¿Los productos tienen garantía?", answer: "Política de garantías: Nuestra tienda ofrece una garantía de 3 meses por defectos de fábrica. Algunas marcas brindan una garantía extendida de hasta un año. La garantía no cubre daños por mal uso del producto. Procedimiento para reportar garantía: 1. Escríbenos al correo: aznarastore@gmail.com 2. En el asunto debes especificar: GARANTÍA WEB 3. Debes enviar todos tus datos para validar la compra. 4. Adjuntar foto del producto en mención. 5. Explica de manera detallada en que consiste tu reclamo. Nuestro departamento de calidad se comunicará contigo en un máximo de 4 días hábiles."}
   ];
 
   return (
