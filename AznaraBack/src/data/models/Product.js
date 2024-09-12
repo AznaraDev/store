@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       sizes: {
-        type: DataTypes.TEXT, // Usar TEXT en lugar de STRING para permitir almacenamiento de textos más largos
+        type: DataTypes.TEXT, 
         allowNull: true,
         get() {
           const value = this.getDataValue("sizes");
