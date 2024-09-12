@@ -11,7 +11,7 @@ const navigation = [
   { name: 'Colecciones', href: '#about', current: false },
   { name: 'Contactanos', href: '#footer', current: false },
   { name: 'Ofertas', href: '#', current: false },
-  { name: 'Damas', href: '#', current: false },
+  
 ];
 
 function classNames(...classes) {
@@ -30,7 +30,7 @@ export default function Navbar() {
   const userInfo = useSelector(state => state.userLogin.userInfo);
 
  
-    const publicRoutes = ['/login', '/', '/register', '/products','/productsCat/:categoryName']; // Añadir rutas públicas aquí
+    const publicRoutes = ['/login', '/', '/register', '/products','/productsCat/:categoryName', '/caballeros']; // Añadir rutas públicas aquí
 
     useEffect(() => {
       const currentPath = window.location.pathname;
@@ -236,8 +236,8 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'}`}>
-      <div className="max-w-full px-2 sm:px-4 lg:px-8 py-4">
+    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'} `}>
+      <div className="max-w-full px-2 sm:px-4  lg:px-8 py-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
