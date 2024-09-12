@@ -36,8 +36,10 @@ module.exports = async (req, res) => {
         price,
         stock,
         id_category,
+        id_SB,
         sizes,
         colors,
+        materials,
         section,
         isOffer 
       } = req.body;
@@ -54,10 +56,12 @@ module.exports = async (req, res) => {
         price: parseFloat(price),
         stock: parseInt(stock, 10),
         id_category,
+        id_SB,
         sizes: sizes ? JSON.parse(sizes) : null,
         colors: colors ? JSON.parse(colors) : null,
+        materials: materials ?JSON.parse(materials): null,
         section,
-        isOffer: isOffer === 'true' // Asegúrate de convertir el valor a booleano
+        isOffer: isOffer === 'true' 
       });
 
       if (images && images.length > 0) {

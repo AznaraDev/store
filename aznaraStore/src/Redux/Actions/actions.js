@@ -72,6 +72,7 @@ export const createProduct = (productData) => async (dispatch) => {
     formData.append('price', productData.price);
     formData.append('stock', productData.stock);
     formData.append('id_category', productData.id_category);
+    formData.append('id_SB', productData.id_SB)
     formData.append('section', productData.section)
     formData.append('isOffer', productData.isOffer)
 
@@ -82,10 +83,18 @@ export const createProduct = (productData) => async (dispatch) => {
     if (productData.colors) {
       formData.append('colors', JSON.stringify(productData.colors));
     }
+    if (productData.materials) {
+      formData.append('materials', JSON.stringify(productData.materials));
+    }
 
     productData.images.forEach((image) => {
       formData.append('images', image);
     });
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
 
     const response = await axios.post(`${BASE_URL}/product/createProducts`, formData, {
       headers: {
