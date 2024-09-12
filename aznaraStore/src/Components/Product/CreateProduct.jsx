@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct, fetchCategories } from '../../Redux/Actions/actions';
+import { createProduct, fetchCategories,  fetchSB } from '../../Redux/Actions/actions';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
@@ -11,6 +11,7 @@ const CreateProduct = () => {
   const [stock, setStock] = useState('');
   const [section, setSection] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [sbId, setSbId]= useState('')
   const [images, setImages] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [newSize, setNewSize] = useState('');
@@ -21,10 +22,12 @@ const CreateProduct = () => {
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.categories.data);
+  const subCategories = useSelector((state)=> state.subCategories.data)
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchCategories());
+    dispatch(fetchSB());
   }, [dispatch]);
 
   const handleImageChange = (e) => {
@@ -54,7 +57,7 @@ const CreateProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !section || !description || !price || !stock || !categoryId || images.length === 0) {
+    if (!name || !section || !description || !price || !stock || !categoryId || !sbId || images.length === 0) {
       setAlertMessage('Por favor complete todos los campos y seleccione al menos una imagen.');
       return;
     }
@@ -66,6 +69,7 @@ const CreateProduct = () => {
       stock,
       section,
       id_category: categoryId,
+      id_SB: sbId,
       images,
       sizes,
       colors,
@@ -87,6 +91,7 @@ const CreateProduct = () => {
       setPrice('');
       setStock('');
       setCategoryId('');
+      setSbId('')
       setImages([]);
       setSizes([]);
       setColors([]);
@@ -234,6 +239,25 @@ const CreateProduct = () => {
               ))}
             </select>
           </div>
+
+          <div>
+            <label htmlFor="sbId" className="block text-sm font-medium text-gray-700">
+              Sub Categoría
+            </label>
+            <select
+              value={sbId}
+              onChange={(e) => setSbId(e.target.value)}
+              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+            >
+              <option value="">Seleccionar Sub Categoría</option>
+              {subCategories.map((sub) => (
+                <option key={sub.id_SB} value={sub.id_SB}>
+                  {sub.name_SB}
+                </option>
+              ))}
+            </select>
+          </div>
+          
           <div>
             <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">
               Talles

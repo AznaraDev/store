@@ -459,9 +459,7 @@ export const fetchSB = () => async (dispatch) => {
 
   try {
     const response = await axios.get(`${BASE_URL}/sb/`);
-    dispatch({ type: Array.isArray(response.data.data.subCategories)
-      ? response.data.data.subCategories
-      : [], });
+    dispatch({ type: FETCH_SB_SUCCESS, payload: response.data.data.subCategories });
   } catch (error) {
     dispatch({ type: FETCH_SB_FAILURE, payload: error.message });
   }

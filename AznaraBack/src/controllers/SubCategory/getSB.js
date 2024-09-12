@@ -4,8 +4,8 @@ const response = require('../../utils/response');
 
 module.exports = async (req, res) => {
   try {
-    const sb = await SubCategory.findAll();
-    return response(res, 200, { sb });
+    const subCategories = await SubCategory.findAll();
+    return response(res, 200, { subCategories });
   } catch (error) {
     console.error('Error fetching categories:', error);
     return response(res, 500, { error: error.message });
