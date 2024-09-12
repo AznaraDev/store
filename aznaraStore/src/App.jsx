@@ -19,19 +19,22 @@ import CardsAnimated from "./Components/CardsAnimated";
 import ThankYouPage from "./Components/ThankYouPage";
 import FilteredProducts from "./Components/Product/FilteredProducts";
 import PrivateRoute from './Components/PrivateRoute';
+import LandingPrincipal from "./Components/LandingPrincipal";
 
   function App() {
     return (
       <Router>
+    
         <div>
          <Navbar/>
+         
           <Routes>
-        
+          <Route path="/" element={<LandingPrincipal />} />
             <Route exact path="/register" element={<Register/>}/>
             <Route exact path="/login" element={<Login/>}/>
             <Route exact path="/products" element={<ProductsList />} />
-            <Route exact path="/" element={<Landing />} />
-            <Route exact path="/" element={<ProductsList />} />
+            <Route exact path="/caballeros" element={<Landing />} />
+            <Route exact path="/caballerosList" element={<ProductsList />} />
             <Route exact path="/cardsanimated" element={<CardsAnimated />} />
             <Route exact path="/product/:id" element={<ProductDetails />} />
             <Route exact path="/myOrders/:n_document" element={ <PrivateRoute>
