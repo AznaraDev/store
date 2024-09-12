@@ -22,7 +22,7 @@ export default function Navbar() {
   const [isTransparent, setIsTransparent] = useState(true);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Asegúrate de tener esto para redireccionar
+  const navigate = useNavigate(); 
   const searchTerm = useSelector(state => state.searchTerm);
   const priceFilter = useSelector(state => state.priceFilter);
   const categoryFilter = useSelector(state => state.categoryFilter);
@@ -30,20 +30,29 @@ export default function Navbar() {
   const userInfo = useSelector(state => state.userLogin.userInfo);
 
  
-    const publicRoutes = ['/login', '/', '/register', '/products','/productsCat/:categoryName', '/caballeros']; // Añadir rutas públicas aquí
+  
+  const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart'];
 
-    useEffect(() => {
-      const currentPath = window.location.pathname;
-      const isPublicRoute = publicRoutes.some(route => 
-        new RegExp(`^${route.replace(':categoryName', '[^/]+')}$`).test(currentPath)
-      );
-    
-      if (!userInfo && !isPublicRoute) {
-        navigate('/login');
-      }
-    }, [userInfo, navigate]);
+  useEffect(() => {
+    const currentPath = window.location.pathname;
 
   
+    let isPublicRoute = publicRoutes.some(route => {
+   
+      const routeRegex = new RegExp(`^${route.replace(':categoryName', '[^/]+').replace(':id', '\\d+')}$`);
+      return routeRegex.test(currentPath);
+    });
+
+   
+    if (currentPath.startsWith('/product/')) {
+      isPublicRoute = true;
+    }
+
+  
+    if (!userInfo && !isPublicRoute) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
 
   useEffect(() => {
     dispatch(fetchCategories());
