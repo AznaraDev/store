@@ -50,9 +50,15 @@ import {
   CATEGORY_CREATE_REQUEST, 
   CATEGORY_CREATE_SUCCESS, 
   CATEGORY_CREATE_FAIL,
+ SB_CREATE_REQUEST, 
+ SB_CREATE_SUCCESS, 
+ SB_CREATE_FAIL,
   FETCH_LATEST_ORDER_REQUEST,
   FETCH_LATEST_ORDER_SUCCESS,
   FETCH_LATEST_ORDER_FAILURE,
+  FETCH_SB_REQUEST,
+  FETCH_SB_SUCCESS,
+  FETCH_SB_FAILURE,
 
 } from './actions-type';
 
@@ -378,7 +384,7 @@ export const deleteProduct = (id_product) => async (dispatch) => {
   }
 };
 
-export const createCategory = (name_category) => async (dispatch, getState) => {
+export const createCategory = (name_category) => async (dispatch) => {
   try {
     dispatch({ type: CATEGORY_CREATE_REQUEST });
 
@@ -398,18 +404,7 @@ export const createCategory = (name_category) => async (dispatch, getState) => {
       }
     }
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-
-    const { data } = await axios.post(`${BASE_URL}/category/createCategory`, { name_category }, config);
+    const { data } = await axios.post(`${BASE_URL}/category/createCategory`, { name_category });
 
     dispatch({ type: CATEGORY_CREATE_SUCCESS, payload: data });
     return { type: CATEGORY_CREATE_SUCCESS };
@@ -421,5 +416,53 @@ export const createCategory = (name_category) => async (dispatch, getState) => {
         : error.message,
     });
     return { type: CATEGORY_CREATE_FAIL, error: error.response ? error.response.data.message : error.message };
+  }
+};
+
+export const createSB = (name_SB) => async (dispatch) => {
+  try {
+    dispatch({ type: SB_CREATE_REQUEST });
+
+    // Fetch categories first
+    const subCategories = await dispatch(fetchSB());
+
+    // Check if categories is defined and not null
+    if (subCategories && subCategories.length) {
+      // Check if category already exists
+      const subCategoryExists = subCategories.some(
+        (sb) => sb.name_SB.toLowerCase() === name_SB.toLowerCase()
+      );
+
+      if (subCategoryExists) {
+        dispatch({ type: SB_CREATE_FAIL, payload: 'SB already exists' });
+        return { type: SB_CREATE_FAIL, error: 'SB already exists' };
+      }
+    }
+
+    const { data } = await axios.post(`${BASE_URL}/sb/createSB`, { name_SB });
+
+    dispatch({ type: SB_CREATE_SUCCESS, payload: data });
+    return { type: SB_CREATE_SUCCESS };
+  } catch (error) {
+    dispatch({
+      type: SB_CREATE_FAIL,
+      payload: error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+    return { type: SB_CREATE_FAIL, error: error.response ? error.response.data.message : error.message };
+  }
+};
+
+export const fetchSB = () => async (dispatch) => {
+  dispatch({ type: FETCH_SB_REQUEST });
+
+  try {
+    const response = await axios.get(`${BASE_URL}/sb/`);
+    dispatch({ type: Array.isArray(response.data.data.subCategories)
+      ? response.data.data.subCategories
+      : [], });
+  } catch (error) {
+    dispatch({ type: FETCH_SB_FAILURE, payload: error.message });
   }
 };

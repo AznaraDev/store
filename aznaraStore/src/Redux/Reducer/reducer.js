@@ -47,9 +47,16 @@ import {
   CATEGORY_CREATE_REQUEST,
   CATEGORY_CREATE_SUCCESS,
   CATEGORY_CREATE_FAIL,
+  SB_CREATE_REQUEST,
+  SB_CREATE_SUCCESS,
+  SB_CREATE_FAIL,
   FETCH_LATEST_ORDER_REQUEST,
   FETCH_LATEST_ORDER_SUCCESS,
   FETCH_LATEST_ORDER_FAILURE,
+  FETCH_SB_REQUEST,
+  FETCH_SB_SUCCESS,
+  FETCH_SB_FAILURE,
+
 } from "../Actions/actions-type";
 
 const initialState = {
@@ -73,6 +80,11 @@ const initialState = {
     error: null,
   },
   categories: {
+    loading: false,
+    data: [],
+    error: null,
+  },
+  subCategories: {
     loading: false,
     data: [],
     error: null,
@@ -568,6 +580,34 @@ const rootReducer = (state = initialState, action) => {
           error: action.payload,
         },
       };
+      case SB_CREATE_REQUEST:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: true,
+        },
+      };
+    case SB_CREATE_SUCCESS:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: false,
+          data: Array.isArray(state.subCategories.data)
+          ? [...state.subCategories.data, action.payload.data.sb]
+          : [action.payload.data.sb], 
+      },
+      };
+    case SB_CREATE_FAIL:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: false,
+          error: action.payload,
+        },
+      };
     case FETCH_LATEST_ORDER_REQUEST:
       return {
         ...state,
@@ -592,6 +632,33 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         latestOrder: {
           ...state.latestOrder,
+          loading: false,
+          error: action.payload,
+        },
+      };
+
+      case FETCH_SB_REQUEST:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: true,
+        },
+      };
+    case FETCH_SB_SUCCESS:
+      return {
+        ...state,
+        subCategories: {
+          loading: false,
+          data: action.payload,
+          error: null,
+        },
+      };
+    case FETCH_SB_FAILURE:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
           loading: false,
           error: action.payload,
         },

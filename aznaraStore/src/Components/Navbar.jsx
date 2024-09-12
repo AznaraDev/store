@@ -219,6 +219,19 @@ export default function Navbar() {
           <Menu.Item>
             {({ active }) => (
               <Link
+                to="/sb"
+                className={classNames(
+                  active ? 'bg-gray-100' : '',
+                  'block px-4 py-2 text-sm text-gray-700'
+                )}
+              >
+                Nueva SubCategoría
+              </Link>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <Link
                 to="/"
                 onClick={handleLogout}
                 className={classNames(

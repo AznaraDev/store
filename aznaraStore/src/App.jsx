@@ -12,6 +12,7 @@ import OrdersDetails from "./Components/OrdersDetail";
 import OrdersList from "./Components/OrdersList";
 import UpdateProduct from "./Components/Product/UpdateProduct";
 import CreateCategory from "./Components/Product/CreateCategory";
+import CreateSB from "./Components/Product/CreateSB";
 import Footer from "./Components/Footer";
 import WhatsAppButton from "./Components/WhatsappButton";
 import Landing from "./Components/Landing";
@@ -19,6 +20,7 @@ import CardsAnimated from "./Components/CardsAnimated";
 import ThankYouPage from "./Components/ThankYouPage";
 import FilteredProducts from "./Components/Product/FilteredProducts";
 import PrivateRoute from './Components/PrivateRoute';
+
 
   function App() {
     return (
@@ -50,6 +52,7 @@ import PrivateRoute from './Components/PrivateRoute';
               <UpdateProduct />
             </PrivateRoute>} /> 
             <Route path="/category" element={<CreateCategory/>}/>  
+            <Route path="/sb" element={<CreateSB/>}/>  
             <Route path="/productsCat/:categoryName" element={<FilteredProducts />} />     
           </Routes>
         </div>
