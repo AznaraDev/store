@@ -9,6 +9,10 @@ const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  // Estado para manejar el producto seleccionado
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const { product, similarProducts, loading, error } = useSelector((state) => ({
     product: state.product,
     similarProducts: state.similarProducts,
@@ -19,22 +23,30 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
+  // Cargar el producto por id cuando se monta el componente
   useEffect(() => {
     dispatch(fetchProductById(id));
   }, [dispatch, id]);
 
+  // Actualizar el estado del producto seleccionado cuando se obtiene el producto
+  useEffect(() => {
+    if (product) {
+      setSelectedProduct(product);
+    }
+  }, [product]);
+
   const handleAddToCart = () => {
-    if (product && product.sizes && product.sizes.length > 0 && !selectedSize) {
+    if (selectedProduct && selectedProduct.sizes && selectedProduct.sizes.length > 0 && !selectedSize) {
       alert('Por favor, selecciona un talle.');
       return;
     }
-    if (product && product.colors && product.colors.length > 0 && !selectedColor) {
+    if (selectedProduct && selectedProduct.colors && selectedProduct.colors.length > 0 && !selectedColor) {
       alert('Por favor, selecciona un color.');
       return;
     }
 
     const productToAdd = {
-      ...product,
+      ...selectedProduct,
       selectedSize,
       selectedColor
     };
@@ -43,15 +55,10 @@ const ProductDetails = () => {
     navigate('/cart');
   };
 
-  const handleAddRelatedToCart = (relatedProduct) => {
-    const productToAdd = {
-      ...relatedProduct,
-      selectedSize,
-      selectedColor
-    };
-
-    dispatch(addToCart(productToAdd));
-    navigate('/cart');
+  const handleViewSimilarProduct = (relatedProduct) => {
+    setSelectedProduct(relatedProduct);
+    setSelectedSize(''); // Reiniciar talle seleccionado
+    setSelectedColor(''); // Reiniciar color seleccionado
   };
 
   if (loading) {
@@ -61,7 +68,7 @@ const ProductDetails = () => {
     return <div>Error: {error}</div>;
   }
 
-  if (!product) {
+  if (!selectedProduct) {
     return <div>No se encontró el producto.</div>;
   }
 
@@ -80,16 +87,16 @@ const ProductDetails = () => {
           {/* Imagen del producto */}
           <div className="w-full lg:w-1/2 p-4">
             <img
-              src={product.Images && product.Images.length > 0 ? product.Images[0].url : 'https://via.placeholder.com/600'}
-              alt={product.name}
+              src={selectedProduct.Images && selectedProduct.Images.length > 0 ? selectedProduct.Images[0].url : 'https://via.placeholder.com/600'}
+              alt={selectedProduct.name}
               className="w-full h-full object-cover object-center rounded-lg shadow-md"
             />
             <div className="mt-4 flex overflow-x-auto space-x-4">
-              {product.Images && product.Images.length > 1 && product.Images.slice(1).map((image) => (
+              {selectedProduct.Images && selectedProduct.Images.length > 1 && selectedProduct.Images.slice(1).map((image) => (
                 <img
                   key={image.id_image}
                   src={image.url}
-                  alt={`${product.name} additional`}
+                  alt={`${selectedProduct.name} additional`}
                   className="w-24 h-24 object-cover object-center rounded-lg cursor-pointer hover:opacity-75"
                   onClick={() => console.log('Image clicked')}
                 />
@@ -99,11 +106,11 @@ const ProductDetails = () => {
 
           {/* Detalles del producto */}
           <div className="w-full lg:w-1/2 p-4">
-            <h2 className="text-3xl font-bold text-yellow-600 mb-2 font-nunito bg-slate-600 p-2 rounded">{product.name}</h2>
-            <p className="text-lg text-gray-300 mb-4 font-nunito font-semibold">{product.description}</p>
-            <p className="text-2xl font-semibold font-nunito text-yellow-600 mb-6">Precio: ${product.price}</p>
+            <h2 className="text-3xl font-bold text-yellow-600 mb-2 font-nunito bg-slate-600 p-2 rounded">{selectedProduct.name}</h2>
+            <p className="text-lg text-gray-300 mb-4 font-nunito font-semibold">{selectedProduct.description}</p>
+            <p className="text-2xl font-semibold font-nunito text-yellow-600 mb-6">Precio: ${selectedProduct.price}</p>
 
-            {product.sizes && product.sizes.length > 0 && (
+            {selectedProduct.sizes && selectedProduct.sizes.length > 0 && (
               <div className="mb-4">
                 <label htmlFor="sizes" className="block text-sm font-medium font-nunito text-gray-300">Talles</label>
                 <select
@@ -112,14 +119,14 @@ const ProductDetails = () => {
                   className="w-full bg-slate-600 border border-gray-600 rounded-lg py-2 px-4 text-gray-300 font-nunito"
                 >
                   <option value="">Seleccionar talle</option>
-                  {product.sizes.map((size, index) => (
+                  {selectedProduct.sizes.map((size, index) => (
                     <option key={index} value={size}>{size}</option>
                   ))}
                 </select>
               </div>
             )}
 
-            {product.colors && product.colors.length > 0 && (
+            {selectedProduct.colors && selectedProduct.colors.length > 0 && (
               <div className="mb-4">
                 <label htmlFor="colors" className="block text-sm font-medium text-gray-300">Colores</label>
                 <select
@@ -128,7 +135,7 @@ const ProductDetails = () => {
                   className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
                 >
                   <option value="">Seleccionar color</option>
-                  {product.colors.map((color, index) => (
+                  {selectedProduct.colors.map((color, index) => (
                     <option key={index} value={color}>{color}</option>
                   ))}
                 </select>
@@ -153,28 +160,19 @@ const ProductDetails = () => {
           <h2 className="text-2xl font-bold text-yellow-600 mb-4">Productos Relacionados</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {similarProducts.map((relatedProduct) => (
-              <div key={relatedProduct.id_product} className="bg-colorDetalle rounded-lg shadow-md p-4">
+              <div key={relatedProduct.id_product} className="bg-colorDetalle rounded-lg shadow-md p-4 cursor-pointer" onClick={() => handleViewSimilarProduct(relatedProduct)}>
                 <img
                   src={relatedProduct.Images && relatedProduct.Images.length > 0 ? relatedProduct.Images[0].url : 'https://via.placeholder.com/300'}
                   alt={relatedProduct.name}
-                  className="w-full h-48 object-cover object-center rounded-lg mb-4"
-                   
+                   className="w-full h-48 object-contain object-center rounded-lg mb-4 "
                 />
                 
                 <h3 className="text-xl font-bold text-yellow-600 mb-2">{relatedProduct.name}</h3>
-                <h2 className="text-xl font-bold text-yellow-600 mb-2">CARACTERISTICAS</h2>
                 <p className="text-lg text-gray-300 mb-2">{relatedProduct.description}</p>
                 <p className="text-lg text-gray-300 mb-2">Talles: {relatedProduct.sizes}</p>
                 <p className="text-lg text-gray-300 mb-2">Color: {relatedProduct.colors}</p>
                 <p className="text-lg text-gray-300 mb-2">Material: {relatedProduct.materials}</p>
                 <p className="text-lg font-semibold text-yellow-600">Precio: ${relatedProduct.price}</p>
-                
-                <button
-                  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-colorLogo mt-4 flex items-center font-nunito"
-                  onClick={() => handleAddRelatedToCart(relatedProduct)}
-                >
-                  <FiShoppingCart className="mr-2" /> Añadir al Carrito
-                </button>
               </div>
             ))}
           </div>
@@ -185,5 +183,6 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
 
 
