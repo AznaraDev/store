@@ -10,8 +10,9 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Estado para manejar el producto seleccionado
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
 
   const { product, similarProducts, loading, error } = useSelector((state) => ({
     product: state.product,
@@ -20,27 +21,40 @@ const ProductDetails = () => {
     error: state.error,
   }));
 
-  const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
-
-  // Cargar el producto por id cuando se monta el componente
   useEffect(() => {
     dispatch(fetchProductById(id));
   }, [dispatch, id]);
 
-  // Actualizar el estado del producto seleccionado cuando se obtiene el producto
   useEffect(() => {
     if (product) {
       setSelectedProduct(product);
     }
   }, [product]);
 
+  // Función para obtener todos los talles disponibles que coincidan con id_SB, color y precio
+  const getAvailableSizes = () => {
+    if (!selectedProduct || !similarProducts) return [];
+
+    // Filtrar los productos similares que coincidan con id_SB, color y precio
+    const matchingProducts = similarProducts.filter(
+      (p) =>
+        p.id_SB === selectedProduct.id_SB &&
+        p.colors.includes(selectedColor) &&
+        p.price === selectedProduct.price
+    );
+
+    // Extraer los talles únicos de los productos filtrados
+    const availableSizes = [...new Set(matchingProducts.flatMap((p) => p.sizes))];
+
+    return availableSizes;
+  };
+
   const handleAddToCart = () => {
-    if (selectedProduct && selectedProduct.sizes && selectedProduct.sizes.length > 0 && !selectedSize) {
+    if (!selectedSize) {
       alert('Por favor, selecciona un talle.');
       return;
     }
-    if (selectedProduct && selectedProduct.colors && selectedProduct.colors.length > 0 && !selectedColor) {
+    if (!selectedColor) {
       alert('Por favor, selecciona un color.');
       return;
     }
@@ -48,7 +62,7 @@ const ProductDetails = () => {
     const productToAdd = {
       ...selectedProduct,
       selectedSize,
-      selectedColor
+      selectedColor,
     };
 
     dispatch(addToCart(productToAdd));
@@ -74,33 +88,33 @@ const ProductDetails = () => {
 
   return (
     <div className="relative min-h-screen bg-gray-800">
-      {/* Imagen de fondo */}
-      <img
-        src={banner}
-        alt="Background"
-        className="absolute inset-0 w-full h-full object-cover opacity-50 z-0"
-      />
-
-      {/* Contenedor principal */}
+      <img src={banner} alt="Background" className="absolute inset-0 w-full h-full object-cover opacity-50 z-0" />
+      
       <div className="relative min-h-screen flex items-center justify-center pt-16 z-10">
         <div className="bg-colorDetalle rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl mx-4 sm:mx-6 lg:mx-8 flex flex-col lg:flex-row">
-          {/* Imagen del producto */}
+          
+          {/* Sección de imágenes */}
           <div className="w-full lg:w-1/2 p-4">
             <img
               src={selectedProduct.Images && selectedProduct.Images.length > 0 ? selectedProduct.Images[0].url : 'https://via.placeholder.com/600'}
               alt={selectedProduct.name}
               className="w-full h-full object-cover object-center rounded-lg shadow-md"
             />
+            
+            {/* Mostrar imágenes de productos similares en miniatura */}
             <div className="mt-4 flex overflow-x-auto space-x-4">
-              {selectedProduct.Images && selectedProduct.Images.length > 1 && selectedProduct.Images.slice(1).map((image) => (
-                <img
-                  key={image.id_image}
-                  src={image.url}
-                  alt={`${selectedProduct.name} additional`}
-                  className="w-24 h-24 object-cover object-center rounded-lg cursor-pointer hover:opacity-75"
-                  onClick={() => console.log('Image clicked')}
-                />
-              ))}
+              {similarProducts.map((relatedProduct) => 
+                relatedProduct.Images && relatedProduct.Images.length > 0 && (
+                  relatedProduct.Images.map((image, index) => (
+                    <img
+                      key={`${relatedProduct.id_product}-${index}`}
+                      src={image.url}
+                      alt={`${relatedProduct.name} additional`}
+                      className="w-24 h-24 object-cover object-center rounded-lg cursor-pointer hover:opacity-75"
+                    />
+                  ))
+                )
+              )}
             </div>
           </div>
 
@@ -108,12 +122,24 @@ const ProductDetails = () => {
           <div className="w-full lg:w-1/2 p-4">
             <h2 className="text-3xl font-bold text-yellow-600 mb-2 font-nunito bg-slate-600 p-2 rounded">{selectedProduct.name}</h2>
             <p className="text-lg text-gray-300 mb-4 font-nunito font-semibold">{selectedProduct.description}</p>
-            <p className="text-lg text-gray-300 mb-2">Talles: {selectedProduct.sizes}</p>
-                <p className="text-lg text-gray-300 mb-2">Color: {selectedProduct.colors}</p>
-                <p className="text-lg text-gray-300 mb-2">Material: {selectedProduct.materials}</p>
-            <p className="text-2xl font-semibold font-nunito text-yellow-600 mb-6">Precio: ${selectedProduct.price}</p>
+            
+            {/* Seleccionar color */}
+            <div className="mb-4">
+              <label htmlFor="colors" className="block text-sm font-medium text-gray-300">Colores</label>
+              <select
+                value={selectedColor}
+                onChange={(e) => setSelectedColor(e.target.value)}
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
+              >
+                <option value="">Seleccionar color</option>
+                {selectedProduct.colors.map((color, index) => (
+                  <option key={index} value={color}>{color}</option>
+                ))}
+              </select>
+            </div>
 
-            {selectedProduct.sizes && selectedProduct.sizes.length > 0 && (
+            {/* Mostrar talles que coincidan */}
+            {selectedColor && (
               <div className="mb-4">
                 <label htmlFor="sizes" className="block text-sm font-medium font-nunito text-gray-300">Talles</label>
                 <select
@@ -122,24 +148,8 @@ const ProductDetails = () => {
                   className="w-full bg-slate-600 border border-gray-600 rounded-lg py-2 px-4 text-gray-300 font-nunito"
                 >
                   <option value="">Seleccionar talle</option>
-                  {selectedProduct.sizes.map((size, index) => (
+                  {getAvailableSizes().map((size, index) => (
                     <option key={index} value={size}>{size}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {selectedProduct.colors && selectedProduct.colors.length > 0 && (
-              <div className="mb-4">
-                <label htmlFor="colors" className="block text-sm font-medium text-gray-300">Colores</label>
-                <select
-                  value={selectedColor}
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
-                >
-                  <option value="">Seleccionar color</option>
-                  {selectedProduct.colors.map((color, index) => (
-                    <option key={index} value={color}>{color}</option>
                   ))}
                 </select>
               </div>
@@ -186,6 +196,7 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
 
 
 
