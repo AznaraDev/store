@@ -138,11 +138,26 @@ export const fetchProductById = (id) => async (dispatch) => {
 
   try {
     const response = await axios.get(`${BASE_URL}/product/${id}`);
-    dispatch({ type: FETCH_PRODUCT_SUCCESS, payload: response.data.data.product });
+    
+    // Verifica la estructura de la respuesta
+    console.log('API response:', response.data); 
+    
+    const { product, relatedProducts } = response.data.data;
+
+    // Asegúrate de que estos valores no sean undefined
+    console.log('Product:', product);
+    console.log('Related Products:', relatedProducts);
+    
+    dispatch({ 
+      type: FETCH_PRODUCT_SUCCESS, 
+      payload: { product, similarProducts: relatedProducts } 
+    });
   } catch (error) {
+    console.log('Error fetching product by ID:', error);
     dispatch({ type: FETCH_PRODUCT_FAILURE, payload: error.message });
   }
 };
+
 
 export const addToCart = (product) => ({
   type: ADD_TO_CART,

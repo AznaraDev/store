@@ -66,6 +66,7 @@ const initialState = {
   searchResults: [],
   loading: false,
   product: null,
+   similarProducts: [],
   products: [],
   error: null,
 
@@ -185,23 +186,24 @@ const rootReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
-    case FETCH_PRODUCT_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
-    case FETCH_PRODUCT_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        product: action.payload,
-      };
-    case FETCH_PRODUCT_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
+      case FETCH_PRODUCT_REQUEST:
+        return {
+          ...state,
+          loading: true,
+        };
+      case FETCH_PRODUCT_SUCCESS:
+        return {
+          ...state,
+          product: action.payload.product,
+          similarProducts: action.payload.similarProducts, // Guarda los productos similares
+          loading: false,
+        };
+      case FETCH_PRODUCT_FAILURE:
+        return {
+          ...state,
+          error: action.payload,
+          loading: false,
+        };
     case ADD_TO_CART:
       const existingItem = state.cart.items.find(
         (item) => item.id_product === action.payload.id_product

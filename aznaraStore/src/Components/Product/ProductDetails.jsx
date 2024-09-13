@@ -9,9 +9,12 @@ const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const product = useSelector((state) => state.product);
-  const loading = useSelector((state) => state.loading);
-  const error = useSelector((state) => state.error);
+  const { product, similarProducts, loading, error } = useSelector((state) => ({
+    product: state.product,
+    similarProducts: state.similarProducts,
+    loading: state.loading,
+    error: state.error,
+  }));
 
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -21,17 +24,28 @@ const ProductDetails = () => {
   }, [dispatch, id]);
 
   const handleAddToCart = () => {
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+    if (product && product.sizes && product.sizes.length > 0 && !selectedSize) {
       alert('Por favor, selecciona un talle.');
       return;
     }
-    if (product.colors && product.colors.length > 0 && !selectedColor) {
+    if (product && product.colors && product.colors.length > 0 && !selectedColor) {
       alert('Por favor, selecciona un color.');
       return;
     }
 
     const productToAdd = {
       ...product,
+      selectedSize,
+      selectedColor
+    };
+
+    dispatch(addToCart(productToAdd));
+    navigate('/cart');
+  };
+
+  const handleAddRelatedToCart = (relatedProduct) => {
+    const productToAdd = {
+      ...relatedProduct,
       selectedSize,
       selectedColor
     };
@@ -55,23 +69,23 @@ const ProductDetails = () => {
     <div className="relative min-h-screen bg-gray-800">
       {/* Imagen de fondo */}
       <img
-        src={banner} // Reemplaza con la ruta de tu imagen
+        src={banner}
         alt="Background"
-        className="absolute inset-0 w-full h-full object-cover opacity-50"
+        className="absolute inset-0 w-full h-full object-cover opacity-50 z-0"
       />
 
       {/* Contenedor principal */}
-      <div className="relative min-h-screen flex items-center justify-center pt-16">
+      <div className="relative min-h-screen flex items-center justify-center pt-16 z-10">
         <div className="bg-colorDetalle rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl mx-4 sm:mx-6 lg:mx-8 flex flex-col lg:flex-row">
           {/* Imagen del producto */}
           <div className="w-full lg:w-1/2 p-4">
             <img
-              src={product.Images.length > 0 ? product.Images[0].url : 'https://via.placeholder.com/600'}
+              src={product.Images && product.Images.length > 0 ? product.Images[0].url : 'https://via.placeholder.com/600'}
               alt={product.name}
               className="w-full h-full object-cover object-center rounded-lg shadow-md"
             />
             <div className="mt-4 flex overflow-x-auto space-x-4">
-              {product.Images.length > 1 && product.Images.slice(1).map((image) => (
+              {product.Images && product.Images.length > 1 && product.Images.slice(1).map((image) => (
                 <img
                   key={image.id_image}
                   src={image.url}
@@ -86,9 +100,9 @@ const ProductDetails = () => {
           {/* Detalles del producto */}
           <div className="w-full lg:w-1/2 p-4">
             <h2 className="text-3xl font-bold text-yellow-600 mb-2 font-nunito bg-slate-600 p-2 rounded">{product.name}</h2>
-            <p className="text-lg text-gray-300 mb-4 font-nunito font-semibold">Descripción: {product.description}</p>
+            <p className="text-lg text-gray-300 mb-4 font-nunito font-semibold">{product.description}</p>
             <p className="text-2xl font-semibold font-nunito text-yellow-600 mb-6">Precio: ${product.price}</p>
-            
+
             {product.sizes && product.sizes.length > 0 && (
               <div className="mb-4">
                 <label htmlFor="sizes" className="block text-sm font-medium font-nunito text-gray-300">Talles</label>
@@ -132,14 +146,44 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Productos relacionados */}
+      {similarProducts && similarProducts.length > 0 && (
+        <div className="py-10 px-4 sm:px-6 lg:px-8 z-10 relative">
+          <h2 className="text-2xl font-bold text-yellow-600 mb-4">Productos Relacionados</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {similarProducts.map((relatedProduct) => (
+              <div key={relatedProduct.id_product} className="bg-colorDetalle rounded-lg shadow-md p-4">
+                <img
+                  src={relatedProduct.Images && relatedProduct.Images.length > 0 ? relatedProduct.Images[0].url : 'https://via.placeholder.com/300'}
+                  alt={relatedProduct.name}
+                  className="w-full h-48 object-cover object-center rounded-lg mb-4"
+                   
+                />
+                
+                <h3 className="text-xl font-bold text-yellow-600 mb-2">{relatedProduct.name}</h3>
+                <h2 className="text-xl font-bold text-yellow-600 mb-2">CARACTERISTICAS</h2>
+                <p className="text-lg text-gray-300 mb-2">{relatedProduct.description}</p>
+                <p className="text-lg text-gray-300 mb-2">Talles: {relatedProduct.sizes}</p>
+                <p className="text-lg text-gray-300 mb-2">Color: {relatedProduct.colors}</p>
+                <p className="text-lg text-gray-300 mb-2">Material: {relatedProduct.materials}</p>
+                <p className="text-lg font-semibold text-yellow-600">Precio: ${relatedProduct.price}</p>
+                
+                <button
+                  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-colorLogo mt-4 flex items-center font-nunito"
+                  onClick={() => handleAddRelatedToCart(relatedProduct)}
+                >
+                  <FiShoppingCart className="mr-2" /> Añadir al Carrito
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ProductDetails;
-
-
-
-
 
 
