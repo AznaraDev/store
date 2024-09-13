@@ -108,6 +108,9 @@ const ProductDetails = () => {
           <div className="w-full lg:w-1/2 p-4">
             <h2 className="text-3xl font-bold text-yellow-600 mb-2 font-nunito bg-slate-600 p-2 rounded">{selectedProduct.name}</h2>
             <p className="text-lg text-gray-300 mb-4 font-nunito font-semibold">{selectedProduct.description}</p>
+            <p className="text-lg text-gray-300 mb-2">Talles: {selectedProduct.sizes}</p>
+                <p className="text-lg text-gray-300 mb-2">Color: {selectedProduct.colors}</p>
+                <p className="text-lg text-gray-300 mb-2">Material: {selectedProduct.materials}</p>
             <p className="text-2xl font-semibold font-nunito text-yellow-600 mb-6">Precio: ${selectedProduct.price}</p>
 
             {selectedProduct.sizes && selectedProduct.sizes.length > 0 && (
