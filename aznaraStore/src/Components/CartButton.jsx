@@ -4,7 +4,7 @@ const CartButton = () => {
   return (
     <a
       href="/products"
-      className="fixed top-44 right-2    transition duration-300 transform hover:scale-100 hover:animate-bounce z-50 md:bottom-8 md:right-6"
+      className="fixed top-44 right-2    transition duration-300 transform hover:scale-100 hover:animate-bounce z-50 md:bottom-8 md:-right-6"
       target="_blank"
       rel="noopener noreferrer"
     >
