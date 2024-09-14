@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById, addToCart } from "../../Redux/Actions/actions";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
-import banner from "../../assets/img/banner.png";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -13,7 +12,9 @@ const ProductDetails = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-  const [selectedImage, setSelectedImage] = useState(""); // Nuevo estado para la imagen seleccionada
+  const [selectedImage, setSelectedImage] = useState(""); // Imagen seleccionada
+  const [startIndex, setStartIndex] = useState(0);
+  const itemsToShow = 5; // Número máximo de productos a mostrar a la vez
 
   const { product, similarProducts, loading, error } = useSelector((state) => ({
     product: state.product,
@@ -21,6 +22,8 @@ const ProductDetails = () => {
     loading: state.loading,
     error: state.error,
   }));
+
+  const containerRef = useRef(null);
 
   useEffect(() => {
     dispatch(fetchProductById(id));
@@ -33,20 +36,18 @@ const ProductDetails = () => {
         product.Images && product.Images.length > 0
           ? product.Images[0].url
           : "https://via.placeholder.com/600"
-      ); // Inicializar la imagen seleccionada
+      );
     }
   }, [product]);
 
   const getAvailableColors = () => {
     if (!selectedProduct || !similarProducts) return [];
-  
+
     const matchingProducts = similarProducts.filter(
       (p) => p.id_SB === selectedProduct.id_SB && p.price === selectedProduct.price
     );
-  
-    // Extraer los colores únicos de los productos filtrados
-    const availableColors = [...new Set(matchingProducts.flatMap((p) => p.colors))];
-    return availableColors;
+
+    return [...new Set(matchingProducts.flatMap((p) => p.colors))];
   };
 
   const getAvailableSizes = () => {
@@ -59,10 +60,7 @@ const ProductDetails = () => {
         p.price === selectedProduct.price
     );
 
-    // Extraer los talles únicos de los productos filtrados
-    const availableSizes = [...new Set(matchingProducts.flatMap((p) => p.sizes))];
-    
-    return availableSizes;
+    return [...new Set(matchingProducts.flatMap((p) => p.sizes))];
   };
 
   const handleAddToCart = () => {
@@ -90,7 +88,6 @@ const ProductDetails = () => {
     setSelectedSize("");
     setSelectedColor("");
 
-    // Actualizar la imagen principal con la primera imagen del producto relacionado
     setSelectedImage(
       relatedProduct.Images && relatedProduct.Images.length > 0
         ? relatedProduct.Images[0].url
@@ -107,11 +104,64 @@ const ProductDetails = () => {
         p.colors.includes(color)
     );
 
-    // Actualizar la imagen principal basada en el color seleccionado
     if (matchingProduct && matchingProduct.Images && matchingProduct.Images.length > 0) {
       setSelectedImage(matchingProduct.Images[0].url);
     }
   };
+
+  const scrollLeft = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({
+        left: -containerRef.current.clientWidth * 0.8, // Ajustar el desplazamiento según el tamaño visible
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({
+        left: containerRef.current.clientWidth * 0.8, // Ajustar el desplazamiento según el tamaño visible
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    const updateScrollButtons = () => {
+      if (container) {
+        setCanScrollLeft(container.scrollLeft > 0);
+        setCanScrollRight(
+          container.scrollLeft + container.clientWidth < container.scrollWidth
+        );
+      }
+    };
+
+    if (container) {
+      updateScrollButtons(); // Inicial check
+
+      container.addEventListener("scroll", updateScrollButtons);
+
+      return () => {
+        container.removeEventListener("scroll", updateScrollButtons);
+      };
+    }
+  }, [similarProducts]);
+
+  const handlePrevious = () => {
+    setStartIndex((prev) => Math.max(prev - itemsToShow, 0));
+  };
+
+  const handleNext = () => {
+    setStartIndex((prev) => Math.min(prev + itemsToShow, similarProducts.length - itemsToShow));
+  };
+
+  const visibleProducts = similarProducts.slice(startIndex, startIndex + itemsToShow);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -211,7 +261,7 @@ const ProductDetails = () => {
                   <select
                     value={selectedSize}
                     onChange={(e) => setSelectedSize(e.target.value)}
-                    className="w-relative bg-slate-600 border border-gray-600 rounded-lg py-2 px-4 text-gray-300 font-nunito"
+                    className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
                   >
                     <option value="">Seleccionar talle</option>
                     {getAvailableSizes().map((size, index) => (
@@ -223,29 +273,42 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <div className="mt-32 flex justify-center">
+              <div className="flex items-center">
                 <button
-                  className="w-full h-full bg-yellow-600 text-gray-800 px-5 p-8 py-2 rounded hover:bg-colorLogo flex items-center font-nunito"
+                  className="bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300"
                   onClick={handleAddToCart}
                 >
-                  <FiShoppingCart className="mr-2" /> Añadir al Carrito
+                  <FiShoppingCart className="inline-block mr-2" />
+                  Agregar al carrito
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Sección de productos relacionados */}
-          {similarProducts && similarProducts.length > 0 && (
-            <div className="mt-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4 font-nunito">
-                Productos Relacionados
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {similarProducts.map((relatedProduct, index) => (
+          {/* Productos relacionados */}
+          <div className="relative mt-12">
+            <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+              Productos relacionados
+            </h3>
+            <div className="relative flex items-center">
+              {startIndex > 0 && (
+                <button
+                  onClick={handlePrevious}
+                  className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow-lg"
+                >
+                  ◀
+                </button>
+              )}
+              <div
+                ref={containerRef}
+                className="overflow-x-auto whitespace-nowrap flex space-x-4"
+                style={{ scrollBehavior: "smooth" }}
+              >
+                {visibleProducts.map((relatedProduct, index) => (
                   <div
                     key={index}
-                    
                     onClick={() => handleViewSimilarProduct(relatedProduct)}
+                    className="inline-block w-20 h-20 object-cover object-center rounded-lg cursor-pointer"
                   >
                     <img
                       src={
@@ -253,18 +316,21 @@ const ProductDetails = () => {
                           ? relatedProduct.Images[0].url
                           : "https://via.placeholder.com/600"
                       }
-                      // alt={relatedProduct.name}
-                       className="w-20 h-20 object-cover object-center rounded-lg"
+                      className="w-full h-full object-cover rounded-lg"
                     />
-                    {/* <h4 className="text-lg font-medium text-gray-800 mt-2 font-nunito">
-                      {relatedProduct.name}
-                    </h4>
-                    <p className="text-gray-600">${relatedProduct.price}</p> */}
                   </div>
                 ))}
               </div>
+              {startIndex + itemsToShow < similarProducts.length && (
+                <button
+                  onClick={handleNext}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow-lg"
+                >
+                  ▶
+                </button>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
@@ -272,4 +338,9 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
+
+
+
+
 
