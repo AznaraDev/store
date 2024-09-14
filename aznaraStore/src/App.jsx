@@ -14,14 +14,14 @@ import UpdateProduct from "./Components/Product/UpdateProduct";
 import CreateCategory from "./Components/Product/CreateCategory";
 import CreateSB from "./Components/Product/CreateSB";
 import Footer from "./Components/Footer";
-import WhatsAppButton from "./Components/WhatsappButton";
+import CartButton from "./Components/CartButton";
 import Landing from "./Components/Landing";
 import CardsAnimated from "./Components/CardsAnimated";
 import ThankYouPage from "./Components/ThankYouPage";
 import FilteredProducts from "./Components/Product/FilteredProducts";
 import PrivateRoute from './Components/PrivateRoute';
 import LandingPrincipal from "./Components/LandingPrincipal";
-
+import WhatsappButton from "./Components/WhatsappButton";
 
   function App() {
     return (
@@ -60,7 +60,8 @@ import LandingPrincipal from "./Components/LandingPrincipal";
           </Routes>
         </div>
         <Footer/>
-        <WhatsAppButton /> 
+        <CartButton /> 
+        <WhatsappButton/>
       </Router>
     );
   }

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { createSB} from '../../Redux/Actions/actions';
+import imgFondo from '../../assets/img/banner.png'
 
 const CreateSB = () => {
   const [name_SB, setNameSB] = useState('');
@@ -25,7 +26,11 @@ const CreateSB = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div 
+    className="min-h-screen flex flex-col justify-center items-center bg-cover bg-center " 
+    style={{ backgroundImage: `url(${imgFondo})` }}
+  >
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md mt-24 mb-4">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-2xl mb-4 text-center">Crear nueva Subcategoria</h1>
         <form onSubmit={submitHandler}>
@@ -56,6 +61,7 @@ const CreateSB = () => {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 };
