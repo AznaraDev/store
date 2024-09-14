@@ -32,10 +32,18 @@ module.exports = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    response(res, 200, { message: "Autenticación exitosa", token, n_document: user.n_document });
+    // Enviar solo un objeto con token y el role que ya viene en el token decodificado
+    return res.status(200).json({
+      message: "Autenticación exitosa",
+      token, // Aquí retornas el token correctamente
+      role: user.role,
+      n_document: user.n_document
+    });
+
   } catch (error) {
     console.error(error);
     response(res, 500, "Error al autenticar el usuario");
   }
 };
+
 

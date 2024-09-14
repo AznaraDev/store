@@ -262,7 +262,7 @@ export const login = (email, password) => async (dispatch) => {
     const { data } = await axios.post(`${BASE_URL}/auth/login`,{ email, password }, config);
 
       // Decodifica el token para obtener el rol del usuario
-      const decodedToken = jwtDecode(data.data.token);
+      const decodedToken = jwtDecode(data.token);
       const userInfo = {
         token: data.token,
         role: decodedToken.role,

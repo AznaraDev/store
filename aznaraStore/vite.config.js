@@ -8,4 +8,7 @@ export default defineConfig({
     react(),
     WindiCSS(),
   ],
+  optimizeDeps: {
+    include: ['redux-thunk'], // Asegura que redux-thunk esté optimizado por Vite
+  },
 });

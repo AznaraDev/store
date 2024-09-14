@@ -25,6 +25,8 @@ const Login = () => {
     }
   }, [userInfo, navigate]);
 
+  console.log(userInfo)
+
   return (
     <div 
       className="min-h-screen flex flex-col justify-center items-center bg-cover bg-center" 

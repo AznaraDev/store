@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Disclosure, Menu } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
-import { Link, useNavigate } from 'react-router-dom'; // Agrega useNavigate para la redirección
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/img/logoNombre.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
@@ -11,7 +11,6 @@ const navigation = [
   { name: 'Colecciones', href: '#about', current: false },
   { name: 'Contactanos', href: '#footer', current: false },
   { name: 'Ofertas', href: '#', current: false },
-  
 ];
 
 function classNames(...classes) {
@@ -22,38 +21,13 @@ export default function Navbar() {
   const [isTransparent, setIsTransparent] = useState(true);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const searchTerm = useSelector(state => state.searchTerm);
   const priceFilter = useSelector(state => state.priceFilter);
   const categoryFilter = useSelector(state => state.categoryFilter);
   const categories = useSelector(state => state.categories.data);
   const userInfo = useSelector(state => state.userLogin.userInfo);
-
- 
-  
-  const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart'];
-
-  useEffect(() => {
-    const currentPath = window.location.pathname;
-
-  
-    let isPublicRoute = publicRoutes.some(route => {
-   
-      const routeRegex = new RegExp(`^${route.replace(':categoryName', '[^/]+').replace(':id', '\\d+')}$`);
-      return routeRegex.test(currentPath);
-    });
-
-   
-    if (currentPath.startsWith('/product/')) {
-      isPublicRoute = true;
-    }
-
-  
-    if (!userInfo && !isPublicRoute) {
-      navigate('/login');
-    }
-  }, [userInfo, navigate]);
-
+console.log(userInfo)
   useEffect(() => {
     dispatch(fetchCategories());
 
@@ -122,7 +96,6 @@ export default function Navbar() {
               </Link>
             )}
           </Menu.Item>
-          
         </>
       );
     } else if (userInfo.role === 'User') {
@@ -144,7 +117,7 @@ export default function Navbar() {
           <Menu.Item>
             {({ active }) => (
               <Link
-                to="/header"
+                to="#"
                 onClick={handleLogout}
                 className={classNames(
                   active ? 'bg-gray-100' : '',
@@ -241,7 +214,7 @@ export default function Navbar() {
           <Menu.Item>
             {({ active }) => (
               <Link
-                to="/"
+                to="#"
                 onClick={handleLogout}
                 className={classNames(
                   active ? 'bg-gray-100' : '',
@@ -258,8 +231,8 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'} `}>
-      <div className="max-w-full px-2 sm:px-4  lg:px-8 py-4">
+    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'}`}>
+      <div className="max-w-full px-2 sm:px-4 lg:px-8 py-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
@@ -267,7 +240,7 @@ export default function Navbar() {
               <img
                 alt="Your Company"
                 src={logo}
-              className="h-52 w-auto object-contain" 
+                className="h-52 w-auto object-contain"
               />
             </Link>
           </div>
@@ -275,14 +248,14 @@ export default function Navbar() {
           {/* Enlaces de navegación para pantallas grandes */}
           <div className="hidden sm:flex flex-1 justify-center space-x-8">
             {navigation.map((item) => (
-          <a
+              <a
                 key={item.name}
-            href={item.href} // Usa <a> para enlaces de anclaje
-            className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
-            aria-current={item.current ? 'page' : undefined}
+                href={item.href} // Usa <a> para enlaces de anclaje
+                className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
+                aria-current={item.current ? 'page' : undefined}
               >
                 {item.name}
-          </a>
+              </a>
             ))}
           </div>
 
@@ -297,57 +270,73 @@ export default function Navbar() {
                 placeholder="Buscar productos"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="block w-1/2 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-transparent text-gray-200 placeholder-gray-200 focus:outline-none focus:ring-0 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
               />
             </div>
           </div>
 
-          {/* Iconos de carrito y menú móvil */}
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <Link to="/cart" className="relative p-2 text-gray-200 hover:text-gray-400">
-              <ShoppingBagIcon className="h-8 w-8" aria-hidden="true" />
+          {/* Carrito y menú */}
+          <div className="flex items-center space-x-4">
+            <Link to="/cart" className="text-white">
+              <ShoppingBagIcon className="h-6 w-6" />
             </Link>
-
-            {/* User dropdown */}
-            <Menu as="div" className="relative ml-3">
-              <Menu.Button className="bg-transparent text-white px-3 py-2 rounded-md text-xl font-medium">
-                Menu
-                </Menu.Button>
-              <Menu.Items className="absolute right-0 z-10 mt-2 w-48 py-1 bg-white text-gray-900 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+            <Menu as="div" className="relative">
+              <Menu.Button className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-gray-800 px-4 py-2 text-sm font-medium text-white shadow-sm ring-1 ring-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span className="sr-only">Open user menu</span>
+                {/* Icono de usuario (ajustar según sea necesario) */}
+                <svg className="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14c3.5 0 6.4 1.6 8 4M12 14c-3.5 0-6.4 1.6-8 4m8-4V3m0 11V3m0 11v-8M8 7h8" />
+                </svg>
+              </Menu.Button>
+              <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {renderMenuItems()}
               </Menu.Items>
             </Menu>
           </div>
-        </div>
 
-        {/* Mobile menu button */}
-        <div className="-mr-2 flex sm:hidden">
-          <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-            <span className="sr-only">Abrir menú</span>
-            {open ? (
-              <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-            )}
-          </Disclosure.Button>
+          {/* Mobile menu button */}
+          <div className="-mr-2 flex items-center sm:hidden">
+            <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+              <span className="sr-only">Open main menu</span>
+              {open ? (
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+              )}
+            </Disclosure.Button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile navigation */}
+      {/* Mobile menu */}
       <Disclosure.Panel className="sm:hidden">
-        <div className="space-y-1 px-2 pt-2 pb-3">
+        <div className="space-y-1 px-2 py-3">
           {navigation.map((item) => (
             <Disclosure.Button
               key={item.name}
-              as={Link}
-              to={item.href}
-              className={`block px-3 py-2 rounded-md text-base font-medium ${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
+              as="a"
+              href={item.href}
+              className={`block px-4 py-2 text-base font-medium text-gray-900 ${item.current ? 'bg-gray-100 text-gray-900' : ''}`}
             >
               {item.name}
             </Disclosure.Button>
           ))}
+          <div className="relative mt-4">
+            <input
+              type="text"
+              placeholder="Buscar productos"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+            />
+          </div>
+          <Link to="/cart" className="block px-4 py-2 text-base font-medium text-gray-900">
+            Carrito
+          </Link>
+          {renderMenuItems()}
         </div>
       </Disclosure.Panel>
     </Disclosure>
   );
 }
+

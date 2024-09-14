@@ -19,7 +19,7 @@ const ProductsList = () => {
   const loading = useSelector((state) => state.loading);
   const error = useSelector((state) => state.error);
   const searchTerm = useSelector((state) => state.searchTerm);
-  const userInfo = useSelector((state) => state.userLogin?.userInfo);
+  const userInfo = useSelector(state => state.userLogin.userInfo);
 
   useEffect(() => {
     if (searchTerm) {
