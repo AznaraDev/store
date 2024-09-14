@@ -47,8 +47,12 @@ const ProductDetails = () => {
         p.price === selectedProduct.price
     );
 
-    return [...new Set(matchingProducts.flatMap((p) => p.sizes))];
+    // Extraer los talles únicos de los productos filtrados
+    const availableSizes = [...new Set(matchingProducts.flatMap((p) => p.sizes))];
+
+    return availableSizes;
   };
+  
 
   const handleAddToCart = () => {
     if (!selectedSize) {
