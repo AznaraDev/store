@@ -130,7 +130,7 @@ const ProductDetails = () => {
 
             {/* Detalles del producto */}
             <div className="w-full lg:w-1/2 p-4">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2 font-nunito bg-gray-100 p-2 rounded">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2 font-nunito bg-gray-100 p-2 rounded uppercase">
                 {selectedProduct.name}
               </h2>
               <p className="text-lg text-gray-500 mb-4 font-nunito font-semibold">
@@ -174,7 +174,7 @@ const ProductDetails = () => {
                 <div className="mb-4">
                   <label
                     htmlFor="sizes"
-                    className="block text-sm font-medium font-nunito text-gray-300"
+                    className="block text-sm font-medium font-nunito text-gray-500"
                   >
                     Talles
                   </label>

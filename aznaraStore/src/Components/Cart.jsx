@@ -11,7 +11,7 @@ const Cart = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const navigate = useNavigate();
-
+console.log(cart)
   const handleIncrementQuantity = (productId) => {
     dispatch(incrementQuantity(productId));
   };
@@ -47,31 +47,31 @@ const Cart = () => {
 
       {/* Contenedor del carrito */}
       <div className="relative flex flex-col justify-center items-center min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-        <div className="bg-colorDetalle rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl">
-          <h1 className="text-3xl text-yellow-600 font-bold font-nunito mb-10 text-center">
+        <div className="bg-gray-100 rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl">
+          <h1 className="text-3xl text-gray-600 font-bold font-nunito mb-10 text-center">
             PRODUCTOS SELECCIONADOS
           </h1>
           {cart.items.length === 0 ? (
-            <p className="text-center text-white font-nunito font-semibold">Tu carrito está vacío.</p>
+            <p className="text-center text-gray-700 font-nunito font-semibold">Tu carrito está vacío.</p>
           ) : (
             <div>
               {cart.items.map((item) => (
-                <div key={item.id_product} className="flex items-center justify-between mb-6 border-b pb-4">
-                  <div className="flex items-center space-x-4">
+                <div key={item.id_product} className="flex items-center justify-between mb-6 border-b pb-4 bg-gray-300 p-6">
+                  <div className="flex items-center space-x-4 ">
                     <img src={item.Images[0]?.url} alt={item.name} className="w-28 h-28 object-cover rounded-lg" />
                     <div>
-                      <h2 className="text-3xl font-semibold font-nunito text-white">{item.name}</h2>
-                      <p className=" font-nunito text-2xl text-gray-300">Precio: ${item.price}</p>
-                      <div className="flex items-center space-x-2 mt-2">
+                      <h2 className="text-3xl font-semibold font-nunito text-gray-700 uppercase">{item.name}</h2>
+                      <p className=" font-nunito text-2xl text-gray-600">Precio: ${item.price}</p>
+                      <div className="flex items-center space-x-2 mt-2 ">
                         <button
-                          className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-700"
+                          className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
                           onClick={() => handleIncrementQuantity(item.id_product)}
                         >
                           <SlPlus />
                         </button>
-                        <span className="text-lg text-white">{item.quantity}</span>
+                        <span className="text-lg text-gray-700">{item.quantity}</span>
                         <button
-                          className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-700"
+                          className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
                           onClick={() => handleDecrementQuantity(item.id_product)}
                         >
                           <SlMinus />
