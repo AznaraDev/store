@@ -37,6 +37,18 @@ const ProductDetails = () => {
     }
   }, [product]);
 
+  const getAvailableColors = () => {
+    if (!selectedProduct || !similarProducts) return [];
+  
+    const matchingProducts = similarProducts.filter(
+      (p) => p.id_SB === selectedProduct.id_SB && p.price === selectedProduct.price
+    );
+  
+    // Extraer los colores únicos de los productos filtrados
+    const availableColors = [...new Set(matchingProducts.flatMap((p) => p.colors))];
+    return availableColors;
+  };
+
   const getAvailableSizes = () => {
     if (!selectedProduct || !similarProducts) return [];
 
@@ -49,10 +61,9 @@ const ProductDetails = () => {
 
     // Extraer los talles únicos de los productos filtrados
     const availableSizes = [...new Set(matchingProducts.flatMap((p) => p.sizes))];
-
+    
     return availableSizes;
   };
-  
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -78,13 +89,28 @@ const ProductDetails = () => {
     setSelectedProduct(relatedProduct);
     setSelectedSize("");
     setSelectedColor("");
-  
+
     // Actualizar la imagen principal con la primera imagen del producto relacionado
     setSelectedImage(
       relatedProduct.Images && relatedProduct.Images.length > 0
         ? relatedProduct.Images[0].url
         : "https://via.placeholder.com/600"
     );
+  };
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+    const matchingProduct = similarProducts.find(
+      (p) =>
+        p.id_SB === selectedProduct.id_SB &&
+        p.price === selectedProduct.price &&
+        p.colors.includes(color)
+    );
+
+    // Actualizar la imagen principal basada en el color seleccionado
+    if (matchingProduct && matchingProduct.Images && matchingProduct.Images.length > 0) {
+      setSelectedImage(matchingProduct.Images[0].url);
+    }
   };
 
   if (loading) {
@@ -161,11 +187,11 @@ const ProductDetails = () => {
                 </label>
                 <select
                   value={selectedColor}
-                  onChange={(e) => setSelectedColor(e.target.value)}
+                  onChange={(e) => handleColorChange(e.target.value)}
                   className="w-relative bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
                 >
                   <option value="">Seleccionar color</option>
-                  {selectedProduct.colors.map((color, index) => (
+                  {getAvailableColors().map((color, index) => (
                     <option key={index} value={color}>
                       {color}
                     </option>
@@ -208,24 +234,34 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Productos relacionados debajo */}
+          {/* Sección de productos relacionados */}
           {similarProducts && similarProducts.length > 0 && (
             <div className="mt-8">
-              <h2 className="text-2xl font-nunito text-yellow-600 mb-4">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 font-nunito">
                 Productos Relacionados
-              </h2>
-              <div className="flex overflow-x-auto space-x-2">
-                {similarProducts.map((relatedProduct) =>
-                  relatedProduct.Images && relatedProduct.Images.length > 0 ? (
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {similarProducts.map((relatedProduct, index) => (
+                  <div
+                    key={index}
+                    
+                    onClick={() => handleViewSimilarProduct(relatedProduct)}
+                  >
                     <img
-                      key={relatedProduct.id_product}
-                      src={relatedProduct.Images[0].url} // Solo mostramos la primera imagen
-                      alt={`${relatedProduct.name} main`}
-                      className="w-16 h-16 object-cover object-center rounded-lg cursor-pointer hover:opacity-75"
-                      onClick={() => handleViewSimilarProduct(relatedProduct)}
+                      src={
+                        relatedProduct.Images && relatedProduct.Images.length > 0
+                          ? relatedProduct.Images[0].url
+                          : "https://via.placeholder.com/600"
+                      }
+                      // alt={relatedProduct.name}
+                       className="w-20 h-20 object-cover object-center rounded-lg"
                     />
-                  ) : null
-                )}
+                    {/* <h4 className="text-lg font-medium text-gray-800 mt-2 font-nunito">
+                      {relatedProduct.name}
+                    </h4>
+                    <p className="text-gray-600">${relatedProduct.price}</p> */}
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -236,6 +272,4 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
-
 
