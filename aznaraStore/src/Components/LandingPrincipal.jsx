@@ -17,9 +17,22 @@ const LandingPrincipal = () => {
           </div>
         </div>
       </div>
-
+      {/* Flayer - Propaganda que se mueve hacia la izquierda */}
+      <div className="text-gray-300  text-center font-nunito font-semibold overflow-hidden">
+  <div className="flex justify-center items-center space-x-20 animate-marquee-right">
+    {/* Primer Texto en Movimiento */}
+    <div className="whitespace-nowrap flayer-text text-lg md:text-xl mr-10">
+      PAGO CONTRAENTREGA
+    </div>
+    
+    {/* Segundo Texto en Movimiento */}
+    <div className="whitespace-nowrap flayer-text text-lg md:text-xl">
+      ENVIO GRATIS A PARTIR DE 160.000
+    </div>
+  </div>
+</div>
       {/* Secciones divididas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
         {/* Sección Caballeros */}
         <div className="relative group">
           <a href="/caballeros">
@@ -30,7 +43,7 @@ const LandingPrincipal = () => {
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <h2 className="text-white text-3xl md:text-4xl font-bold group-hover:underline font-nunito">
-                Sección Caballeros
+                 Caballeros
               </h2>
             </div>
           </a>
@@ -46,19 +59,15 @@ const LandingPrincipal = () => {
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <h2 className="text-white text-3xl md:text-4xl font-bold group-hover:underline font-nunito">
-                Sección Damas
+                 Damas
               </h2>
             </div>
           </a>
         </div>
       </div>
 
-      {/* Flayer - Propaganda que se mueve hacia la izquierda */}
-      <div className="text-colorLogo p-4 text-center font-nunito font-semibold">
-        <div className="animate-marquee-right whitespace-normal transform -rotate-12 flayer-text text-2xl md:text-5xl mb-10 md:mb-20">
-          PAGO CONTRAENTREGA
-        </div>
-      </div>
+
+
     </div>
   );
 };

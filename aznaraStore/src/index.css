@@ -22,20 +22,16 @@
   }
   
   /* Aplicar las animaciones */
-  .animate-marquee-left {
-    animation: marquee-left 20s linear infinite;
-  }
-  
-  .animate-marquee-right {
-    animation: marquee-right 20s linear infinite;
-  }
-  
+.animate-marquee-left,
+.animate-marquee-right {
+  animation: marquee-right 20s linear infinite;
+}
   /* Flayer más llamativo */
   .flayer-text {
     font-family: 'Nunuto', sans-serif; /* Cambia a una fuente más llamativa */
-    text-shadow: 2px 2px 4px rgba(205, 210, 61, 0.7); /* Añadir sombra al texto */
-    color: #ffb422; /* Un color amarillo brillante para el texto */
-    background: linear-gradient(90deg, rgb(255, 235, 19) 0%, rgb(255, 255, 255) 100%); /* Efecto de gradiente */
+    text-shadow: 2px 2px 4px rgba(115, 109, 109, 0.7); /* Añadir sombra al texto */
+    color: #141413; /* Un color amarillo brillante para el texto */
+    background: linear-gradient(90deg, rgb(120, 120, 116) 0%, rgb(255, 255, 255) 100%); /* Efecto de gradiente */
     -webkit-background-clip: text; /* Truco para el gradiente en el texto */
     -webkit-text-fill-color: transparent; /* Hace que solo se vea el gradiente */
     font-weight: 900; /* Aumentar el grosor */

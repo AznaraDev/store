@@ -7,6 +7,7 @@ import {
   fetchLatestOrder,
 } from "../Redux/Actions/actions";
 import Swal from "sweetalert2";
+import imgFondo from '../assets/img/banner.png'
 
 const Checkout = () => {
   const currentDate = new Date().toISOString().split("T")[0];
@@ -133,20 +134,17 @@ const Checkout = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-4 bg-white rounded-lg shadow-md">
-      <h2
-        className="text-2xl font-bold mb-4 text-center"
-        style={{
-          fontFamily: "Roboto, sans-serif",
-          fontWeight: 900,
-          color: "rgb(34, 197, 94)",
-        }}
-      >
+    <div 
+    className="min-h-screen flex justify-center items-center bg-cover bg-center px-4" 
+    style={{ backgroundImage: `url(${imgFondo})`, paddingTop: '4rem' }}  // Ajustar el padding si el navbar es fijo
+  >
+    <div className="max-w-lg w-full mx-auto p-10 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold font-nunito mb-4 text-center">
         Finalizar Compra
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Fecha</label>
+          <label className="block text-sm font-semibold font-nunito text-gray-700">Fecha</label>
           <input
             type="date"
             name="date"
@@ -157,7 +155,7 @@ const Checkout = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-semibold font-nunito text-gray-700">
             Tipo de entrega:
           </label>
           <select
@@ -173,7 +171,7 @@ const Checkout = () => {
         </div>
         {address === "Envio a domicilio" && (
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-nunito font-semibold text-gray-700">
               Dirección de envío:
             </label>
             <input
@@ -188,19 +186,15 @@ const Checkout = () => {
         )}
         <div className="mb-4">
           <h3
-            className="text-xl font-bold mb-2"
-            style={{
-              fontFamily: "Roboto, sans-serif",
-              fontWeight: 900,
-              color: "rgb(34, 197, 94)",
-            }}
+            className="text-xl font-semibold font-nunito mb-2"
+         
           >
             Resumen del Pedido
           </h3>
           <ul className="divide-y divide-gray-200">
             {cart.items.map((item) => (
               <li key={item.id_product} className="py-2">
-                <div className="flex justify-between">
+                <div className="flex justify-between uppercase">
                   <span>{item.name}</span>
                   <span>
                     {item.quantity} x ${item.price}
@@ -209,18 +203,18 @@ const Checkout = () => {
               </li>
             ))}
           </ul>
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-4 uppercase">
             <span>Cantidad:</span>
             <span>{cart.totalItems}</span>
           </div>
-          <div className="flex justify-between mt-2">
+          <div className="flex justify-between mt-2 uppercase">
             <span>Total:</span>
             <span>${cart.totalPrice}</span>
           </div>
         </div>
         <button
           type="submit"
-          className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+          className="w-full bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-colorLogo"
           disabled={orderCreate.loading}
         >
           {orderCreate.loading ? "Procesando..." : "Finalizar Compra"}
@@ -230,6 +224,7 @@ const Checkout = () => {
         )}
       </form>
     </div>
+  </div>
   );
 };
 
