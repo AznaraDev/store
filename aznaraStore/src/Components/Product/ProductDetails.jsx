@@ -13,6 +13,7 @@ const ProductDetails = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+  const [selectedImage, setSelectedImage] = useState(""); // Nuevo estado para la imagen seleccionada
 
   const { product, similarProducts, loading, error } = useSelector((state) => ({
     product: state.product,
@@ -28,6 +29,11 @@ const ProductDetails = () => {
   useEffect(() => {
     if (product) {
       setSelectedProduct(product);
+      setSelectedImage(
+        product.Images && product.Images.length > 0
+          ? product.Images[0].url
+          : "https://via.placeholder.com/600"
+      ); // Inicializar la imagen seleccionada
     }
   }, [product]);
 
@@ -68,6 +74,13 @@ const ProductDetails = () => {
     setSelectedProduct(relatedProduct);
     setSelectedSize("");
     setSelectedColor("");
+  
+    // Actualizar la imagen principal con la primera imagen del producto relacionado
+    setSelectedImage(
+      relatedProduct.Images && relatedProduct.Images.length > 0
+        ? relatedProduct.Images[0].url
+        : "https://via.placeholder.com/600"
+    );
   };
 
   if (loading) {
@@ -82,22 +95,34 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="full min-h-screen  mb-36 bg-gray-900">
+    <div className="full min-h-screen mb-36 bg-gray-900">
       <div className="relative min-h-screen flex items-center justify-center pt-8 z-10">
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-6xl mx-4 sm:mx-6 lg:mx-8 flex flex-col">
           {/* Sección principal de detalles del producto */}
           <div className="flex flex-col lg:flex-row w-full">
             {/* Imágenes del producto */}
-            <div className="w-full lg:w-1/2 p-4">
-              <img
-                src={
-                  selectedProduct.Images && selectedProduct.Images.length > 0
-                    ? selectedProduct.Images[0].url
-                    : "https://via.placeholder.com/600"
-                }
-                alt={selectedProduct.name}
-                className="w-full max-w-xs aspect-square object-cover object-center rounded-lg shadow-md"
-              />
+            <div className="w-full lg:w-1/2 p-4 flex flex-col lg:flex-row">
+              {/* Imágenes en miniatura (verticales) */}
+              <div className="flex flex-col space-y-2 lg:mr-4">
+                {selectedProduct.Images &&
+                  selectedProduct.Images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image.url}
+                      alt={selectedProduct.name}
+                      className="w-16 h-16 object-cover object-center rounded-lg cursor-pointer border border-gray-300"
+                      onClick={() => setSelectedImage(image.url)} // Al hacer clic cambia la imagen seleccionada
+                    />
+                  ))}
+              </div>
+              {/* Imagen principal */}
+              <div className="flex-1">
+                <img
+                  src={selectedImage}
+                  alt={selectedProduct.name}
+                  className="w-full max-w-xs aspect-square object-cover object-center rounded-lg shadow-md"
+                />
+              </div>
             </div>
 
             {/* Línea vertical de separación */}
@@ -111,6 +136,16 @@ const ProductDetails = () => {
               <p className="text-lg text-gray-500 mb-4 font-nunito font-semibold">
                 {selectedProduct.description}
               </p>
+              
+              {/* Mostrar precio y material */}
+              <div className="mb-4">
+                <p className="text-xl font-semibold text-gray-800">
+                  Precio: ${selectedProduct.price}
+                </p>
+                <p className="text-lg text-gray-600">
+                  Material: {selectedProduct.materials.join(', ')}
+                </p>
+              </div>
 
               {/* Seleccionar color */}
               <div className="mb-4">
@@ -177,16 +212,15 @@ const ProductDetails = () => {
               </h2>
               <div className="flex overflow-x-auto space-x-2">
                 {similarProducts.map((relatedProduct) =>
-                  relatedProduct.Images && relatedProduct.Images.length > 0 &&
-                  relatedProduct.Images.map((image, index) => (
+                  relatedProduct.Images && relatedProduct.Images.length > 0 ? (
                     <img
-                      key={`${relatedProduct.id_product}-${index}`}
-                      src={image.url}
-                      alt={`${relatedProduct.name} additional`}
-                      className="w-12 h-12 object-cover object-center rounded-lg cursor-pointer hover:opacity-75"
+                      key={relatedProduct.id_product}
+                      src={relatedProduct.Images[0].url} // Solo mostramos la primera imagen
+                      alt={`${relatedProduct.name} main`}
+                      className="w-16 h-16 object-cover object-center rounded-lg cursor-pointer hover:opacity-75"
                       onClick={() => handleViewSimilarProduct(relatedProduct)}
                     />
-                  ))
+                  ) : null
                 )}
               </div>
             </div>
@@ -198,4 +232,6 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
+
 
