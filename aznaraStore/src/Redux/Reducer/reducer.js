@@ -71,12 +71,12 @@ const initialState = {
   error: null,
 
   userRegister: {
-    userInfo: null,
+    userInfo:localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
     loading: false,
     error: null,
   },
   userLogin: {
-    userInfo: null,
+    userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
     loading: false,
     error: null,
   },
