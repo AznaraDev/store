@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css'; 
 import 'swiper/css/navigation'; 
 import 'swiper/css/pagination'; 
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 const ProductCarousel = () => {
   const dispatch = useDispatch();
@@ -29,11 +29,15 @@ const ProductCarousel = () => {
   return (
     <div className="carousel-container p-8 mt-20">
       <Swiper
-        modules={[Navigation, Pagination]} 
+        modules={[Navigation, Pagination, Autoplay]} 
         navigation
         pagination={{ clickable: true }}
         spaceBetween={10}
         slidesPerView={1} 
+        autoplay={{ // Configuración del autoplay
+          delay: 1000, // 3 segundos entre cada slide
+          disableOnInteraction: false, // Para que siga reproduciendo después de una interacción
+        }}
         breakpoints={{
           640: { slidesPerView: 1 }, 
           768: { slidesPerView: 2 }, 
