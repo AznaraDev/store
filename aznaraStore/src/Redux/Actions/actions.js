@@ -50,9 +50,15 @@ import {
   CATEGORY_CREATE_REQUEST, 
   CATEGORY_CREATE_SUCCESS, 
   CATEGORY_CREATE_FAIL,
+ SB_CREATE_REQUEST, 
+ SB_CREATE_SUCCESS, 
+ SB_CREATE_FAIL,
   FETCH_LATEST_ORDER_REQUEST,
   FETCH_LATEST_ORDER_SUCCESS,
   FETCH_LATEST_ORDER_FAILURE,
+  FETCH_SB_REQUEST,
+  FETCH_SB_SUCCESS,
+  FETCH_SB_FAILURE,
 
 } from './actions-type';
 
@@ -66,6 +72,9 @@ export const createProduct = (productData) => async (dispatch) => {
     formData.append('price', productData.price);
     formData.append('stock', productData.stock);
     formData.append('id_category', productData.id_category);
+    formData.append('id_SB', productData.id_SB)
+    formData.append('section', productData.section)
+    formData.append('isOffer', productData.isOffer)
 
     if (productData.sizes) {
       formData.append('sizes', JSON.stringify(productData.sizes));
@@ -74,10 +83,18 @@ export const createProduct = (productData) => async (dispatch) => {
     if (productData.colors) {
       formData.append('colors', JSON.stringify(productData.colors));
     }
+    if (productData.materials) {
+      formData.append('materials', JSON.stringify(productData.materials));
+    }
 
     productData.images.forEach((image) => {
       formData.append('images', image);
     });
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
 
     const response = await axios.post(`${BASE_URL}/product/createProducts`, formData, {
       headers: {
@@ -121,11 +138,26 @@ export const fetchProductById = (id) => async (dispatch) => {
 
   try {
     const response = await axios.get(`${BASE_URL}/product/${id}`);
-    dispatch({ type: FETCH_PRODUCT_SUCCESS, payload: response.data.data.product });
+    
+    // Verifica la estructura de la respuesta
+    console.log('API response:', response.data); 
+    
+    const { product, relatedProducts } = response.data.data;
+
+    // Asegúrate de que estos valores no sean undefined
+    console.log('Product:', product);
+    console.log('Related Products:', relatedProducts);
+    
+    dispatch({ 
+      type: FETCH_PRODUCT_SUCCESS, 
+      payload: { product, similarProducts: relatedProducts } 
+    });
   } catch (error) {
+    console.log('Error fetching product by ID:', error);
     dispatch({ type: FETCH_PRODUCT_FAILURE, payload: error.message });
   }
 };
+
 
 export const addToCart = (product) => ({
   type: ADD_TO_CART,
@@ -273,16 +305,21 @@ export const setCategoryFilter = (category) => ({
   payload: category,
 });
 
-export const fetchFilteredProducts = (searchTerm, priceFilter, categoryFilter) => async (dispatch) => {
+export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName, isOffer) => async (dispatch) => {
   dispatch({ type: FETCH_PRODUCTS_REQUEST });
 
   try {
     let url = `${BASE_URL}/product?search=${searchTerm}`;
+    
     if (priceFilter && priceFilter.min !== null && priceFilter.max !== null) {
       url += `&minPrice=${priceFilter.min}&maxPrice=${priceFilter.max}`;
     }
-    if (categoryFilter) {
-      url += `&categoryId=${categoryFilter}`;
+    
+    if (categoryName) {
+      url += `&categoryName=${categoryName}`;
+    }
+    if (isOffer) {
+      url += `&isOffer=true`;
     }
 
     const response = await fetch(url);
@@ -297,6 +334,8 @@ export const fetchFilteredProducts = (searchTerm, priceFilter, categoryFilter) =
     dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
   }
 };
+
+
 
 
 export const fetchOrdersByDocument = (n_document) => async (dispatch) => {
@@ -369,7 +408,7 @@ export const deleteProduct = (id_product) => async (dispatch) => {
   }
 };
 
-export const createCategory = (name_category) => async (dispatch, getState) => {
+export const createCategory = (name_category) => async (dispatch) => {
   try {
     dispatch({ type: CATEGORY_CREATE_REQUEST });
 
@@ -389,18 +428,7 @@ export const createCategory = (name_category) => async (dispatch, getState) => {
       }
     }
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-
-    const { data } = await axios.post(`${BASE_URL}/category/createCategory`, { name_category }, config);
+    const { data } = await axios.post(`${BASE_URL}/category/createCategory`, { name_category });
 
     dispatch({ type: CATEGORY_CREATE_SUCCESS, payload: data });
     return { type: CATEGORY_CREATE_SUCCESS };
@@ -412,5 +440,51 @@ export const createCategory = (name_category) => async (dispatch, getState) => {
         : error.message,
     });
     return { type: CATEGORY_CREATE_FAIL, error: error.response ? error.response.data.message : error.message };
+  }
+};
+
+export const createSB = (name_SB) => async (dispatch) => {
+  try {
+    dispatch({ type: SB_CREATE_REQUEST });
+
+    // Fetch categories first
+    const subCategories = await dispatch(fetchSB());
+
+    // Check if categories is defined and not null
+    if (subCategories && subCategories.length) {
+      // Check if category already exists
+      const subCategoryExists = subCategories.some(
+        (sb) => sb.name_SB.toLowerCase() === name_SB.toLowerCase()
+      );
+
+      if (subCategoryExists) {
+        dispatch({ type: SB_CREATE_FAIL, payload: 'SB already exists' });
+        return { type: SB_CREATE_FAIL, error: 'SB already exists' };
+      }
+    }
+
+    const { data } = await axios.post(`${BASE_URL}/sb/createSB`, { name_SB });
+
+    dispatch({ type: SB_CREATE_SUCCESS, payload: data });
+    return { type: SB_CREATE_SUCCESS };
+  } catch (error) {
+    dispatch({
+      type: SB_CREATE_FAIL,
+      payload: error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+    return { type: SB_CREATE_FAIL, error: error.response ? error.response.data.message : error.message };
+  }
+};
+
+export const fetchSB = () => async (dispatch) => {
+  dispatch({ type: FETCH_SB_REQUEST });
+
+  try {
+    const response = await axios.get(`${BASE_URL}/sb/`);
+    dispatch({ type: FETCH_SB_SUCCESS, payload: response.data.data.subCategories });
+  } catch (error) {
+    dispatch({ type: FETCH_SB_FAILURE, payload: error.message });
   }
 };

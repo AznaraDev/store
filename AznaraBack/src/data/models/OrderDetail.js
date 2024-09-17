@@ -18,11 +18,11 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-     amount: {
+      amount: {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
-      address:{
+      address: {
         type: DataTypes.ENUM('Envio a domicilio', 'Retira en local'),
         allowNull: false,
       },
@@ -30,19 +30,24 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true, 
       },
-      state_order:{
-      type: DataTypes.ENUM('Pedido Realizado', 'En Preparación', 'Listo para entregar','Envío Realizado', 'Retirado'),
+      state_order: {
+        type: DataTypes.ENUM('Pedido Realizado', 'En Preparación', 'Listo para entregar', 'Envío Realizado', 'Retirado'),
+        allowNull: false,
+        defaultValue: 'Pedido Realizado',
+      },
+      integritySignature: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
-      integritySignature:{
-        type:DataTypes.STRING,
-        allowNull:false,
+      transaction_status: {
+        type: DataTypes.ENUM('Pendiente', 'Aprobado', 'Rechazado', 'Fallido', 'Cancelado'),
+        allowNull: false,
+        defaultValue: 'Pendiente',  
       },
       trackingNumber: {
         type: DataTypes.STRING,
-        allowNull: true, // Puede ser null hasta que se agregue el número de seguimiento
+        allowNull: true,
       },
-     
       deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -64,3 +69,4 @@ module.exports = (sequelize) => {
     }
   );
 };
+

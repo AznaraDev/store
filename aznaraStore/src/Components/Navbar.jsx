@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Disclosure, Menu } from '@headlessui/react';
-import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { FiAlignJustify } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
-import logo from '../assets/img/logoSunya.png';
+import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import { Link, useNavigate } from 'react-router-dom'; // Agrega useNavigate para la redirección
+import logo from '../assets/img/logoNombre.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
 
 const navigation = [
-  { name: 'Nuestros Productos', href: '/', current: true },
-  { name: 'Donde Encontrarnos', href: '#', current: false },
-  { name: 'Contacto', href: '#', current: false },
+  { name: 'Tienda', href: '/products', current: true },
+  { name: 'Colecciones', href: '#about', current: false },
+  { name: 'Contactanos', href: '#footer', current: false },
+  { name: 'Ofertas', href: '#', current: false },
+  
 ];
 
 function classNames(...classes) {
@@ -18,15 +19,57 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const [isTransparent, setIsTransparent] = useState(true);
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate(); 
   const searchTerm = useSelector(state => state.searchTerm);
   const priceFilter = useSelector(state => state.priceFilter);
   const categoryFilter = useSelector(state => state.categoryFilter);
-  const categories = useSelector((state) => state.categories.data);
-  const userInfo = useSelector((state) => state.userLogin.userInfo);
+  const categories = useSelector(state => state.categories.data);
+  const userInfo = useSelector(state => state.userLogin.userInfo);
+
+ 
+  
+  const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart'];
 
   useEffect(() => {
-    dispatch(fetchCategories()); 
+    const currentPath = window.location.pathname;
+
+  
+    let isPublicRoute = publicRoutes.some(route => {
+   
+      const routeRegex = new RegExp(`^${route.replace(':categoryName', '[^/]+').replace(':id', '\\d+')}$`);
+      return routeRegex.test(currentPath);
+    });
+
+   
+    if (currentPath.startsWith('/product/')) {
+      isPublicRoute = true;
+    }
+
+  
+    if (!userInfo && !isPublicRoute) {
+      navigate('/login');
+    }
+  }, [userInfo, navigate]);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsTransparent(false);
+      } else {
+        setIsTransparent(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [dispatch]);
 
   const handleSearchChange = (event) => {
@@ -48,7 +91,6 @@ export default function Navbar() {
   const handleLogout = () => {
     dispatch(logout());
   };
-  
 
   const renderMenuItems = () => {
     if (!userInfo) {
@@ -80,6 +122,7 @@ export default function Navbar() {
               </Link>
             )}
           </Menu.Item>
+          
         </>
       );
     } else if (userInfo.role === 'User') {
@@ -100,14 +143,14 @@ export default function Navbar() {
           </Menu.Item>
           <Menu.Item>
             {({ active }) => (
-               <Link
-               to="/"
-               onClick={handleLogout}
-               className={classNames(
-                 active ? 'bg-gray-100' : '',
-                 'block px-4 py-2 text-sm text-gray-700'
-               )}
-             >
+              <Link
+                to="/header"
+                onClick={handleLogout}
+                className={classNames(
+                  active ? 'bg-gray-100' : '',
+                  'block px-4 py-2 text-sm text-gray-700'
+                )}
+              >
                 Salir
               </Link>
             )}
@@ -184,14 +227,27 @@ export default function Navbar() {
           </Menu.Item>
           <Menu.Item>
             {({ active }) => (
-               <Link
-               to="/"
-               onClick={handleLogout}
-               className={classNames(
-                 active ? 'bg-gray-100' : '',
-                 'block px-4 py-2 text-sm text-gray-700'
-               )}
-             >
+              <Link
+                to="/sb"
+                className={classNames(
+                  active ? 'bg-gray-100' : '',
+                  'block px-4 py-2 text-sm text-gray-700'
+                )}
+              >
+                Nueva SubCategoría
+              </Link>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <Link
+                to="/"
+                onClick={handleLogout}
+                className={classNames(
+                  active ? 'bg-gray-100' : '',
+                  'block px-4 py-2 text-sm text-gray-700'
+                )}
+              >
                 Salir
               </Link>
             )}
@@ -202,128 +258,94 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className="bg-yellow-200">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            <Disclosure.Button className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-              <span className="absolute -inset-0.5" />
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon aria-hidden="true" className="block h-6 w-6 group-data-[open]:hidden" />
-              <XMarkIcon aria-hidden="true" className="hidden h-6 w-6 group-data-[open]:block" />
-            </Disclosure.Button>
+    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'} `}>
+      <div className="max-w-full px-2 sm:px-4  lg:px-8 py-4">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/">
+              <img
+                alt="Your Company"
+                src={logo}
+              className="h-52 w-auto object-contain" 
+              />
+            </Link>
           </div>
-          <div className=" items-center flex-shrink-0 h-32 w-32 sm:block hidden mt-6">
-  <img
-    alt="Your Company"
-    src={logo}
-    className="h-full w-full object-contain"
-  />
-</div>
 
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <div className="flex space-x-4">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  aria-current={item.current ? 'page' : undefined}
-                  className={classNames(
-                    item.current ? 'bg-green-500 text-white' : 'text-blue-950 hover:bg-green-500 hover:text-white',
-                    'rounded-md px-3 py-2 text-sm font-medium'
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
+          {/* Enlaces de navegación para pantallas grandes */}
+          <div className="hidden sm:flex flex-1 justify-center space-x-8">
+            {navigation.map((item) => (
+          <a
+                key={item.name}
+            href={item.href} // Usa <a> para enlaces de anclaje
+            className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
+            aria-current={item.current ? 'page' : undefined}
+              >
+                {item.name}
+          </a>
+            ))}
+          </div>
+
+          {/* Search bar */}
+          <div className="flex-1 flex justify-center px-2 lg:ml-6 lg:mr-6">
+            <div className="relative w-full max-w-lg">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              </div>
               <input
                 type="text"
                 placeholder="Buscar productos"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-950"
+                className="block w-1/2 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-transparent text-gray-200 placeholder-gray-200 focus:outline-none focus:ring-0 sm:text-sm"
               />
-              <select
-                value={categoryFilter}
-                onChange={handleCategoryChange}
-                className="px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-950"
-              >
-                <option value="">Filtrar por categoría</option>
-                {categories.map(category => (
-                  <option key={category.id_category} value={category.id_category}>
-                    {category.name_category}
-                  </option>
-                ))}
-              </select>
             </div>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <Link to="/cart">
-              <ShoppingCartIcon aria-hidden="true" className="h-6 w-6 text-blue-950 hover:text-white" />
+
+          {/* Iconos de carrito y menú móvil */}
+          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            <Link to="/cart" className="relative p-2 text-gray-200 hover:text-gray-400">
+              <ShoppingBagIcon className="h-8 w-8" aria-hidden="true" />
             </Link>
-            <div className="relative ml-3">
-              <Menu>
-                <Menu.Button className="relative flex rounded-full bg-yellow-200 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
-                  <FiAlignJustify aria-hidden="true" className="h-6 w-6 text-blue-950" />
+
+            {/* User dropdown */}
+            <Menu as="div" className="relative ml-3">
+              <Menu.Button className="bg-transparent text-white px-3 py-2 rounded-md text-xl font-medium">
+                Menu
                 </Menu.Button>
-                <Menu.Items
-                  className="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                >
-                  {renderMenuItems()}
-                </Menu.Items>
-              </Menu>
-            </div>
+              <Menu.Items className="absolute right-0 z-10 mt-2 w-48 py-1 bg-white text-gray-900 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                {renderMenuItems()}
+              </Menu.Items>
+            </Menu>
           </div>
+        </div>
+
+        {/* Mobile menu button */}
+        <div className="-mr-2 flex sm:hidden">
+          <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+            <span className="sr-only">Abrir menú</span>
+            {open ? (
+              <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+            )}
+          </Disclosure.Button>
         </div>
       </div>
 
+      {/* Mobile navigation */}
       <Disclosure.Panel className="sm:hidden">
-        <div className="space-y-1 px-2 pb-3 pt-2">
+        <div className="space-y-1 px-2 pt-2 pb-3">
           {navigation.map((item) => (
-            <Link
+            <Disclosure.Button
               key={item.name}
+              as={Link}
               to={item.href}
-              aria-current={item.current ? 'page' : undefined}
-              className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium'
-              )}
+              className={`block px-3 py-2 rounded-md text-base font-medium ${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
             >
               {item.name}
-            </Link>
+            </Disclosure.Button>
           ))}
-          <input
-            type="text"
-            placeholder="Buscar productos"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="block px-3 py-2 rounded-md text-sm w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
-          />
-          <select
-            value={categoryFilter}
-            onChange={handleCategoryChange}
-            className="px-3 py-2 rounded-md text-sm w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
-          >
-            <option value="">Filtrar por categoría</option>
-            {categories.map(category => (
-              <option key={category.id_category} value={category.id_category}>
-                {category.name_category}
-              </option>
-            ))}
-          </select>
-          {/* <select
-            value={`${priceFilter.min}-${priceFilter.max}`}
-            onChange={handlePriceChange}
-            className="px-3 py-2 rounded-md text-sm w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
-          >
-            <option value="">Filtrar por precio</option>
-            <option value="0-100">0 - 100</option>
-            <option value="101-200">101 - 200</option>
-            <option value="201-300">201 - 300</option>
-           
-          </select> */}
         </div>
       </Disclosure.Panel>
     </Disclosure>

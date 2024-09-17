@@ -10,21 +10,13 @@ module.exports = (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      account_group: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
+
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       price: {
@@ -32,7 +24,7 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       sizes: {
-        type: DataTypes.TEXT, // Usar TEXT en lugar de STRING para permitir almacenamiento de textos más largos
+        type: DataTypes.TEXT, 
         allowNull: true,
         get() {
           const value = this.getDataValue("sizes");
@@ -53,42 +45,61 @@ module.exports = (sequelize) => {
           this.setDataValue("colors", JSON.stringify(value));
         },
       },
+      materials: {
+        type: DataTypes.TEXT, // Usar TEXT en lugar de STRING
+        allowNull: true,
+        get() {
+          const value = this.getDataValue("materials");
+          return value ? JSON.parse(value) : [];
+        },
+        set(value) {
+          this.setDataValue("materials", JSON.stringify(value));
+        },
+      },
 
       stock: {
         type: DataTypes.INTEGER,
       },
+      isOffer: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
       stock_control: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  tax_classification: {
-    type: DataTypes.STRING,
-    defaultValue: 'Taxed',
-  },
-  tax_included: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  tax_consumption_value: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-  },
-  taxes_id: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  prices_currency_code: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  prices_price_list_position: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  unit: {
-    type: DataTypes.STRING,
-    defaultValue: '94',
-  },
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      section: {
+        type: DataTypes.ENUM("Caballero", "Dama", "Unisex"),
+        allowNull: true,
+      },
+      tax_classification: {
+        type: DataTypes.STRING,
+        defaultValue: "Taxed",
+      },
+      tax_included: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      tax_consumption_value: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      taxes_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      prices_currency_code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      prices_price_list_position: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      unit: {
+        type: DataTypes.STRING,
+        defaultValue: "94",
+      },
 
       deletedAt: {
         type: DataTypes.DATE,

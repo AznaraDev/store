@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { createCategory } from '../../Redux/Actions/actions';
+import imgFondo from '../../assets/img/banner.png'
 
 const CreateCategory = () => {
   const [name_category, setNameCategory] = useState('');
@@ -25,7 +26,11 @@ const CreateCategory = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div 
+    className="min-h-screen flex flex-col justify-center items-center bg-cover bg-center " 
+    style={{ backgroundImage: `url(${imgFondo})` }}
+  >
+    <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md mt-24 mb-4">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-2xl mb-4 text-center">Crear nueva categoría</h1>
         <form onSubmit={submitHandler}>
@@ -44,7 +49,7 @@ const CreateCategory = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full bg-yellow-600 hover:bg-yellow-700 text-gray-300 font-nunito font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             disabled={loading}
           >
             {loading ? 'Loading...' : 'Guardar'}
@@ -56,6 +61,7 @@ const CreateCategory = () => {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 };

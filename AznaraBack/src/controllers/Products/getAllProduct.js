@@ -4,9 +4,8 @@ const { Op } = require('sequelize');
 
 module.exports = async (req, res) => {
   try {
-    const { search, price, categoryId } = req.query;
+    const { search, price, categoryId, categoryName } = req.query;
 
-    let products;
     let whereClause = {
       [Op.and]: [],
     };
@@ -21,15 +20,22 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Filtro por name_category o id_category de Category
+    // Filtro por id_category de Category
     if (categoryId) {
       whereClause[Op.and].push({
         '$Category.id_category$': categoryId,
       });
     }
 
+    // Filtro por name_category de Category
+    if (categoryName) {
+      whereClause[Op.and].push({
+        '$Category.name_category$': { [Op.iLike]: `%${categoryName}%` },
+      });
+    }
+
     // Construir la consulta de productos
-    products = await Product.findAll({
+    const products = await Product.findAll({
       where: whereClause,
       include: [
         { model: Image },
