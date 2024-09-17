@@ -61,7 +61,9 @@ console.log(cart)
                     <img src={item.Images[0]?.url} alt={item.name} className="w-28 h-28 object-cover rounded-lg" />
                     <div>
                       <h2 className="text-3xl font-semibold font-nunito text-gray-700 uppercase">{item.name}</h2>
-                      <p className=" font-nunito text-2xl text-gray-600">Precio: ${item.price}</p>
+                      <p className=" font-nunito text-2xl text-gray-600">Color {item.colors}</p>
+                      <p className=" font-nunito text-2xl text-gray-600">Talle {item.sizes}</p>
+                      <p className=" font-nunito font-semibold text-2xl text-gray-600">Precio: ${item.price}</p>
                       <div className="flex items-center space-x-2 mt-2 ">
                         <button
                           className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"

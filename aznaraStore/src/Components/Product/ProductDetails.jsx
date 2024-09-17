@@ -16,13 +16,32 @@ const ProductDetails = () => {
   const [startIndex, setStartIndex] = useState(0);
   const itemsToShow = 5; // Número máximo de productos a mostrar a la vez
 
+
+
+
+
+
+
   const { product, similarProducts, loading, error } = useSelector((state) => ({
     product: state.product,
     similarProducts: state.similarProducts,
     loading: state.loading,
     error: state.error,
   }));
+// Filtrar productos similares por color
+const getUniqueColorProducts = (products) => {
+  const uniqueColorsMap = new Map();
 
+  products.forEach((product) => {
+    product.colors.forEach((color) => {
+      if (!uniqueColorsMap.has(color)) {
+        uniqueColorsMap.set(color, product);
+      }
+    });
+  });
+
+  return Array.from(uniqueColorsMap.values());
+};
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -95,6 +114,8 @@ const ProductDetails = () => {
     );
   };
 
+  
+
   const handleColorChange = (color) => {
     setSelectedColor(color);
     const matchingProduct = similarProducts.find(
@@ -153,6 +174,10 @@ const ProductDetails = () => {
     }
   }, [similarProducts]);
 
+  // Obtener productos únicos por color
+  const uniqueColorProducts = getUniqueColorProducts(similarProducts);
+
+
   const handlePrevious = () => {
     setStartIndex((prev) => Math.max(prev - itemsToShow, 0));
   };
@@ -161,7 +186,7 @@ const ProductDetails = () => {
     setStartIndex((prev) => Math.min(prev + itemsToShow, similarProducts.length - itemsToShow));
   };
 
-  const visibleProducts = similarProducts.slice(startIndex, startIndex + itemsToShow);
+  const visibleProducts = uniqueColorProducts.slice(startIndex, startIndex + itemsToShow);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -215,6 +240,9 @@ const ProductDetails = () => {
               </h2>
               <p className="text-lg text-gray-500 mb-4 font-nunito font-semibold">
                 {selectedProduct.description}
+              </p>
+              <p className="text-lg text-gray-500 mb-4 font-nunito font-semibold">
+                {selectedProduct.colors}
               </p>
               
               {/* Mostrar precio y material */}
