@@ -35,7 +35,7 @@ const ProductCarousel = () => {
         spaceBetween={10}
         slidesPerView={1} 
         autoplay={{ // Configuración del autoplay
-          delay: 1000, // 3 segundos entre cada slide
+          delay: 1500, // 3 segundos entre cada slide
           disableOnInteraction: false, // Para que siga reproduciendo después de una interacción
         }}
         breakpoints={{
