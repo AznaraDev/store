@@ -11,7 +11,6 @@
       transform: translateX(100%);
     }
   }
-  
   @keyframes marquee-right {
     0% {
       transform: translateX(100%);
@@ -22,9 +21,12 @@
   }
   
   /* Aplicar las animaciones */
-.animate-marquee-left,
+.animate-marquee-left{
+  animation: marquee-left 20s linear infinite;
+}
 .animate-marquee-right {
-  animation: marquee-right 20s linear infinite;
+  animation: marquee-right 10s linear infinite;
+  
 }
   /* Flayer más llamativo */
   .flayer-text {
@@ -66,5 +68,20 @@
       transform: translateX(0%);
     }
   }
-  
-  
+  .payment-logo {
+    width: 100px; /* Ajusta el tamaño del logo a lo que necesites */
+    height: auto; /* Mantener proporción */
+    object-fit: contain; /* Asegura que la imagen se ajuste correctamente dentro de su contenedor */
+   
+  }
+  .payment-logos {
+    display: flex;
+    align-items: center; /* Alinea los logos verticalmente */
+    justify-content: center; /* Centra los logos horizontalmente */
+    overflow: hidden;
+    background-color: black;
+    padding: 1rem 0; /* Ajusta el padding según sea necesario */
+    width: 80px; /* Ajusta el tamaño del logo a lo que necesites */
+    height: auto; /* Mantener proporción */
+    object-fit: contain;
+  }
