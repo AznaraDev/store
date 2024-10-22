@@ -12,6 +12,7 @@ const Cart = () => {
   const { userInfo } = userLogin;
   const navigate = useNavigate();
 console.log(cart)
+
   const handleIncrementQuantity = (productId) => {
     dispatch(incrementQuantity(productId));
   };
@@ -24,9 +25,9 @@ console.log(cart)
     dispatch(removeFromCart(productId));
   };
 
-  const handleClearCart = () => {
-    dispatch(clearCart());
-  };
+  // const handleClearCart = () => {
+  //   dispatch(clearCart());
+  // };
 
   const handleCheckout = () => {
     if (!userInfo) {
@@ -91,15 +92,15 @@ console.log(cart)
               ))}
               <div className="flex justify-between items-center mt-6">
                 <p className="text-lg font-semibold font-nunito text-gray-700 bg-yellow-600 p-2 rounded">Total: ${cart.totalPrice}</p>
-                <button
+                {/* <button
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
                   onClick={handleClearCart}
                 >
                   <SlTrash />
-                </button>
+                </button> */}
               </div>
               <div className="mt-8 flex justify-between">
-                <Link to="/" className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 font-nunito font-semibold">
+                <Link to="/products" className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 font-nunito font-semibold">
                   Seguir Comprando
                 </Link>
                 <button

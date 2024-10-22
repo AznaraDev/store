@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProducts,
   fetchFilteredProducts,
-  addToCart,
+
   deleteProduct,
 } from "../../Redux/Actions/actions";
 import { Link, useNavigate } from "react-router-dom";
@@ -38,9 +38,9 @@ const ProductsList = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
-    navigate("/cart");
+  const handleButtonClick = (product) => {
+    // Redirigir a la ruta /products/id
+    navigate(`/product/${product.id_product}`);
   };
 
   const handleEditProduct = (id_product) => {
@@ -125,7 +125,7 @@ const ProductsList = () => {
               </div>
               <div className="mt-4 mb-4 px-4 flex justify-between items-center">
                 <button
-                  onClick={() => handleAddToCart(product)}
+                  onClick={() => handleButtonClick(product)}
                   className="mt-4 flex items-center justify-center w-full bg-colorLogo font-nunito font-semibold text-gray-900 py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300"
                 >
                   <FiShoppingCart className="mr-2 text-colorFooter" /> Añadir al carrito
