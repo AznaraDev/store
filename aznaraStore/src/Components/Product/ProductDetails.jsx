@@ -12,9 +12,9 @@ const ProductDetails = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-  const [selectedImage, setSelectedImage] = useState(""); // Imagen seleccionada
+  const [selectedImage, setSelectedImage] = useState(""); 
   const [startIndex, setStartIndex] = useState(0);
-  const itemsToShow = 5; // Número máximo de productos a mostrar a la vez
+  const itemsToShow = 5; 
 
 
 
@@ -251,7 +251,7 @@ const getUniqueColorProducts = (products) => {
                   Precio: ${selectedProduct.price}
                 </p>
                 <p className="text-lg text-gray-600">
-                  Material: {selectedProduct.materials.join(', ')}
+                  Material: {selectedProduct.materials.join(', ')|| "No hay materiales disponibles"}
                 </p>
               </div>
 
