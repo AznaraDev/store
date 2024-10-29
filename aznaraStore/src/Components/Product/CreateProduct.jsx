@@ -248,17 +248,19 @@ const CreateProduct = () => {
               className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
             >
               <option value="">Seleccionar subcategoría</option>
-              {subCategories && subCategories.length > 0 ? (
-                subCategories.map((sb) => (
-                  <option key={sb.id_SB} value={sb.id_SB}>
-                    {sb.name_SB}
-                  </option>
-                ))
-              ) : (
-                <option disabled value="">
-                  No hay subcategorías disponibles
-                </option>
-              )}
+              { 
+  subCategories && subCategories.length > 0 
+  ? subCategories.map((sb) => (
+      sb && sb.id_SB ? (
+        <option key={sb.id_SB} value={sb.id_SB}>
+          {sb.name_SB}
+        </option>
+      ) : null
+    ))
+  : <option disabled value="">No hay subcategorías disponibles</option>
+}
+
+              
             </select>
           </div>
 

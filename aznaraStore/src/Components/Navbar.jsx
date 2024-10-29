@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Disclosure, Menu } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom'; // Agrega useNavigate para la redirección
 import logo from '../assets/img/logoNombre.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
+//import { SectionContext } from '../SectionContext';
+import { useSection } from '../SectionContext';
 
 const navigation = [
   { name: 'Tienda', href: '/products', current: true },
@@ -20,6 +22,9 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const [isTransparent, setIsTransparent] = useState(true);
+  
+  const { section } = useSection();
+  console.log("Current section in Navbar:", section); 
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
@@ -29,7 +34,9 @@ export default function Navbar() {
   const categories = useSelector(state => state.categories.data);
   const userInfo = useSelector(state => state.userLogin.userInfo);
 
- 
+  useEffect(() => {
+    console.log('Current section in Navbar:', section); // Confirmación de carga correcta
+  }, [section]);
   
   const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart'];
 
@@ -71,6 +78,13 @@ export default function Navbar() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [dispatch]);
+
+
+  
+
+  const navbarStyles = section === 'Dama'
+  ? 'bg-black text-white'
+  : 'bg-colorFooter text-white';
 
   const handleSearchChange = (event) => {
     dispatch(setSearchTerm(event.target.value));
@@ -258,7 +272,12 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'} `}>
+    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 ${
+      section === 'Dama' 
+        ? 'bg-black text-white' // Fondo negro para sección Dama sin transparencia
+        : isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white' // Transparencia solo en Caballeros
+    }`}>
+
       <div className="max-w-full px-2 sm:px-4  lg:px-8 py-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -278,7 +297,7 @@ export default function Navbar() {
           <a
                 key={item.name}
             href={item.href} // Usa <a> para enlaces de anclaje
-            className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
+            className={`text-xl font-medium ${navbarStyles.includes('bg-black') ? 'text-white' : 'text-gray-200'} ${item.current ? 'text-gray-200' : 'hover:text-gray-400'}`}
             aria-current={item.current ? 'page' : undefined}
               >
                 {item.name}
@@ -300,6 +319,7 @@ export default function Navbar() {
                 className="block w-1/2 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-transparent text-gray-200 placeholder-gray-200 focus:outline-none focus:ring-0 sm:text-sm"
               />
             </div>
+            <span>{`Estas en la seccion: ${section}`}</span>
           </div>
 
           {/* Iconos de carrito y menú móvil */}

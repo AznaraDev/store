@@ -11,8 +11,12 @@ import pse from '../assets/img/PSE.png';
 import envios from '../assets/img/pagos/envios.png';
 import pagos from '../assets/img/pagos/pagoConEntrega.png'
 import logoAz from '../assets/img/logoSolo.png'
+import { useSection } from '../SectionContext.jsx';
 
 const LandingPrincipal = () => {
+  const { section, changeSection } = useSection();
+
+
   return (
     <div className="min-h-screen bg-colorFooter">
       {/* Carrusel de imágenes en movimiento */}
@@ -48,35 +52,33 @@ const LandingPrincipal = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
         {/* Sección Caballeros */}
         <div className="relative group">
-          <a href="/caballeros">
+        <a href="/caballeros" onClick={(e) => { e.preventDefault(); changeSection('Caballero'); window.location.href = "/caballeros"; }}>
             <img
               src={banner}
-              alt="Caballeros"
+              alt="Caballero"
               className="w-full h-auto object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <h2 className="text-white text-3xl md:text-4xl font-bold group-hover:underline font-nunito">
-                 Caballeros
+                Caballeros
               </h2>
             </div>
           </a>
         </div>
 
-        {/* Sección Damas */}
-        <div className="relative group">
-          <a href="/damas">
-            <img
-              src={banner}
-              alt="Damas"
-              className="w-full h-auto object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <h2 className="text-white text-3xl md:text-4xl font-bold group-hover:underline font-nunito">
-                 Damas
-              </h2>
-            </div>
-          </a>
-        </div>
+      {/* Sección Damas */}
+<div className="relative group">
+<a href="/damas" onClick={(e) => { e.preventDefault(); changeSection('Dama'); window.location.href = "/damas"; }}>
+{/* Imágenes y contenido */}
+    <img src={banner} alt="Dama" className="w-full h-auto object-cover" />
+    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <h2 className="text-white text-3xl md:text-4xl font-bold group-hover:underline font-nunito">
+        Damas
+      </h2>
+    </div>
+  </a>
+</div>
+
       </div>
  {/* Flayer - Propaganda que se mueve hacia la izquierda */}
  <div className="text-center overflow-hidden bg-black py-4">
