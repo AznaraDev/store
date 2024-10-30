@@ -1,5 +1,6 @@
 import React from 'react';
 import banner from './../assets/img/banner.png';
+import bannerD from '../assets/img/Dama/logos/bannerDama.png'
 import banner1 from './../assets/img/BannerPrincipal/bannerA.jpeg';
 import banner2 from './../assets/img/BannerPrincipal/bannerB.jpeg';
 import banner3 from './../assets/img/BannerPrincipal/bannerC.jpeg';
@@ -70,7 +71,7 @@ const LandingPrincipal = () => {
 <div className="relative group">
 <a href="/damas" onClick={(e) => { e.preventDefault(); changeSection('Dama'); window.location.href = "/damas"; }}>
 {/* Imágenes y contenido */}
-    <img src={banner} alt="Dama" className="w-full h-auto object-cover" />
+    <img src={bannerD} alt="Dama" className="w-full h-auto object-cover" />
     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <h2 className="text-white text-3xl md:text-4xl font-bold group-hover:underline font-nunito">
         Damas
