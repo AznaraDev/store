@@ -159,14 +159,14 @@ export const fetchProductById = (id) => async (dispatch) => {
 };
 
 
-export const addToCart = (product) => ({
+export const addToCart = (id_product) => ({
   type: ADD_TO_CART,
-  payload: product,
+  payload: id_product,
 });
 
-export const removeFromCart = (productId) => ({
+export const removeFromCart = (id_product) => ({
   type: REMOVE_FROM_CART,
-  payload: productId,
+  payload: id_product,
 });
 
 export const clearCart = () => ({

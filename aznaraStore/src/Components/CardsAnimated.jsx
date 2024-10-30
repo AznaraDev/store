@@ -11,7 +11,7 @@ const CardsAnimated = () => {
   const [isInView, setIsInView] = useState(false);
   const ref = useRef(null);
 
-  // Configurar el Intersection Observer para activar animaciones al hacer scroll
+ 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

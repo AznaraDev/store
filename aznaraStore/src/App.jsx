@@ -22,9 +22,12 @@ import FilteredProducts from "./Components/Product/FilteredProducts";
 import PrivateRoute from './Components/PrivateRoute';
 import LandingPrincipal from "./Components/LandingPrincipal";
 import WhatsappButton from "./Components/WhatsappButton";
+import LandingDama from "./Components/Dama/LandingDama";
+import { SectionProvider } from "./SectionContext";
 
   function App() {
     return (
+      <SectionProvider>
       <Router>
     
         <div>
@@ -36,6 +39,7 @@ import WhatsappButton from "./Components/WhatsappButton";
             <Route exact path="/login" element={<Login/>}/>
             <Route exact path="/products" element={<ProductsList />} />
             <Route exact path="/caballeros" element={<Landing />} />
+            <Route exact path="/damas" element={<LandingDama />} />
             <Route exact path="/caballerosList" element={<ProductsList />} />
             <Route exact path="/cardsanimated" element={<CardsAnimated />} />
             <Route exact path="/product/:id" element={<ProductDetails />} />
@@ -63,6 +67,7 @@ import WhatsappButton from "./Components/WhatsappButton";
         <CartButton /> 
         <WhatsappButton/>
       </Router>
+      </SectionProvider>
     );
   }
 export default App
