@@ -103,7 +103,8 @@ const ProductsList = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-colorFooter py-16">
+    <div className={`min-h-screen flex flex-col justify-center items-center ${
+        currentSection === 'Dama' ? 'bg-black' : 'bg-colorFooter'} py-16`}>
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 uppercase font-nunito font-semibold">
           {currentProducts.map((product) => (
@@ -139,9 +140,11 @@ const ProductsList = () => {
               <div className="mt-4 mb-4 px-4 flex justify-between items-center">
                 <button
                   onClick={() => handleButtonClick(product)}
-                  className="mt-4 flex items-center justify-center w-full bg-colorLogo font-nunito font-semibold text-gray-900 py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300"
+                  className={`mt-4 flex items-center justify-center w-full ${
+                    currentSection === 'Dama' ? 'bg-colorFondoDama hover:bg-white ': 'bg-colorLogo'} font-nunito font-semibold text-gray-900 py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300`}
                 >
-                  <FiShoppingCart className="mr-2 text-colorFooter" /> Añadir al carrito
+                  <FiShoppingCart className={`mr-2 ${
+        currentSection === 'Dama' ? 'text-black' : 'text-colorFooter'} `} /> Añadir al carrito
                 </button>
               </div>
               {userInfo && userInfo.role === "Admin" && (
