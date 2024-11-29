@@ -1,9 +1,30 @@
 import React, { useState } from 'react';
 import { FaInstagram, FaEnvelope, FaFileAlt } from 'react-icons/fa';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'; // Íconos para mostrar/ocultar
+import axios from "axios";
+import { BASE_URL } from "../Config";
 
 const Footer = () => {
   const [activeIndex, setActiveIndex] = useState(null);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubscribe = async () => {
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await axios.post(`${BASE_URL}/user/suscripcion`, { email });
+      setSuccess("Te has suscrito con éxito. ¡Gracias!");
+    } catch (err) {
+      setError("Hubo un problema al suscribirte. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -53,9 +74,18 @@ const Footer = () => {
           <input
             type="email"
             placeholder="Correo"
+            onChange={(e) => setEmail(e.target.value)}
             className="p-2 border border-gray-300 rounded w-full mb-2 font-nunito"
           />
-          <button className="bg-colorLogo text-colorFooter p-2 rounded w-full font-nunito">SUSCRIBETE</button>
+           <button
+        onClick={handleSubscribe}
+        disabled={loading}
+        className="bg-colorLogo text-colorFooter p-2 rounded w-full font-nunito"
+      >
+        {loading ? "Suscribiendo..." : "SUSCRÍBETE"}
+      </button>
+      {success && <p className="text-green-500 mt-2">{success}</p>}
+      {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
       </div>
 

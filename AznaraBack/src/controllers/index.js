@@ -1,4 +1,5 @@
 const {catchedAsync} = require("../utils");
+
 const webhook = require("./webhook");
 
 
@@ -21,5 +22,6 @@ module.exports = {
     createUsers:catchedAsync(require("./Users/createUsers")),
     getOrderDetailID:catchedAsync(require("./OrdersDetails/getOrderDetailID")),
     updateOrderDetail:catchedAsync(require("./OrdersDetails/updateOrderDetail")),
-    webhook:catchedAsync(require("./webhook"))
+    webhook:catchedAsync(require("./webhook")),
+    suscription:catchedAsync(require("./Users/suscription"))
 }
