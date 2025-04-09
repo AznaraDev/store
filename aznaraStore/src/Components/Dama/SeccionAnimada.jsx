@@ -56,18 +56,16 @@ const SeccionAnimada = () => {
           {sections.map((section, sectionIndex) => (
             <div
               key={sectionIndex}
-              className={`relative w-full h-96 overflow-hidden rounded-2xl shadow-lg ${
-                sectionIndex % 2 === 0 ? "mt-0" : "mt-12"
-              }`} // Alterna alturas para un diseño visual atractivo
+              className={`relative w-full h-96 overflow-hidden rounded-2xl shadow-lg ${sectionIndex % 2 === 0 ? "mt-0" : "mt-12"
+                }`} // Alterna alturas para un diseño visual atractivo
             >
               {section.images.map((image, imageIndex) => (
                 <img
                   key={imageIndex}
                   src={image}
                   alt={section.title}
-                  className={`absolute w-full h-full object-cover rounded-2xl transition-opacity duration-1000 ${
-                    imageIndices[sectionIndex] === imageIndex ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={`absolute w-full h-full object-cover rounded-2xl transition-opacity duration-1000 ${imageIndices[sectionIndex] === imageIndex ? "opacity-100" : "opacity-0"
+                    }`}
                 />
               ))}
               <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold z-10 text-center">
@@ -78,9 +76,11 @@ const SeccionAnimada = () => {
         </div>
 
         {/* Columna para el texto */}
-        <div className="flex flex-col items-center justify-center text-white text-center ml-16 md:ml-24">
-          <h2 className="text-3xl font-bold">¿Por qué comprar nuestros<br /> accesorios?</h2>
-          <p className="mt-4 text-gray-300 text-2xl">
+        <div className="flex flex-col items-center justify-center text-white text-center md:ml-24">
+          <h2 className="text-2xl md:text-3xl font-bold leading-tight"> {/* Ajusta el tamaño del texto */}
+            ¿Por qué comprar nuestros<br /> accesorios?
+          </h2>
+          <p className="mt-4 text-gray-300 text-base md:text-2xl leading-snug md:leading-normal"> {/* Ajusta el tamaño y el espaciado */}
             Productos de calidad<br />
             Sabemos que necesitas accesorios<br />
             de alta calidad y nosotros te<br />
