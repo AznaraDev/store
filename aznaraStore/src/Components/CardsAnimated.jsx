@@ -27,20 +27,20 @@ const CardsAnimated = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 p-6 md:p-20 ">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 p-6 md:p-20 overflow-hidden">
       {/* Columna izquierda: Texto */}
       <div className="flex flex-col justify-center">
         <h2 className="text-3xl md:text-4xl font-nunito font-semibold mb-4 text-center">
           Por qué comprar nuestros<br /> accesorios
         </h2>
-
+  
         {/* Logo manitoDiamante */}
         <img
           src={manitoDiamante}
           alt="Manito Diamante"
           className="mx-auto w-24 h-24 md:w-32 md:h-32 -mt-4"
         />
-
+  
         <div className="flex items-center justify-center mb-6">
           <p className="text-xl md:text-2xl font-nunito font-semibold text-center">
             Productos de calidad<br />
@@ -61,12 +61,12 @@ const CardsAnimated = () => {
           </p>
         </div>
       </div>
-
+  
       {/* Columna derecha: Tarjetas con animación */}
-      <div className="relative flex justify-center items-center w-full h-full mt-24 md:mt-0  md:mb-0">
+      <div className="relative flex justify-center items-center w-full h-full mt-24 md:mt-0 md:mb-0">
         {/* Tarjeta 1 */}
         <motion.div
-          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg z-10"
           variants={variants.card1}
           initial="hidden"
           whileInView="visible"
@@ -74,10 +74,10 @@ const CardsAnimated = () => {
         >
           <img src={card1} alt="Accesorio 1" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-
+  
         {/* Tarjeta 2 */}
         <motion.div
-          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg z-10"
           variants={variants.card2}
           initial="hidden"
           whileInView="visible"
@@ -85,10 +85,10 @@ const CardsAnimated = () => {
         >
           <img src={card2} alt="Accesorio 2" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-
+  
         {/* Tarjeta 3 */}
         <motion.div
-          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg z-10"
           variants={variants.card3}
           initial="hidden"
           whileInView="visible"
@@ -96,10 +96,10 @@ const CardsAnimated = () => {
         >
           <img src={card3} alt="Accesorio 3" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-
+  
         {/* Tarjeta 4 */}
         <motion.div
-          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg z-10"
           variants={variants.card4}
           initial="hidden"
           whileInView="visible"
