@@ -1,13 +1,19 @@
 import React from 'react';
 import { Disclosure } from '@headlessui/react';
-import backgroundImage from '../../assets/img/Dama/portada1.jpeg'; // Cambia la ruta según la ubicación de tu imagen
-
-
+import backgroundImage from '../../assets/img/Dama/portada1.jpeg';
+import smallBackgroundImage from '../../assets/img/Dama/portada.jpg'; // Imagen para pantallas pequeñas
 
 export default function Header() {
+  const isSmallScreen = window.innerWidth < 640; // Detecta si la pantalla es pequeña
+
   return (
-    <Disclosure as="header" className="relative bg-cover bg-center h-[50rem]" style={{ backgroundImage: `url(${backgroundImage})` }}>
-    
+    <Disclosure
+      as="header"
+      className="relative bg-cover bg-center h-[50rem]"
+      style={{
+        backgroundImage: `url(${isSmallScreen ? smallBackgroundImage : backgroundImage})`,
+      }}
+    >
     </Disclosure>
   );
 }
