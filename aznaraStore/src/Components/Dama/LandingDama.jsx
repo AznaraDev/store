@@ -13,19 +13,15 @@ import 'slick-carousel/slick/slick-theme.css';
 function LandingDama() {
   return (
     <div className="relative">
-      <Header2/>
-        <HeaderDama/>
-        <SeccionIconosDama/>
-        <ProductCarousel/>
-        <SeccionAnimada/>
-        {/* <HeaderDama/>
-        <SeccionIconosH/>
-        <ProductCarousel/>
-        <CardsAnimated/>
-        <About/> */}
-
-   </div>
-  )
+      <Header2 />
+      <HeaderDama />
+     
+        <SeccionIconosDama />
+     
+      <ProductCarousel />
+      <SeccionAnimada />
+    </div>
+  );
 }
 
 export default LandingDama

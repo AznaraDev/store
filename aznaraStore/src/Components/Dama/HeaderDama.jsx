@@ -6,7 +6,7 @@ import banner3 from '../../assets/img/Dama/logos/3.jpeg';
 
 export default function HeaderDama() {
   return (
-    <Disclosure as="header" className="relative bg-cover bg-center h-[50rem]">
+    <Disclosure as="header" className="relative bg-cover bg-center">
       <div className="relative overflow-hidden">
          {/* Flayer - Propaganda que se mueve hacia la izquierda */}
       <div className="text-center font-nunito font-semibold overflow-hidden bg-black">
