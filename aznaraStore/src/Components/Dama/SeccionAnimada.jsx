@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; 
-import image1a from '../../assets/img/Dama/dama1.jpeg';
-import image1b from '../../assets/img/Dama/dama2.jpeg';
+import image1a from '../../assets/img/Dama/dama1.jpg';
+import image1b from '../../assets/img/Dama/dama2.jpg';
 import image2a from '../../assets/img/Dama/dama3.jpg';
-import image2b from '../../assets/img/Dama/dama4.jpeg';
+import image2b from '../../assets/img/Dama/dama4.jpg';
 
 const SeccionAnimada = () => {
   const [imageIndex1, setImageIndex1] = useState(0);
