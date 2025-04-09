@@ -47,9 +47,9 @@ console.log(cart)
       />
 
       {/* Contenedor del carrito */}
-      <div className="relative flex flex-col justify-center items-center min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-        <div className="bg-gray-100 rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl">
-          <h1 className="text-3xl text-gray-600 font-bold font-nunito mb-10 text-center">
+      <div className="relative flex flex-col justify-center items-center min-h-screen py-24 px-4 sm:px-6 lg:px-8">
+        <div className="bg-gray-100 rounded-lg shadow-lg  lg:p-12 mt-6 w-full max-w-3xl">
+          <h1 className="text-2xl text-gray-600 font-bold font-nunito mb-10 text-center">
             PRODUCTOS SELECCIONADOS
           </h1>
           {cart.items.length === 0 ? (

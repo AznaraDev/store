@@ -15,7 +15,7 @@ const CartButton = () => {
     >
       <img
         src={currentSection === 'Dama' ? imgLogo2 : imgLogo}
-        className="w-24 h-24 md:w-48 md:h-48"
+        className="w-16 h-24 md:w-32 md:h-32 "
         alt="Cart Icon"
       />
     </a>

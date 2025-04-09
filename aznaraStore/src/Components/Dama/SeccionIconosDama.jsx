@@ -15,7 +15,7 @@ const SeccionIconosDama = () => {
   };
 
   return (
-    <div className="flex justify-center p-4">
+    <div className="flex justify-center p-4 bg-black rounded-lg shadow-lg mt-40">
       <div className="grid grid-cols-4 gap-16 max-w-4xl w-full">
         <a href="#section1" className="block mx-auto" onClick={() => handleCategoryClick('Relojes')}>
           <img
