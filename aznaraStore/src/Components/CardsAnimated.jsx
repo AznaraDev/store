@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import manitoDiamante from '../assets/img/manitoDiamante.png';
 import pesos from '../assets/img/pesos.png';
@@ -8,84 +7,40 @@ import card3 from '../assets/img/an3.png';
 import card4 from '../assets/img/an4.png';
 
 const CardsAnimated = () => {
-  const [isInView, setIsInView] = useState(false);
-  const ref = useRef(null);
-
- 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsInView(true); // El componente está en vista, activamos la animación
-        } else {
-          setIsInView(false); // El componente está fuera de vista
-        }
-      },
-      { threshold: 0.8 } // Se activará cuando el 80% del componente esté visible
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    // Limpiar el observador cuando se desmonte el componente
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
-      }
-    };
-  }, []);
-
   const variants = {
-    initial1: { scale: 1.2, opacity: 1, x: 50, y: -100 },
-    initial2: { scale: 1.2, opacity: 1, x: -50, y: 100 },
-    initial3: { scale: 1.2, opacity: 1, x: 100, y: -50 },
-    initial4: { scale: 1.2, opacity: 1, x: -100, y: 50 },
-  
-    animate1: {
-      scale: 1.1,
-      opacity: 1,
-      x: 0,
-      y: -20,
-      transition: { duration: 2, yoyo: Infinity },
+    card1: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: { x: -100, y: -100, opacity: 1, transition: { duration: 1 } },
     },
-    animate2: {
-      scale: 1.1,
-      opacity: 1,
-      x: 0,
-      y: 20,
-      transition: { duration: 2, yoyo: Infinity },
+    card2: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: { x: 100, y: -100, opacity: 1, transition: { duration: 1 } },
     },
-    animate3: {
-      scale: 1.1,
-      opacity: 1,
-      x: 20,
-      y: -20,
-      transition: { duration: 2, yoyo: Infinity },
+    card3: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: { x: -100, y: 100, opacity: 1, transition: { duration: 1 } },
     },
-    animate4: {
-      scale: 1.1,
-      opacity: 1,
-      x: -20,
-      y: 20,
-      transition: { duration: 2, yoyo: Infinity },
+    card4: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: { x: 100, y: 100, opacity: 1, transition: { duration: 1 } },
     },
   };
+
   return (
-    <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 p-6 md:p-60">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 p-6 md:p-20 ">
       {/* Columna izquierda: Texto */}
       <div className="flex flex-col justify-center">
         <h2 className="text-3xl md:text-4xl font-nunito font-semibold mb-4 text-center">
           Por qué comprar nuestros<br /> accesorios
         </h2>
-  
+
         {/* Logo manitoDiamante */}
         <img
           src={manitoDiamante}
           alt="Manito Diamante"
-          className="mx-auto w-20 h-20 md:w-28 md:h-28 -mt-4"
+          className="mx-auto w-24 h-24 md:w-32 md:h-32 -mt-4"
         />
-  
+
         <div className="flex items-center justify-center mb-6">
           <p className="text-xl md:text-2xl font-nunito font-semibold text-center">
             Productos de calidad<br />
@@ -98,7 +53,7 @@ const CardsAnimated = () => {
             <img
               src={pesos}
               alt="Pesos"
-              className="mx-auto w-14 h-14 md:w-20 md:h-20"
+              className="mx-auto w-16 h-16 md:w-24 md:h-24"
             />
             Precios a tu medida<br />
             En Aznara Store encontrarás el<br />
@@ -106,54 +61,58 @@ const CardsAnimated = () => {
           </p>
         </div>
       </div>
-  
+
       {/* Columna derecha: Tarjetas con animación */}
-      <div className="relative flex justify-center items-center ">
+      <div className="relative flex justify-center items-center w-full h-full mt-24 md:mt-0  md:mb-0">
         {/* Tarjeta 1 */}
         <motion.div
-          className="w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-72 rounded-lg"
-          variants={variants}
-          initial="animate1"
-          animate={isInView ? "initial1" : "animate1"}
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          variants={variants.card1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.5 }}
         >
           <img src={card1} alt="Accesorio 1" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-  
+
         {/* Tarjeta 2 */}
         <motion.div
-          className="w-24 h-32 sm:w-32 sm:h-40 md:w-40 md:h-56 rounded-lg"
-          variants={variants}
-          initial="animate2"
-          animate={isInView ? "initial2" : "animate2"}
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          variants={variants.card2}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.5 }}
         >
           <img src={card2} alt="Accesorio 2" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-  
+
         {/* Tarjeta 3 */}
         <motion.div
-          className="w-20 h-28 sm:w-28 sm:h-36 md:w-36 md:h-48 rounded-lg"
-          variants={variants}
-          initial="animate3"
-          animate={isInView ? "initial3" : "animate3"}
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          variants={variants.card3}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.5 }}
         >
           <img src={card3} alt="Accesorio 3" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-  
+
         {/* Tarjeta 4 */}
         <motion.div
-          className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-lg"
-          variants={variants}
-          initial="animate4"
-          animate={isInView ? "initial4" : "animate4"}
+          className="absolute w-36 h-48 sm:w-48 sm:h-60 md:w-56 md:h-72 rounded-lg"
+          variants={variants.card4}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.5 }}
         >
           <img src={card4} alt="Accesorio 4" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
       </div>
     </div>
-  );}
+  );
+};
 
 export default CardsAnimated;
-
 
 
 
