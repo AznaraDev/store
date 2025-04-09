@@ -36,44 +36,41 @@ const CardsAnimated = () => {
     };
   }, []);
 
-  // Variants con ajustes para dispositivos grandes y pequeños
   const variants = {
-    initial1: { scale: 1.6, opacity: 1, x: 60, y: -120 },
-    initial2: { scale: 1.6, opacity: 1, x: 20, y: 210 },
-    initial3: { scale: 1.4, opacity: 1, x: 320, y: -190 },
-    initial4: { scale: 1.9, opacity: 0.8, x: 330, y: 125 },
-
-    // Ajustes para animaciones más lentas y adaptables a pantallas pequeñas
+    initial1: { scale: 1.2, opacity: 1, x: 50, y: -100 },
+    initial2: { scale: 1.2, opacity: 1, x: -50, y: 100 },
+    initial3: { scale: 1.2, opacity: 1, x: 100, y: -50 },
+    initial4: { scale: 1.2, opacity: 1, x: -100, y: 50 },
+  
     animate1: {
-      scale: 1.6,
+      scale: 1.1,
       opacity: 1,
       x: 0,
-      y: -30,
-      transition: { duration: 3, yoyo: Infinity },
+      y: -20,
+      transition: { duration: 2, yoyo: Infinity },
     },
     animate2: {
-      scale: 1.3,
+      scale: 1.1,
       opacity: 1,
       x: 0,
-      y: 50,
-      transition: { duration: 3, yoyo: Infinity },
+      y: 20,
+      transition: { duration: 2, yoyo: Infinity },
     },
     animate3: {
-      scale: 1.4,
+      scale: 1.1,
       opacity: 1,
-      x: 120,
-      y: -50,
-      transition: { duration: 3, yoyo: Infinity },
+      x: 20,
+      y: -20,
+      transition: { duration: 2, yoyo: Infinity },
     },
     animate4: {
-      scale: 1.3,
+      scale: 1.1,
       opacity: 1,
-      x: 120,
-      y: 50,
-      transition: { duration: 3, yoyo: Infinity },
+      x: -20,
+      y: 20,
+      transition: { duration: 2, yoyo: Infinity },
     },
   };
-
   return (
     <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 p-6 md:p-60">
       {/* Columna izquierda: Texto */}
@@ -81,14 +78,14 @@ const CardsAnimated = () => {
         <h2 className="text-3xl md:text-4xl font-nunito font-semibold mb-4 text-center">
           Por qué comprar nuestros<br /> accesorios
         </h2>
-
-        {/* logo manitoDiamante */}
+  
+        {/* Logo manitoDiamante */}
         <img
           src={manitoDiamante}
           alt="Manito Diamante"
           className="mx-auto w-20 h-20 md:w-28 md:h-28 -mt-4"
         />
-
+  
         <div className="flex items-center justify-center mb-6">
           <p className="text-xl md:text-2xl font-nunito font-semibold text-center">
             Productos de calidad<br />
@@ -97,7 +94,7 @@ const CardsAnimated = () => {
             ofrecemos un producto que<br />
             puedes gozar de una garantía<br />
             dándote tranquilidad.<br />
-            {/* logo pesos */}
+            {/* Logo pesos */}
             <img
               src={pesos}
               alt="Pesos"
@@ -109,42 +106,42 @@ const CardsAnimated = () => {
           </p>
         </div>
       </div>
-
+  
       {/* Columna derecha: Tarjetas con animación */}
-      <div className="relative flex justify-center items-center">
+      <div className="relative flex justify-center items-center ">
         {/* Tarjeta 1 */}
         <motion.div
-          className="absolute w-36 h-48 md:w-48 md:h-72 rounded-lg"
+          className="w-28 h-36 sm:w-36 sm:h-48 md:w-48 md:h-72 rounded-lg"
           variants={variants}
           initial="animate1"
-          animate={isInView ? "initial1" : "animate1"} // Cambiar la animación cuando está en vista
+          animate={isInView ? "initial1" : "animate1"}
         >
           <img src={card1} alt="Accesorio 1" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-
+  
         {/* Tarjeta 2 */}
         <motion.div
-          className="absolute w-40 h-32 md:w-60 md:h-40 rounded-lg"
+          className="w-24 h-32 sm:w-32 sm:h-40 md:w-40 md:h-56 rounded-lg"
           variants={variants}
           initial="animate2"
           animate={isInView ? "initial2" : "animate2"}
         >
           <img src={card2} alt="Accesorio 2" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-
+  
         {/* Tarjeta 3 */}
         <motion.div
-          className="absolute w-28 h-40 md:w-40 md:h-56 rounded-lg"
+          className="w-20 h-28 sm:w-28 sm:h-36 md:w-36 md:h-48 rounded-lg"
           variants={variants}
           initial="animate3"
           animate={isInView ? "initial3" : "animate3"}
         >
           <img src={card3} alt="Accesorio 3" className="w-full h-full rounded-lg object-contain" />
         </motion.div>
-
+  
         {/* Tarjeta 4 */}
         <motion.div
-          className="absolute w-28 h-28 md:w-40 md:h-40 rounded-lg"
+          className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-lg"
           variants={variants}
           initial="animate4"
           animate={isInView ? "initial4" : "animate4"}
@@ -153,8 +150,7 @@ const CardsAnimated = () => {
         </motion.div>
       </div>
     </div>
-  );
-};
+  );}
 
 export default CardsAnimated;
 
