@@ -19,54 +19,57 @@ const SeccionAnimada = () => {
     {
       title: "Anillos",
       images: [image1a, image1b, image1c],
-      delay: 2000,
     },
     {
       title: "Pendientes",
       images: [image2a, image2b, image2c],
-      delay: 2000,
     },
     {
       title: "Cadenas",
       images: [image3a, image3b, image3c],
-      delay: 2000,
     },
     {
       title: "Manillas",
       images: [image4a, image4b, image4c],
-      delay: 2000,
     },
   ];
 
   useEffect(() => {
-    const intervals = sections.map((section, index) =>
+    const intervals = sections.map((_, index) =>
       setInterval(() => {
         setImageIndices((prevIndices) => {
           const newIndices = [...prevIndices];
-          newIndices[index] = (newIndices[index] + 1) % section.images.length;
+          newIndices[index] = (newIndices[index] + 1) % sections[index].images.length;
           return newIndices;
         });
-      }, section.delay)
+      }, 2000) // Cambia cada 2 segundos
     );
 
-    // Limpia los intervalos al desmontar el componente
     return () => intervals.forEach((interval) => clearInterval(interval));
   }, [sections]);
 
   return (
-    <div className="w-full h-full bg-black flex justify-center items-center relative py-12">
+    <div className="w-full h-full bg-black flex justify-center items-center relative ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-3/4 h-auto p-4">
+        {/* Sección de imágenes */}
         <div className="grid grid-cols-2 gap-8">
           {sections.map((section, sectionIndex) => (
             <div
               key={sectionIndex}
-              className="relative w-full h-96 overflow-hidden rounded-2xl shadow-lg"
+              className={`relative w-full h-96 overflow-hidden rounded-2xl shadow-lg ${
+                sectionIndex % 2 === 0 ? "mt-0" : "mt-12"
+              }`} // Alterna alturas para un diseño visual atractivo
             >
-              <img
-                src={section.images[imageIndices[sectionIndex]]}
-                alt={section.title}
-                className="absolute w-full h-full object-cover rounded-2xl transition-opacity duration-1000 opacity-100"
-              />
+              {section.images.map((image, imageIndex) => (
+                <img
+                  key={imageIndex}
+                  src={image}
+                  alt={section.title}
+                  className={`absolute w-full h-full object-cover rounded-2xl transition-opacity duration-1000 ${
+                    imageIndices[sectionIndex] === imageIndex ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              ))}
               <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold z-10 text-center">
                 {section.title}
               </span>
