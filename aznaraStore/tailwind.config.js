@@ -17,7 +17,9 @@ export default {
     },
   },
   variants: {
-    extend: {},
-  },
+    extend: {
+      transform: ['hover'],
+      scale: ['hover'],
+    },},
   plugins: [],
 }

@@ -205,186 +205,183 @@ const getUniqueColorProducts = (products) => {
   }
 
   return (
-    <div className="full min-h-screen p-32 bg-gray-900">
-      <div className="relative min-h-screen flex items-center justify-center z-10">
-        <div className="bg-gray-100 rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-6xl mx-4 sm:mx-6 lg:mx-8 flex flex-col">
+    <div className="full min-h-screen p-4 sm:p-8 lg:p-32 bg-gray-900">
+    <div className="relative min-h-screen flex items-center justify-center z-10">
+      <div className="bg-gray-100 rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 w-full max-w-6xl mx-2 sm:mx-4 lg:mx-8 flex flex-col">
+        
+        {/* Sección principal de detalles del producto */}
+        <div className="flex flex-col lg:flex-row w-full space-y-4 lg:space-y-0 lg:space-x-4">
           
-          {/* Sección principal de detalles del producto */}
-          <div className="flex flex-col lg:flex-row w-full">
+          {/* Imágenes del producto */}
+          <div className="w-full lg:w-1/2 flex flex-col lg:flex-row">
             
-            {/* Imágenes del producto */}
-            <div className="w-full lg:w-1/2 p-4 flex flex-col lg:flex-row">
-              
-              {/* Imágenes en miniatura */}
-              <div className="flex flex-col space-y-2 lg:mr-4">
-                {selectedProduct.Images &&
-                  selectedProduct.Images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={selectedProduct.name}
-                      className="w-16 h-16 object-cover object-center rounded-lg cursor-pointer border border-gray-300"
-                      onClick={() => setSelectedImage(image.url)} // Cambia la imagen seleccionada
-                    />
-                  ))}
-              </div>
-  
-              {/* Imagen principal */}
-              <div className="flex-1">
-                <img
-                  src={selectedImage}
-                  alt={selectedProduct.name}
-                  className="w-full max-w-xs aspect-square object-cover object-center rounded-lg shadow-md"
-                />
-              </div>
+            {/* Imágenes en miniatura */}
+            <div className="flex flex-row lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 overflow-x-auto lg:overflow-visible">
+              {selectedProduct.Images &&
+                selectedProduct.Images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.url}
+                    alt={selectedProduct.name}
+                    className="w-16 h-16 object-cover object-center rounded-lg cursor-pointer border border-gray-300"
+                    onClick={() => setSelectedImage(image.url)} // Cambia la imagen seleccionada
+                  />
+                ))}
             </div>
   
-            {/* Línea vertical de separación */}
-            <div className="hidden lg:block border-l-2 border-gray-300 mx-4"></div>
+            {/* Imagen principal */}
+            <div className="flex-1 mt-4 lg:mt-0">
+              <img
+                src={selectedImage}
+                alt={selectedProduct.name}
+                className="w-full max-w-xs mx-auto aspect-square object-contain object-center rounded-lg shadow-md transform transition-transform duration-300 hover:scale-150"
+              />
+            </div>
+          </div>
   
-            {/* Detalles del producto */}
-            <div className="w-full lg:w-1/2 p-4">
-              {/* Nombre del producto */}
-              <h2 className="text-3xl font-bold text-gray-800 mb-2 font-nunito bg-gray-100 p-2 rounded uppercase">
-                {selectedProduct.name}
-              </h2>
+          {/* Detalles del producto */}
+          <div className="w-full lg:w-1/2 p-4">
+            {/* Nombre del producto */}
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 font-nunito bg-gray-100 p-2 rounded uppercase text-center lg:text-left">
+              {selectedProduct.name}
+            </h2>
   
-              {/* Descripción */}
-              <p className="text-lg text-gray-500 mb-4 font-nunito font-semibold">
-                {selectedProduct.description}
-              </p>
+            {/* Descripción */}
+            <p className="text-sm sm:text-lg text-gray-500 mb-4 font-nunito font-semibold text-center lg:text-left">
+              {selectedProduct.description}
+            </p>
   
-              {/* Colores disponibles */}
+            {/* Colores disponibles */}
+            <div className="mb-4">
+              <label
+                htmlFor="colors"
+                className="block text-sm font-medium text-gray-500"
+              >
+                Colores
+              </label>
+              <select
+                value={selectedColor}
+                onChange={(e) => handleColorChange(e.target.value)}
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
+              >
+                <option value="">Seleccionar color</option>
+                {getAvailableColors().map((color, index) => (
+                  <option key={index} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
+            </div>
+  
+            {/* Talles disponibles */}
+            {selectedColor && (
               <div className="mb-4">
                 <label
-                  htmlFor="colors"
-                  className="block text-sm font-medium text-gray-500"
+                  htmlFor="sizes"
+                  className="block text-sm font-medium font-nunito text-gray-500"
                 >
-                  Colores
+                  Talles
                 </label>
                 <select
-                  value={selectedColor}
-                  onChange={(e) => handleColorChange(e.target.value)}
+                  value={selectedSize}
+                  onChange={(e) => setSelectedSize(e.target.value)}
                   className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
                 >
-                  <option value="">Seleccionar color</option>
-                  {getAvailableColors().map((color, index) => (
-                    <option key={index} value={color}>
-                      {color}
+                  <option value="">Seleccionar talle</option>
+                  {getAvailableSizes().map((size, index) => (
+                    <option key={index} value={size}>
+                      {size}
                     </option>
                   ))}
                 </select>
               </div>
+            )}
   
-              {/* Talles disponibles */}
-              {selectedColor && (
-                <div className="mb-4">
-                  <label
-                    htmlFor="sizes"
-                    className="block text-sm font-medium font-nunito text-gray-500"
-                  >
-                    Talles
-                  </label>
-                  <select
-                    value={selectedSize}
-                    onChange={(e) => setSelectedSize(e.target.value)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
-                  >
-                    <option value="">Seleccionar talle</option>
-                    {getAvailableSizes().map((size, index) => (
-                      <option key={index} value={size}>
-                        {size}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+            {/* Precio y materiales */}
+            <div className="mb-4">
+              <p className="text-lg sm:text-xl font-semibold text-gray-800">
+                Precio: ${selectedProduct.price}
+              </p>
+              <p className="text-sm sm:text-lg text-gray-600">
+                Material: {selectedProduct.materials.join(', ') || "No hay materiales disponibles"}
+              </p>
+            </div>
   
-              {/* Precio y materiales */}
-              <div className="mb-4">
-                <p className="text-xl font-semibold text-gray-800">
-                  Precio: ${selectedProduct.price}
-                </p>
-                <p className="text-lg text-gray-600">
-                  Material: {selectedProduct.materials.join(', ') || "No hay materiales disponibles"}
-                </p>
-              </div>
-  
-              {/* Botón para agregar al carrito */}
-              <div className="flex items-center">
-                <button
-                  className="bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300"
-                  onClick={handleAddToCart}
-                >
-                  <FiShoppingCart className="inline-block mr-2" />
-                  Agregar al carrito
-                </button>
-              </div>
-  
-              {/* Botón para volver */}
+            {/* Botón para agregar al carrito */}
+            <div className="flex items-center justify-center lg:justify-start">
               <button
-                onClick={handleGoBack}
-                className="mt-4 bg-gray-800 text-white py-2 px-3 rounded-md hover:bg-gray-700 transition duration-300 text-sm shadow-md"
+                className="bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300"
+                onClick={handleAddToCart}
               >
-                ← Volver
+                <FiShoppingCart className="inline-block mr-2" />
+                Agregar al carrito
               </button>
             </div>
+  
+            {/* Botón para volver */}
+            <button
+              onClick={handleGoBack}
+              className="mt-4 bg-gray-800 text-white py-2 px-3 rounded-md hover:bg-gray-700 transition duration-300 text-sm shadow-md mx-auto lg:mx-0"
+            >
+              ← Volver
+            </button>
           </div>
+        </div>
   
-          {/* Productos relacionados */}
-          <div className="relative mt-12">
-            <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-              Productos relacionados
-            </h3>
-            <div className="relative flex items-center">
-              {/* Botón para desplazarse a la izquierda */}
-              {startIndex > 0 && (
-                <button
-                  onClick={handlePrevious}
-                  className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow-lg"
-                >
-                  ◀
-                </button>
-              )}
-  
-              {/* Contenedor de productos relacionados */}
-              <div
-                ref={containerRef}
-                className="overflow-x-auto whitespace-nowrap flex space-x-4"
-                style={{ scrollBehavior: "smooth" }}
+        {/* Productos relacionados */}
+        <div className="relative mt-12">
+          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 text-center lg:text-left">
+            Productos relacionados
+          </h3>
+          <div className="relative flex items-center">
+            {/* Botón para desplazarse a la izquierda */}
+            {startIndex > 0 && (
+              <button
+                onClick={handlePrevious}
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow-lg"
               >
-                {visibleProducts.map((relatedProduct, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handleViewSimilarProduct(relatedProduct)}
-                    className="inline-block w-20 h-20 object-cover object-center rounded-lg cursor-pointer"
-                  >
-                    <img
-                      src={
-                        relatedProduct.Images && relatedProduct.Images.length > 0
-                          ? relatedProduct.Images[0].url
-                          : "https://via.placeholder.com/600"
-                      }
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </div>
-                ))}
-              </div>
+                ◀
+              </button>
+            )}
   
-              {/* Botón para desplazarse a la derecha */}
-              {startIndex + itemsToShow < similarProducts.length && (
-                <button
-                  onClick={handleNext}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow-lg"
+            {/* Contenedor de productos relacionados */}
+            <div
+              ref={containerRef}
+              className="overflow-x-auto whitespace-nowrap flex space-x-4"
+              style={{ scrollBehavior: "smooth" }}
+            >
+              {visibleProducts.map((relatedProduct, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleViewSimilarProduct(relatedProduct)}
+                  className="inline-block w-20 h-20 object-cover object-center rounded-lg cursor-pointer"
                 >
-                  ▶
-                </button>
-              )}
+                  <img
+                    src={
+                      relatedProduct.Images && relatedProduct.Images.length > 0
+                        ? relatedProduct.Images[0].url
+                        : "https://via.placeholder.com/600"
+                    }
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div>
+              ))}
             </div>
+  
+            {/* Botón para desplazarse a la derecha */}
+            {startIndex + itemsToShow < similarProducts.length && (
+              <button
+                onClick={handleNext}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full shadow-lg"
+              >
+                ▶
+              </button>
+            )}
           </div>
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
