@@ -1,10 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchFilteredProducts, setCategoryFilter } from '../Redux/Actions/actions';
-import anillo1 from '../assets/img/seccionManilla.png';
-import anillo2 from '../assets/img/seccionAnillo.png';
-import dije1 from '../assets/img/seccionCadena.png';
-import reloj1 from '../assets/img/seccionReloj.png';
+import anillo1 from '../assets/img/Hombre/manilla.png';
+import anillo2 from '../assets/img/Hombre/anillos.png';
+import dije1 from '../assets/img/Hombre/cadena.png';
+import reloj1 from '../assets/img/Hombre/reloj.png';
 
 // Componente reutilizable para cada categoría
 const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
@@ -13,7 +13,7 @@ const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
     className="block mx-auto text-center"
     onClick={() => onClick(categoryName)}
   >
-    <div className="relative p-2 hover:scale-105 transition-transform duration-300">
+    <div className="relative p-4 hover:scale-105 transition-transform duration-300">
       <img
         src={image}
         alt={altText}

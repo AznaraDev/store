@@ -2,10 +2,10 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchFilteredProducts, setCategoryFilter } from '../Redux/Actions/actions';
 import aboutimg from '../assets/img/about.png';
-import anillo1 from '../assets/img/seccionManilla.png';
-import anillo2 from '../assets/img/seccionAnillo.png';
-import dije1 from '../assets/img/seccionCadena.png';
-import reloj1 from '../assets/img/seccionReloj.png';
+import anillo1 from '../assets/img/Hombre/manilla.png';
+import anillo2 from '../assets/img/Hombre/anillos.png';
+import dije1 from '../assets/img/Hombre/cadena.png';
+import reloj1 from '../assets/img/Hombre/reloj.png';
 
 // Componente reutilizable para cada categoría
 const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
@@ -62,7 +62,7 @@ const About = () => {
 
       {/* Sección de íconos */}
       <div className="bg-black ">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto p-4">
           {categories.map((category, index) => (
             <CategoryCard
               key={index}
