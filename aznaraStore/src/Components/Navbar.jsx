@@ -86,7 +86,7 @@ export default function Navbar() {
   ? 'bg-transparent text-white'
   : section === 'Dama'
   ? 'bg-black text-white'
-  : 'bg-blue-900 text-white'; 
+  : 'bg-black text-white'; 
 
   const handleSearchChange = (event) => {
     dispatch(setSearchTerm(event.target.value));
