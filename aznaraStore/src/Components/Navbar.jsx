@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Disclosure, Menu } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom'; // Agrega useNavigate para la redirección
-import logo from '../assets/img/logoNombre.png';
+import logo from '../assets/img/logoCompleto.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
 //import { SectionContext } from '../SectionContext';
@@ -290,7 +290,7 @@ export default function Navbar() {
             <img
               alt="AZNARA Store"
               src={logo}
-              className="h-16 w-auto object-contain" // Tamaño adecuado para todas las pantallas
+              className="h-12 w-auto object-contain" // Tamaño adecuado para todas las pantallas
             />
           </Link>
         </div>
@@ -301,7 +301,7 @@ export default function Navbar() {
             <a
               key={item.name}
               href={item.href}
-              className={`text-lg font-medium ${
+              className={`text-sm font-medium ${
                 navbarStyles.includes('bg-black') ? 'text-white' : 'text-gray-200'
               } ${item.current ? 'text-gray-200' : 'hover:text-gray-400'}`}
               aria-current={item.current ? 'page' : undefined}
@@ -336,12 +336,12 @@ export default function Navbar() {
             to="/cart"
             className="relative p-2 text-gray-200 hover:text-gray-400"
           >
-            <ShoppingBagIcon className="h-6 w-6 sm:h-8 sm:w-8" aria-hidden="true" />
+            <ShoppingBagIcon className="h-6 w-6 sm:h-6 sm:w-6" aria-hidden="true" />
           </Link>
   
           {/* User dropdown */}
           <Menu as="div" className="relative">
-            <Menu.Button className="bg-transparent text-white px-3 py-2 rounded-md text-lg font-medium">
+            <Menu.Button className="bg-transparent text-white px-3 py-2 rounded-md text-sm font-medium">
               Menu
             </Menu.Button>
             <Menu.Items className="absolute right-0 z-10 mt-2 w-48 py-1 bg-white text-gray-900 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
