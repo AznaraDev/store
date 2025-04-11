@@ -6,6 +6,7 @@ import { BASE_URL } from "../Config";
 
 const Footer = () => {
   const [activeIndex, setActiveIndex] = useState(null);
+  const [isFAQOpen, setIsFAQOpen] = useState(false); // Estado para el contenedor general
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -45,25 +46,39 @@ const Footer = () => {
 
         {/* Sección de Preguntas Frecuentes */}
         <div id="footer" className="bg-gray-100 text-gray-800 w-full max-w-md p-6 rounded-lg">
-          <h3 className="text-xl font-semibold mb-4 text-colorLogo font-nunito">Preguntas Frecuentes</h3>
-          {faqs.map((faq, index) => (
-            <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-nunito">
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
-              >
-                {faq.question}
-                {activeIndex === index ? (
-                  <AiOutlineMinus className="text-orange-600" />
-                ) : (
-                  <AiOutlinePlus className="text-orange-600" />
-                )}
-              </button>
-              {activeIndex === index && (
-                <p className="mt-2 text-gray-600">{faq.answer}</p>
-              )}
+          <button
+            onClick={() => setIsFAQOpen(!isFAQOpen)}
+            className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
+          >
+            <h3 className="text-xl font-semibold mb-4 text-gray-700 font-nunito">Preguntas Frecuentes</h3>
+            {isFAQOpen ? (
+              <AiOutlineMinus className="text-orange-600" />
+            ) : (
+              <AiOutlinePlus className="text-orange-600" />
+            )}
+          </button>
+          {isFAQOpen && (
+            <div>
+              {faqs.map((faq, index) => (
+                <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-semibold text-xl font-nunito"> 
+                  <button
+                    onClick={() => toggleFAQ(index)}
+                    className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
+                  >
+                    {faq.question}
+                    {activeIndex === index ? (
+                      <AiOutlineMinus className="text-orange-600" />
+                    ) : (
+                      <AiOutlinePlus className="text-orange-600" />
+                    )}
+                  </button>
+                  {activeIndex === index && (
+                    <p className="mt-2 text-gray-600">{faq.answer}</p>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
 
         {/* Suscripción */}

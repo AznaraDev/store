@@ -1,6 +1,6 @@
 import React from 'react';
 import banner from './../assets/img/banner.png';
-import bannerD from '../assets/img/Dama/banner3.jpeg'
+import bannerD from '../assets/img/Dama/bannerPortada.png'
 import banner1 from './../assets/img/BannerPrincipal/bannerA.jpeg';
 import banner2 from './../assets/img/BannerPrincipal/bannerB.jpeg';
 import banner3 from './../assets/img/BannerPrincipal/bannerC.jpeg';
@@ -103,7 +103,7 @@ const LandingPrincipal = () => {
 
       </div>
  {/* Flayer - Propaganda que se mueve hacia la izquierda */}
- <div className="text-center overflow-hidden bg-black py-4">
+ <div className="text-center overflow-hidden bg-black">
   <div className="flex justify-center items-center space-x-20 animate-marquee-left">
     {/* Imagen 1 */}
     <div className="flex items-center whitespace-nowrap text-3xl md:text-4xl mr-10 text-yellow-500">

@@ -82,9 +82,11 @@ export default function Navbar() {
 
   
 
-  const navbarStyles = section === 'Dama'
+  const navbarStyles = isTransparent
+  ? 'bg-transparent text-white'
+  : section === 'Dama'
   ? 'bg-black text-white'
-  : 'bg-colorFooter text-white';
+  : 'bg-blue-900 text-white'; 
 
   const handleSearchChange = (event) => {
     dispatch(setSearchTerm(event.target.value));
@@ -274,14 +276,8 @@ export default function Navbar() {
   return (
     <Disclosure
     as="nav"
-    className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 ${
-      section === 'Dama'
-        ? 'bg-black text-white'
-        : isTransparent
-        ? 'bg-transparent text-white'
-        : 'bg-colorFooter text-white'
-    }`}
-  >
+    className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 ${navbarStyles}`}
+    >
     <div className="max-w-full px-4 sm:px-6 lg:px-8 py-4">
       <div className="flex items-center justify-between">
         {/* Logo */}

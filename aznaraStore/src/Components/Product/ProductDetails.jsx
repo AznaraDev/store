@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById, addToCart } from "../../Redux/Actions/actions";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -100,6 +102,9 @@ const getUniqueColorProducts = (products) => {
 
     dispatch(addToCart(productToAdd));
     navigate("/cart");
+  };
+   const handleGoBack = () => {
+    navigate(-1); // Navega a la página anterior
   };
 
   const handleViewSimilarProduct = (relatedProduct) => {
@@ -200,14 +205,17 @@ const getUniqueColorProducts = (products) => {
   }
 
   return (
-    <div className="full min-h-screen mb-36 bg-gray-900">
-      <div className="relative min-h-screen flex items-center justify-center pt-8 z-10">
+    <div className="full min-h-screen p-32 bg-gray-900">
+      <div className="relative min-h-screen flex items-center justify-center z-10">
         <div className="bg-gray-100 rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-6xl mx-4 sm:mx-6 lg:mx-8 flex flex-col">
+          
           {/* Sección principal de detalles del producto */}
           <div className="flex flex-col lg:flex-row w-full">
+            
             {/* Imágenes del producto */}
             <div className="w-full lg:w-1/2 p-4 flex flex-col lg:flex-row">
-              {/* Imágenes en miniatura (verticales) */}
+              
+              {/* Imágenes en miniatura */}
               <div className="flex flex-col space-y-2 lg:mr-4">
                 {selectedProduct.Images &&
                   selectedProduct.Images.map((image, index) => (
@@ -216,10 +224,11 @@ const getUniqueColorProducts = (products) => {
                       src={image.url}
                       alt={selectedProduct.name}
                       className="w-16 h-16 object-cover object-center rounded-lg cursor-pointer border border-gray-300"
-                      onClick={() => setSelectedImage(image.url)} // Al hacer clic cambia la imagen seleccionada
+                      onClick={() => setSelectedImage(image.url)} // Cambia la imagen seleccionada
                     />
                   ))}
               </div>
+  
               {/* Imagen principal */}
               <div className="flex-1">
                 <img
@@ -229,33 +238,23 @@ const getUniqueColorProducts = (products) => {
                 />
               </div>
             </div>
-
+  
             {/* Línea vertical de separación */}
             <div className="hidden lg:block border-l-2 border-gray-300 mx-4"></div>
-
+  
             {/* Detalles del producto */}
             <div className="w-full lg:w-1/2 p-4">
+              {/* Nombre del producto */}
               <h2 className="text-3xl font-bold text-gray-800 mb-2 font-nunito bg-gray-100 p-2 rounded uppercase">
                 {selectedProduct.name}
               </h2>
+  
+              {/* Descripción */}
               <p className="text-lg text-gray-500 mb-4 font-nunito font-semibold">
                 {selectedProduct.description}
               </p>
-              <p className="text-lg text-gray-500 mb-4 font-nunito font-semibold">
-                {selectedProduct.colors}
-              </p>
-              
-              {/* Mostrar precio y material */}
-              <div className="mb-4">
-                <p className="text-xl font-semibold text-gray-800">
-                  Precio: ${selectedProduct.price}
-                </p>
-                <p className="text-lg text-gray-600">
-                  Material: {selectedProduct.materials.join(', ')|| "No hay materiales disponibles"}
-                </p>
-              </div>
-
-              {/* Seleccionar color */}
+  
+              {/* Colores disponibles */}
               <div className="mb-4">
                 <label
                   htmlFor="colors"
@@ -266,7 +265,7 @@ const getUniqueColorProducts = (products) => {
                 <select
                   value={selectedColor}
                   onChange={(e) => handleColorChange(e.target.value)}
-                  className="w-relative bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-300"
                 >
                   <option value="">Seleccionar color</option>
                   {getAvailableColors().map((color, index) => (
@@ -276,8 +275,8 @@ const getUniqueColorProducts = (products) => {
                   ))}
                 </select>
               </div>
-
-              {/* Mostrar talles que coincidan */}
+  
+              {/* Talles disponibles */}
               {selectedColor && (
                 <div className="mb-4">
                   <label
@@ -300,7 +299,18 @@ const getUniqueColorProducts = (products) => {
                   </select>
                 </div>
               )}
-
+  
+              {/* Precio y materiales */}
+              <div className="mb-4">
+                <p className="text-xl font-semibold text-gray-800">
+                  Precio: ${selectedProduct.price}
+                </p>
+                <p className="text-lg text-gray-600">
+                  Material: {selectedProduct.materials.join(', ') || "No hay materiales disponibles"}
+                </p>
+              </div>
+  
+              {/* Botón para agregar al carrito */}
               <div className="flex items-center">
                 <button
                   className="bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300"
@@ -310,15 +320,24 @@ const getUniqueColorProducts = (products) => {
                   Agregar al carrito
                 </button>
               </div>
+  
+              {/* Botón para volver */}
+              <button
+                onClick={handleGoBack}
+                className="mt-4 bg-gray-800 text-white py-2 px-3 rounded-md hover:bg-gray-700 transition duration-300 text-sm shadow-md"
+              >
+                ← Volver
+              </button>
             </div>
           </div>
-
+  
           {/* Productos relacionados */}
           <div className="relative mt-12">
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">
               Productos relacionados
             </h3>
             <div className="relative flex items-center">
+              {/* Botón para desplazarse a la izquierda */}
               {startIndex > 0 && (
                 <button
                   onClick={handlePrevious}
@@ -327,6 +346,8 @@ const getUniqueColorProducts = (products) => {
                   ◀
                 </button>
               )}
+  
+              {/* Contenedor de productos relacionados */}
               <div
                 ref={containerRef}
                 className="overflow-x-auto whitespace-nowrap flex space-x-4"
@@ -349,6 +370,8 @@ const getUniqueColorProducts = (products) => {
                   </div>
                 ))}
               </div>
+  
+              {/* Botón para desplazarse a la derecha */}
               {startIndex + itemsToShow < similarProducts.length && (
                 <button
                   onClick={handleNext}
