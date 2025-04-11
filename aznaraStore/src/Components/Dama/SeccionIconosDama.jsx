@@ -13,11 +13,11 @@ const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
     className="block mx-auto text-center cursor-pointer"
     onClick={() => onClick(categoryName)}
   >
-    <div className="relative p-4 hover:scale-105 transition-transform duration-300">
+    <div className="relative p-1 hover:scale-105 transition-transform duration-300">
       <img
         src={image}
         alt={altText}
-        className="w-full aspect-square object-cover rounded-md shadow-lg"
+        className="w-full aspect-square object-cover shadow-lg"
       />
       <span className="absolute inset-0 flex items-center justify-center text-white font-bold bg-black bg-opacity-50 rounded-md">
         {label}
@@ -45,7 +45,7 @@ const SeccionIconosDama = () => {
   ];
 
   return (
-    <div className="flex justify-center p-4 bg-black shadow-lg">
+    <div className="flex justify-center p-4 bg-white shadow-lg">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-6xl w-full">
         {categories.map((category, index) => (
           <CategoryCard
