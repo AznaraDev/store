@@ -11,9 +11,12 @@ import image3c from '../../assets/img/Dama/animada/cadena3.jpg';
 import image4a from '../../assets/img/Dama/animada/manillas1.jpg';
 import image4b from '../../assets/img/Dama/animada/manillas2.jpg';
 import image4c from '../../assets/img/Dama/animada/manillas3.jpg';
+import image5a from '../../assets/img/Dama/animada/dama3.jpg'; 
+import image5b from '../../assets/img/Dama/animada/dama4.jpg';
+import image5c from '../../assets/img/Dama/animada/portada.jpg';
 
 const SeccionAnimada = () => {
-  const [imageIndices, setImageIndices] = useState([0, 0, 0, 0]);
+  const [imageIndices, setImageIndices] = useState([0, 0, 0, 0, 0, 0]); // Agregar índice para la nueva imagen
 
   const sections = [
     {
@@ -31,6 +34,10 @@ const SeccionAnimada = () => {
     {
       title: "Manillas",
       images: [image4a, image4b, image4c],
+    },
+    {
+      title: "Relojes", 
+      images: [image5a, image5b, image5c], 
     },
   ];
 
@@ -52,11 +59,11 @@ const SeccionAnimada = () => {
     <div className="w-full h-full bg-black flex justify-center items-center relative ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-3/4 h-auto p-4">
         {/* Sección de imágenes */}
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8"> {/* Cambiar a 3 columnas */}
           {sections.map((section, sectionIndex) => (
             <div
               key={sectionIndex}
-              className={`relative w-full h-96 overflow-hidden rounded-2xl shadow-lg ${sectionIndex % 2 === 0 ? "mt-0" : "mt-12"
+              className={`relative w-full h-80 overflow-hidden rounded-2xl shadow-lg ${sectionIndex % 2 === 0 ? "mt-0" : "mt-12"
                 }`} // Alterna alturas para un diseño visual atractivo
             >
               {section.images.map((image, imageIndex) => (
