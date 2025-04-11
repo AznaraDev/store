@@ -46,15 +46,15 @@ const SeccionIconosH = () => {
   return (
     <div className="flex justify-center p-2 bg-black shadow-lg">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl w-full">
-        {categories.map((category, index) => (
-          <CategoryCard
-            key={index}
-            image={category.image}
-            altText={category.altText}
-            label={category.label}
-            categoryName={category.categoryName}
-            onClick={handleCategoryClick}
-          />
+      {categories.map((category, index) => (
+            <CategoryCard
+              key={index}
+              image={category.image}
+              altText={category.altText}
+              label={category.label}
+              categoryName={category.categoryName}
+              onClick={handleCategoryClick}
+            />
         ))}
       </div>
     </div>
