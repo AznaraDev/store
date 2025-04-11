@@ -4,6 +4,7 @@ import bannerD from '../assets/img/Dama/bannerPortada.png'
 import banner1 from './../assets/img/BannerPrincipal/bannerA.jpeg';
 import banner2 from './../assets/img/BannerPrincipal/bannerB.jpeg';
 import banner3 from './../assets/img/BannerPrincipal/bannerC.jpeg';
+import banner2D from './../assets/img/Dama/bannerPortada2.png'
 import efecti from '../assets/img/pagos/efecty.png';
 import logoAmeric from '../assets/img/pagos/logoAmeric.png';
 import logoVisa from '../assets/img/pagos/logoVisa.png';
@@ -25,8 +26,10 @@ const LandingPrincipal = () => {
         <div className="carousel-container">
           <div className="carousel-content flex">
             <img src={banner1} alt="Banner 1" className="carousel-image w-full h-80 object-cover" />
-            <img src={banner2} alt="Banner 2" className="carousel-image w-full h-80 object-cover" />
-            <img src={banner3} alt="Banner 3" className="carousel-image w-full h-80 object-cover" />
+            <img src={banner2D} alt="Banner 2" className="carousel-image w-full h-80 object-cover" />
+            <img src={banner2} alt="Banner 3" className="carousel-image w-full h-80 object-cover" />
+           
+            <img src={banner3} alt="Banner 4" className="carousel-image w-full h-80 object-cover" />
           </div>
         </div>
       </div>
