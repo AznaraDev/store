@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://store-xi3e.onrender.com';
+export const BASE_URL = 'https://store-aznara.up.railway.app';
 
 
 const Config = {
