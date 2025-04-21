@@ -1,9 +1,31 @@
 import React, { useState } from 'react';
-import { FaInstagram, FaEnvelope, FaFileAlt } from 'react-icons/fa';
+import { FaInstagram, FaEnvelope } from 'react-icons/fa';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'; // Íconos para mostrar/ocultar
+import axios from "axios";
+import { BASE_URL } from "../Config";
 
 const Footer = () => {
   const [activeIndex, setActiveIndex] = useState(null);
+  const [isFAQOpen, setIsFAQOpen] = useState(false); // Estado para el contenedor general
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubscribe = async () => {
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await axios.post(`${BASE_URL}/user/suscripcion`, { email });
+      setSuccess("Te has suscrito con éxito. ¡Gracias!");
+    } catch (err) {
+      setError("Hubo un problema al suscribirte. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -18,66 +40,86 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative bg-cover bg-center h-auto bg-gray-200 text-gray-800">
-      <div className="container mx-auto flex flex-row items-start justify-between p-6">
+    <footer className="relative bg-cover bg-center h-auto bg-gray-200 text-gray-800 overflow-hidden">
+      <div className="container mx-auto flex flex-col md:flex-row items-start justify-between p-6 space-y-6 md:space-y-0">
         {/* Redes sociales e iconos */}
-       
 
         {/* Sección de Preguntas Frecuentes */}
-        <div id="footer" className="bg-gray-100 text-gray-800 w-full max-w-md p-6 rounded-lg ">
-          <h3 className="text-xl font-semibold mb-4 text-colorLogo font-nunito">Preguntas Frecuentes</h3>
-          {faqs.map((faq, index) => (
-            <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-nunito">
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
-              >
-                {faq.question}
-                {activeIndex === index ? (
-                  <AiOutlineMinus className="text-orange-600" />
-                ) : (
-                  <AiOutlinePlus className="text-orange-600" />
-                )}
-              </button>
-              {activeIndex === index && (
-                <p className="mt-2 text-gray-600">{faq.answer}</p>
-              )}
+        <div id="footer" className="bg-gray-100 text-gray-800 w-full max-w-md p-6 rounded-lg">
+          <button
+            onClick={() => setIsFAQOpen(!isFAQOpen)}
+            className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
+          >
+            <h3 className="text-xl font-semibold mb-4 text-gray-700 font-nunito">Preguntas Frecuentes</h3>
+            {isFAQOpen ? (
+              <AiOutlineMinus className="text-orange-600" />
+            ) : (
+              <AiOutlinePlus className="text-orange-600" />
+            )}
+          </button>
+          {isFAQOpen && (
+            <div>
+              {faqs.map((faq, index) => (
+                <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-semibold text-xl font-nunito"> 
+                  <button
+                    onClick={() => toggleFAQ(index)}
+                    className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
+                  >
+                    {faq.question}
+                    {activeIndex === index ? (
+                      <AiOutlineMinus className="text-orange-600" />
+                    ) : (
+                      <AiOutlinePlus className="text-orange-600" />
+                    )}
+                  </button>
+                  {activeIndex === index && (
+                    <p className="mt-2 text-gray-600">{faq.answer}</p>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
 
         {/* Suscripción */}
-        <div className="text-center mt-16">
+        <div className="text-center w-full max-w-md">
           <h4 className="text-xl font-semibold mb-2 font-nunito">Suscríbete y obtén un 10% de descuento</h4>
           <p className="mb-2 text-gray-600 font-nunito">en tu próxima compra</p>
           <input
             type="email"
             placeholder="Correo"
+            onChange={(e) => setEmail(e.target.value)}
             className="p-2 border border-gray-300 rounded w-full mb-2 font-nunito"
           />
-          <button className="bg-colorLogo text-colorFooter p-2 rounded w-full font-nunito">SUSCRIBETE</button>
+          <button
+            onClick={handleSubscribe}
+            disabled={loading}
+            className="bg-colorLogo text-colorFooter p-2 rounded w-full font-nunito"
+          >
+            {loading ? "Suscribiendo..." : "SUSCRÍBETE"}
+          </button>
+          {success && <p className="text-green-500 mt-2">{success}</p>}
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
       </div>
 
       {/* Links de navegación */}
       <div className="bg-white text-gray-700 py-4 text-center">
-        <div className="flex justify-center space-x-8">
+        <div className="flex flex-wrap justify-center space-x-4">
           <a href="#" className="hover:underline font-nunito">Lo nuevo</a>
           <a href="#" className="hover:underline font-nunito">Colecciones</a>
           <a href="#" className="hover:underline font-nunito">Categorías</a>
           <a href="#" className="hover:underline font-nunito">Ofertas</a>
           <a href="#" className="hover:underline font-nunito">Términos y Condiciones</a>
-          <div className="flex space-x-4">
-         
-         <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
-           <FaInstagram className="h-8 w-8" />
-         </a>
-         <a href="mailto:contact@example.com">
-           <FaEnvelope className="h-8 w-8" />
-         </a>
-       </div>
+          <div className="flex space-x-4 mt-4 md:mt-0">
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+              <FaInstagram className="h-6 w-6" />
+            </a>
+            <a href="mailto:contact@example.com">
+              <FaEnvelope className="h-6 w-6" />
+            </a>
+          </div>
         </div>
-        
       </div>
     </footer>
   );

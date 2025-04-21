@@ -1,26 +1,48 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
-import { setCategoryFilter, fetchFilteredProducts } from '../Redux/Actions/actions';
+import { fetchFilteredProducts, setCategoryFilter } from '../Redux/Actions/actions';
 import aboutimg from '../assets/img/about.png';
-import aznara from "../assets/img/logoCompleto.png";
-import reloj1 from "../assets/img/reloj1.png";
-import manillas from "../assets/img/anillo1.png";
-import anillos from "../assets/img/anillo2.png";
-import cadenas from "../assets/img/dije1.png";
+import anillo1 from '../assets/img/Hombre/manilla.png';
+import anillo2 from '../assets/img/Hombre/anillos.png';
+import dije1 from '../assets/img/Hombre/cadena.png';
+import reloj1 from '../assets/img/Hombre/reloj.png';
+
+// Componente reutilizable para cada categoría
+const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
+  <a
+    href={`#${categoryName}`}
+    className="block mx-auto text-center"
+    onClick={() => onClick(categoryName)}
+  >
+    <div className="relative p-2 hover:scale-105 transition-transform duration-300">
+      <img
+        src={image}
+        alt={altText}
+        className="w-full aspect-square object-cover rounded-md shadow-lg"
+      />
+      <span className="absolute inset-0 flex items-center justify-center text-white font-bold bg-black bg-opacity-50 rounded-md">
+        {label}
+      </span>
+    </div>
+  </a>
+);
 
 const About = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Inicializa useNavigate
 
+  // Función para manejar el clic en una categoría
   const handleCategoryClick = (categoryName) => {
-    // Actualiza el filtro de categoría en el store
     dispatch(setCategoryFilter(categoryName));
     dispatch(fetchFilteredProducts('', { min: null, max: null }, categoryName));
-
-    // Redirige a la página de productos de la categoría
-    navigate(`/productsCat/${categoryName}`); // Cambia la URL
   };
+
+  // Datos de las categorías
+  const categories = [
+    { image: reloj1, altText: 'Relojes', label: 'Relojes', categoryName: 'Relojes' },
+    { image: anillo1, altText: 'Manillas', label: 'Manillas', categoryName: 'Manillas' },
+    { image: anillo2, altText: 'Anillos', label: 'Anillos', categoryName: 'Anillos' },
+    { image: dije1, altText: 'Cadenas', label: 'Cadenas', categoryName: 'Cadenas' },
+  ];
 
   return (
     <>
@@ -37,36 +59,20 @@ const About = () => {
           </div>
         </div>
       </div>
-      <div id="about"   className="bg-colorFooter h-[16rem] mt-10 flex justify-around items-center">
-        <div className="text-center">
-          <a href="#section1" className="block mx-auto">
-            <img src={aznara} alt="Logo 1" className="w-32 h-32 object-cover mx-auto" />
-            <p className="text-white mt-2 font-nunito font-semibold">Marca Tu Estilo</p>
-          </a>
-        </div>
-        <div className="text-center">
-          <a className="block mx-auto" onClick={() => handleCategoryClick('Relojes')}>
-            <img src={reloj1} alt="Logo 2" className="w-32 h-32 object-cover mx-auto" />
-            <p className="text-white mt-2 font-nunito font-semibold">Relojes</p>
-          </a>
-        </div>
-        <div className="text-center">
-          <a className="block mx-auto" onClick={() => handleCategoryClick('Manillas')}>
-            <img src={manillas} alt="Logo 3" className="w-32 h-32 rounded-full object-cover mx-auto" />
-            <p className="text-white mt-2 font-nunito font-semibold">Manillas</p>
-          </a>
-        </div>
-        <div className="text-center">
-          <a className="block mx-auto" onClick={() => handleCategoryClick('Anillos')}>
-            <img src={anillos} alt="Logo 4" className="w-32 h-32 object-cover mx-auto" />
-            <p className="text-white mt-2 font-nunito font-semibold">Anillos</p>
-          </a>
-        </div>
-        <div className="text-center">
-          <a className="block mx-auto" onClick={() => handleCategoryClick('Cadenas')}>
-            <img src={cadenas} alt="Logo 5" className="w-32 h-32 rounded-full object-cover mx-auto" />
-            <p className="text-white mt-2 font-nunito font-semibold">Cadenas</p>
-          </a>
+
+      {/* Sección de íconos */}
+      <div className="bg-black ">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto p-4">
+          {categories.map((category, index) => (
+            <CategoryCard
+              key={index}
+              image={category.image}
+              altText={category.altText}
+              label={category.label}
+              categoryName={category.categoryName}
+              onClick={handleCategoryClick}
+            />
+          ))}
         </div>
       </div>
     </>
@@ -74,5 +80,3 @@ const About = () => {
 };
 
 export default About;
-
-

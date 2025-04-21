@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Disclosure, Menu } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom'; // Agrega useNavigate para la redirección
-import logo from '../assets/img/logoNombre.png';
+import logo from '../assets/img/logoCompleto.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
+//import { SectionContext } from '../SectionContext';
+import { useSection } from '../SectionContext';
 
 const navigation = [
   { name: 'Tienda', href: '/products', current: true },
@@ -20,6 +22,9 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const [isTransparent, setIsTransparent] = useState(true);
+  
+  const { section } = useSection();
+  console.log("Current section in Navbar:", section); 
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
@@ -28,10 +33,12 @@ export default function Navbar() {
   const categoryFilter = useSelector(state => state.categoryFilter);
   const categories = useSelector(state => state.categories.data);
   const userInfo = useSelector(state => state.userLogin.userInfo);
-
- 
+  console.log('User Info:', userInfo);
+  useEffect(() => {
+    console.log('Current section in Navbar:', section); // Confirmación de carga correcta
+  }, [section]);
   
-  const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart'];
+  const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart', '/damas'];
 
   useEffect(() => {
     const currentPath = window.location.pathname;
@@ -71,6 +78,15 @@ export default function Navbar() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [dispatch]);
+
+
+  
+
+  const navbarStyles = isTransparent
+  ? 'bg-transparent text-white'
+  : section === 'Dama'
+  ? 'bg-black text-white'
+  : 'bg-black text-white'; 
 
   const handleSearchChange = (event) => {
     dispatch(setSearchTerm(event.target.value));
@@ -157,7 +173,7 @@ export default function Navbar() {
           </Menu.Item>
         </>
       );
-    } else if (userInfo.role === 'Admin') {
+    } else if (userInfo.role === 'Admin' || userInfo.role === 'comercio') {
       return (
         <>
           <Menu.Item>
@@ -258,68 +274,78 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 text-white ${isTransparent ? 'bg-transparent text-white' : 'bg-colorFooter text-white'} `}>
-      <div className="max-w-full px-2 sm:px-4  lg:px-8 py-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link to="/">
-              <img
-                alt="Your Company"
-                src={logo}
-              className="h-52 w-auto object-contain" 
-              />
-            </Link>
-          </div>
-
-          {/* Enlaces de navegación para pantallas grandes */}
-          <div className="hidden sm:flex flex-1 justify-center space-x-8">
-            {navigation.map((item) => (
-          <a
-                key={item.name}
-            href={item.href} // Usa <a> para enlaces de anclaje
-            className={`text-xl font-medium text-white ${item.current ? 'text-gray-200' : 'text-gray-700 hover:text-gray-400'}`}
-            aria-current={item.current ? 'page' : undefined}
-              >
-                {item.name}
-          </a>
-            ))}
-          </div>
-
-          {/* Search bar */}
-          <div className="flex-1 flex justify-center px-2 lg:ml-6 lg:mr-6">
-            <div className="relative w-full max-w-lg">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar productos"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="block w-1/2 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-transparent text-gray-200 placeholder-gray-200 focus:outline-none focus:ring-0 sm:text-sm"
+    <Disclosure
+    as="nav"
+    className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 ${navbarStyles}`}
+    >
+    <div className="max-w-full px-4 sm:px-6 lg:px-8 py-4">
+      <div className="flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex-shrink-0">
+          <Link to="/">
+            <img
+              alt="AZNARA Store"
+              src={logo}
+              className="h-12 w-auto object-contain" // Tamaño adecuado para todas las pantallas
+            />
+          </Link>
+        </div>
+  
+        {/* Enlaces de navegación para pantallas grandes */}
+        <div className="hidden sm:flex flex-1 justify-center space-x-8">
+          {navigation.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className={`text-sm font-medium ${
+                navbarStyles.includes('bg-black') ? 'text-white' : 'text-gray-200'
+              } ${item.current ? 'text-gray-200' : 'hover:text-gray-400'}`}
+              aria-current={item.current ? 'page' : undefined}
+            >
+              {item.name}
+            </a>
+          ))}
+        </div>
+  
+        {/* Search bar */}
+        <div className="hidden sm:flex flex-1 justify-center px-2 lg:ml-6 lg:mr-6">
+          <div className="relative w-full max-w-lg">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <MagnifyingGlassIcon
+                className="h-5 w-5 text-gray-400"
+                aria-hidden="true"
               />
             </div>
-          </div>
-
-          {/* Iconos de carrito y menú móvil */}
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <Link to="/cart" className="relative p-2 text-gray-200 hover:text-gray-400">
-              <ShoppingBagIcon className="h-8 w-8" aria-hidden="true" />
-            </Link>
-
-            {/* User dropdown */}
-            <Menu as="div" className="relative ml-3">
-              <Menu.Button className="bg-transparent text-white px-3 py-2 rounded-md text-xl font-medium">
-                Menu
-                </Menu.Button>
-              <Menu.Items className="absolute right-0 z-10 mt-2 w-48 py-1 bg-white text-gray-900 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                {renderMenuItems()}
-              </Menu.Items>
-            </Menu>
+            <input
+              type="text"
+              placeholder="Buscar productos"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-transparent text-gray-200 placeholder-gray-200 focus:outline-none focus:ring-0 sm:text-sm"
+            />
           </div>
         </div>
-
+  
+        {/* Iconos de carrito y menú móvil */}
+        <div className="flex items-center space-x-4">
+          <Link
+            to="/cart"
+            className="relative p-2 text-gray-200 hover:text-gray-400"
+          >
+            <ShoppingBagIcon className="h-6 w-6 sm:h-6 sm:w-6" aria-hidden="true" />
+          </Link>
+  
+          {/* User dropdown */}
+          <Menu as="div" className="relative">
+            <Menu.Button className="bg-transparent text-white px-3 py-2 rounded-md text-sm font-medium">
+              Menu
+            </Menu.Button>
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 py-1 bg-white text-gray-900 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+              {renderMenuItems()}
+            </Menu.Items>
+          </Menu>
+        </div>
+  
         {/* Mobile menu button */}
         <div className="-mr-2 flex sm:hidden">
           <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -332,7 +358,7 @@ export default function Navbar() {
           </Disclosure.Button>
         </div>
       </div>
-
+  
       {/* Mobile navigation */}
       <Disclosure.Panel className="sm:hidden">
         <div className="space-y-1 px-2 pt-2 pb-3">
@@ -341,13 +367,18 @@ export default function Navbar() {
               key={item.name}
               as={Link}
               to={item.href}
-              className={`block px-3 py-2 rounded-md text-base font-medium ${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                item.current
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+              }`}
             >
               {item.name}
             </Disclosure.Button>
           ))}
         </div>
       </Disclosure.Panel>
-    </Disclosure>
+    </div>
+  </Disclosure>
   );
 }

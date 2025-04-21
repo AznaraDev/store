@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import {
   CREATE_PRODUCT_REQUEST,
   CREATE_PRODUCT_SUCCESS,
@@ -56,7 +57,6 @@ import {
   FETCH_SB_REQUEST,
   FETCH_SB_SUCCESS,
   FETCH_SB_FAILURE,
-
 } from "../Actions/actions-type";
 
 const initialState = {
@@ -66,17 +66,21 @@ const initialState = {
   searchResults: [],
   loading: false,
   product: null,
-   similarProducts: [],
+  similarProducts: [],
   products: [],
   error: null,
 
   userRegister: {
-    userInfo:localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
+    userInfo: localStorage.getItem("userInfo")
+      ? JSON.parse(localStorage.getItem("userInfo"))
+      : null,
     loading: false,
     error: null,
   },
   userLogin: {
-    userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
+    userInfo: localStorage.getItem("userInfo")
+      ? JSON.parse(localStorage.getItem("userInfo"))
+      : null,
     loading: false,
     error: null,
   },
@@ -91,12 +95,20 @@ const initialState = {
     error: null,
   },
   cart: {
-    items: localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [],
-    totalItems: localStorage.getItem('cart')
-      ? JSON.parse(localStorage.getItem('cart')).reduce((acc, item) => acc + item.quantity, 0)
+    items: localStorage.getItem("cart")
+      ? JSON.parse(localStorage.getItem("cart"))
+      : [],
+    totalItems: localStorage.getItem("cart")
+      ? JSON.parse(localStorage.getItem("cart")).reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        )
       : 0,
-    totalPrice: localStorage.getItem('cart')
-      ? JSON.parse(localStorage.getItem('cart')).reduce((acc, item) => acc + item.price * item.quantity, 0)
+    totalPrice: localStorage.getItem("cart")
+      ? JSON.parse(localStorage.getItem("cart")).reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        )
       : 0,
   },
   order: {
@@ -173,67 +185,51 @@ const rootReducer = (state = initialState, action) => {
           error: action.payload,
         },
       };
-    case FETCH_PRODUCTS_REQUEST:
+
+    case FETCH_PRODUCT_REQUEST:
       return {
         ...state,
         loading: true,
       };
-    case FETCH_PRODUCTS_SUCCESS:
+    case FETCH_PRODUCT_SUCCESS:
       return {
         ...state,
+        product: action.payload.product,
+        similarProducts: action.payload.similarProducts, // Guarda los productos similares
         loading: false,
-        products: action.payload,
       };
-    case FETCH_PRODUCTS_FAILURE:
+    case FETCH_PRODUCT_FAILURE:
       return {
         ...state,
-        loading: false,
         error: action.payload,
+        loading: false,
       };
-      case FETCH_PRODUCT_REQUEST:
-        return {
-          ...state,
-          loading: true,
-        };
-      case FETCH_PRODUCT_SUCCESS:
-        return {
-          ...state,
-          product: action.payload.product,
-          similarProducts: action.payload.similarProducts, // Guarda los productos similares
-          loading: false,
-        };
-      case FETCH_PRODUCT_FAILURE:
-        return {
-          ...state,
-          error: action.payload,
-          loading: false,
-        };
-        case ADD_TO_CART:
-          const existingItem = state.cart.items.find(
-            (item) => item.id_product === action.payload.id_product
-          );
+    case ADD_TO_CART:
+      const existingItem = state.cart.items.find(
+        (item) => item.id_product === action.payload.id_product
+      );
       if (existingItem) {
         return {
           ...state,
           cart: {
-                ...state.cart,
-                items: state.cart.items.map((item) =>
-                  item.id_product === action.payload.id_product
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-                ),
-                totalItems: state.cart.totalItems + 1,
-                totalPrice: state.cart.totalPrice + action.payload.price,
+            ...state.cart,
+            items: state.cart.items.map((item) =>
+              item.id_product === action.payload.id_product
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            ),
+            totalItems: state.cart.totalItems + 1,
+            totalPrice: state.cart.totalPrice + action.payload.price,
           },
         };
       } else {
         return {
           ...state,
           cart: {
-                ...state.cart,
-                items: [...state.cart.items, { ...action.payload, quantity: 1 }],
-                totalItems: state.cart.totalItems + 1,
-                totalPrice: state.cart.totalPrice + action.payload.price,
+            ...state.cart,
+            items: [...state.cart.items, { ...action.payload, quantity: 1 }],
+            totalItems: state.cart.totalItems + 1,
+            totalPrice: state.cart.totalPrice + action.payload.price,
           },
         };
       }
@@ -242,75 +238,75 @@ const rootReducer = (state = initialState, action) => {
         (item) => item.id_product === action.payload
       );
       if (!itemToRemove) return state;
-          
-          return {
-              ...state,
-              cart: {
-                ...state.cart,
+
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
           items: state.cart.items.filter(
             (item) => item.id_product !== action.payload
           ),
-                totalItems: state.cart.totalItems - itemToRemove.quantity,
+          totalItems: state.cart.totalItems - itemToRemove.quantity,
           totalPrice:
             state.cart.totalPrice - itemToRemove.price * itemToRemove.quantity,
-              },
-            };
-          case INCREMENT_QUANTITY:
+        },
+      };
+    case INCREMENT_QUANTITY:
       return {
-              ...state,
-              cart: {
-                ...state.cart,
-                items: state.cart.items.map((item) =>
-                  item.id_product === action.payload
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-                ),
-                totalItems: state.cart.totalItems + 1,
-                totalPrice:
-                  state.cart.totalPrice +
+        ...state,
+        cart: {
+          ...state.cart,
+          items: state.cart.items.map((item) =>
+            item.id_product === action.payload
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+          totalItems: state.cart.totalItems + 1,
+          totalPrice:
+            state.cart.totalPrice +
             state.cart.items.find((item) => item.id_product === action.payload)
               .price,
-              },
-            };
-          case DECREMENT_QUANTITY:
+        },
+      };
+    case DECREMENT_QUANTITY:
       const itemToDecrement = state.cart.items.find(
         (item) => item.id_product === action.payload
       );
-            if (itemToDecrement.quantity === 1) {
+      if (itemToDecrement.quantity === 1) {
         return {
-                ...state,
-                cart: {
-                  ...state.cart,
+          ...state,
+          cart: {
+            ...state.cart,
             items: state.cart.items.filter(
               (item) => item.id_product !== action.payload
             ),
-                  totalItems: state.cart.totalItems - 1,
-                  totalPrice: state.cart.totalPrice - itemToDecrement.price,
-                },
-              };
-            }
+            totalItems: state.cart.totalItems - 1,
+            totalPrice: state.cart.totalPrice - itemToDecrement.price,
+          },
+        };
+      }
       return {
-              ...state,
-              cart: {
-                ...state.cart,
-                items: state.cart.items.map((item) =>
-                  item.id_product === action.payload
-                    ? { ...item, quantity: item.quantity - 1 }
-                    : item
-                ),
-                totalItems: state.cart.totalItems - 1,
-                totalPrice: state.cart.totalPrice - itemToDecrement.price,
-              },
-            };
-          case CLEAR_CART:
+        ...state,
+        cart: {
+          ...state.cart,
+          items: state.cart.items.map((item) =>
+            item.id_product === action.payload
+              ? { ...item, quantity: item.quantity - 1 }
+              : item
+          ),
+          totalItems: state.cart.totalItems - 1,
+          totalPrice: state.cart.totalPrice - itemToDecrement.price,
+        },
+      };
+    case CLEAR_CART:
       return {
-              ...state,
-              cart: {
-                items: [],
-                totalItems: 0,
-                totalPrice: 0,
-              },
-            };
+        ...state,
+        cart: {
+          items: [],
+          totalItems: 0,
+          totalPrice: 0,
+        },
+      };
     case ORDER_CREATE_REQUEST:
       return {
         ...state,
@@ -586,7 +582,7 @@ const rootReducer = (state = initialState, action) => {
           error: action.payload,
         },
       };
-      case SB_CREATE_REQUEST:
+    case SB_CREATE_REQUEST:
       return {
         ...state,
         subCategories: {
@@ -601,9 +597,9 @@ const rootReducer = (state = initialState, action) => {
           ...state.subCategories,
           loading: false,
           data: Array.isArray(state.subCategories.data)
-          ? [...state.subCategories.data, action.payload.data.sb]
-          : [action.payload.data.sb], 
-      },
+            ? [...state.subCategories.data, action.payload.data.sb]
+            : [action.payload.data.sb],
+        },
       };
     case SB_CREATE_FAIL:
       return {
@@ -643,7 +639,7 @@ const rootReducer = (state = initialState, action) => {
         },
       };
 
-      case FETCH_SB_REQUEST:
+    case FETCH_SB_REQUEST:
       return {
         ...state,
         subCategories: {

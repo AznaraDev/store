@@ -41,6 +41,10 @@ module.exports = (sequelize) => {
         type: DataTypes.ENUM('User', 'Admin'),
         defaultValue: 'User',
       },
+      isSubscribed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false, // Inicialmente no están suscritos
+      },
       deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,

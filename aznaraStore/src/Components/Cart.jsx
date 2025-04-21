@@ -12,6 +12,7 @@ const Cart = () => {
   const { userInfo } = userLogin;
   const navigate = useNavigate();
 console.log(cart)
+
   const handleIncrementQuantity = (productId) => {
     dispatch(incrementQuantity(productId));
   };
@@ -24,9 +25,9 @@ console.log(cart)
     dispatch(removeFromCart(productId));
   };
 
-  const handleClearCart = () => {
-    dispatch(clearCart());
-  };
+  // const handleClearCart = () => {
+  //   dispatch(clearCart());
+  // };
 
   const handleCheckout = () => {
     if (!userInfo) {
@@ -46,9 +47,9 @@ console.log(cart)
       />
 
       {/* Contenedor del carrito */}
-      <div className="relative flex flex-col justify-center items-center min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-        <div className="bg-gray-100 rounded-lg shadow-lg p-6 lg:p-8 w-full max-w-4xl">
-          <h1 className="text-3xl text-gray-600 font-bold font-nunito mb-10 text-center">
+      <div className="relative flex flex-col justify-center items-center min-h-screen py-24 px-4 sm:px-6 lg:px-8">
+        <div className="bg-gray-100 rounded-lg shadow-lg  lg:p-12 mt-6 w-full max-w-3xl">
+          <h1 className="text-2xl text-gray-600 font-bold font-nunito mb-10 text-center">
             PRODUCTOS SELECCIONADOS
           </h1>
           {cart.items.length === 0 ? (
@@ -91,15 +92,15 @@ console.log(cart)
               ))}
               <div className="flex justify-between items-center mt-6">
                 <p className="text-lg font-semibold font-nunito text-gray-700 bg-yellow-600 p-2 rounded">Total: ${cart.totalPrice}</p>
-                <button
+                {/* <button
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
                   onClick={handleClearCart}
                 >
                   <SlTrash />
-                </button>
+                </button> */}
               </div>
               <div className="mt-8 flex justify-between">
-                <Link to="/" className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 font-nunito font-semibold">
+                <Link to="/products" className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 font-nunito font-semibold">
                   Seguir Comprando
                 </Link>
                 <button
