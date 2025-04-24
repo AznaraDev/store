@@ -50,7 +50,7 @@ const Footer = () => {
             onClick={() => setIsFAQOpen(!isFAQOpen)}
             className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
           >
-            <h3 className="text-xl font-semibold mb-4 text-gray-700 font-nunito">Preguntas Frecuentes</h3>
+            <h3 className="text-xl font-light mb-4 text-gray-700 font-nunito">Preguntas Frecuentes</h3>
             {isFAQOpen ? (
               <AiOutlineMinus className="text-orange-600" />
             ) : (
@@ -60,7 +60,7 @@ const Footer = () => {
           {isFAQOpen && (
             <div>
               {faqs.map((faq, index) => (
-                <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-semibold text-xl font-nunito"> 
+                <div key={index} className="mb-4 border-b border-gray-300 pb-4 font-light text-xl font-nunito"> 
                   <button
                     onClick={() => toggleFAQ(index)}
                     className="flex items-center justify-between w-full text-left font-medium text-gray-700 hover:text-orange-600"
@@ -83,18 +83,18 @@ const Footer = () => {
 
         {/* Suscripción */}
         <div className="text-center w-full max-w-md">
-          <h4 className="text-xl font-semibold mb-2 font-nunito">Suscríbete y obtén un 10% de descuento</h4>
-          <p className="mb-2 text-gray-600 font-nunito">en tu próxima compra</p>
+          <h4 className="text-xl font-light mb-2 font-nunito">Suscríbete y obtén un 10% de descuento</h4>
+          <p className="mb-2 text-gray-600 font-light font-nunito">en tu próxima compra</p>
           <input
             type="email"
             placeholder="Correo"
             onChange={(e) => setEmail(e.target.value)}
-            className="p-2 border border-gray-300 rounded w-full mb-2 font-nunito"
+            className="p-2 border border-gray-300 rounded w-full mb-2 font-light font-nunito"
           />
           <button
             onClick={handleSubscribe}
             disabled={loading}
-            className="bg-colorLogo text-colorFooter p-2 rounded w-full font-nunito"
+            className="bg-colorLogo text-colorFooter p-2 rounded w-full font-light font-nunito"
           >
             {loading ? "Suscribiendo..." : "SUSCRÍBETE"}
           </button>
@@ -106,11 +106,11 @@ const Footer = () => {
       {/* Links de navegación */}
       <div className="bg-white text-gray-700 py-4 text-center">
         <div className="flex flex-wrap justify-center space-x-4">
-          <a href="#" className="hover:underline font-nunito">Lo nuevo</a>
-          <a href="#" className="hover:underline font-nunito">Colecciones</a>
-          <a href="#" className="hover:underline font-nunito">Categorías</a>
-          <a href="#" className="hover:underline font-nunito">Ofertas</a>
-          <a href="#" className="hover:underline font-nunito">Términos y Condiciones</a>
+ 
+
+          <a href="#" className="hover:underline font-nunito font-light">Categorías</a>
+          <a href="#" className="hover:underline font-nunito font-light">Ofertas</a>
+          <a href="#" className="hover:underline font-nunito font-light">Términos y Condiciones</a>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
               <FaInstagram className="h-6 w-6" />

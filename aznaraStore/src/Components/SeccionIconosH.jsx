@@ -17,9 +17,9 @@ const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
       <img
         src={image}
         alt={altText}
-        className="w-full aspect-square object-cover rounded-md shadow-lg"
+        className="w-full aspect-square object-cover rounded-md "
       />
-      <span className="absolute inset-0 flex items-center justify-center text-white font-bold bg-black bg-opacity-50 rounded-md">
+      <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-thin font-nunito bg-black bg-opacity-10 rounded-md">
         {label}
       </span>
     </div>
@@ -44,7 +44,7 @@ const SeccionIconosH = () => {
   ];
 
   return (
-    <div className="flex justify-center p-2 bg-black shadow-lg">
+    <div className="flex justify-center p-2 bg-black ">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl w-full">
       {categories.map((category, index) => (
             <CategoryCard
