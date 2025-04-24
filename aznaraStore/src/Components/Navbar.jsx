@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
 //import { SectionContext } from '../SectionContext';
 import { useSection } from '../SectionContext';
-import { FaInstagram, FaWhatsapp, FaFacebook } from 'react-icons/fa';
+import { FaInstagram, FaWhatsapp, FaFacebook, FaTiktok } from 'react-icons/fa';
 
 const navigation = [
   { name: 'Tienda', href: '/products', current: true },
@@ -339,7 +339,15 @@ export default function Navbar() {
                               rel="noopener noreferrer"
                               className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             >
-                              <FaInstagram className="mr-2" /> Instagram
+                              <FaInstagram className="mr-2" /> Instagram Caballero
+                            </a>
+                            <a
+                              href="https://www.instagram.com/aznara_woman?igsh=MWI2anc2Z3Zsdnl2ZQ==" // Reemplaza con tu URL
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaInstagram className="mr-2" /> Instagram Dama
                             </a>
                             <a
                               href="https://wa.me/573203679240" // Reemplaza con tu número de WhatsApp
@@ -356,6 +364,22 @@ export default function Navbar() {
                               className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             >
                               <FaFacebook className="mr-2" /> Facebook
+                            </a>
+                            <a
+                              href="https://www.tiktok.com/@aznara.store?_t=ZS-8voIkkib1mB&_r=1" // Reemplaza con tu URL de TikTok
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaTiktok className="mr-2" /> TikTok Caballero
+                            </a>
+                            <a
+                              href="https://www.tiktok.com/@aznara.woman?_t=ZS-8voIp4syg2k&_r=1" // Reemplaza con tu URL de TikTok
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              <FaTiktok className="mr-2" /> TikTok Dama
                             </a>
                           </div>
                         )}
@@ -440,8 +464,16 @@ export default function Navbar() {
                           className="flex items-center px-3 py-2 rounded-md text-sm font-thin font-nunito text-gray-400 hover:bg-gray-700 hover:text-white"
                           // onClick={() => close()} // Opcional: cerrar panel al hacer clic
                         >
-                          <FaInstagram className="mr-2" /> Instagram
+                          <FaInstagram className="mr-2" /> Instagram Caballero
                         </a>
+                        <a
+                              href="https://www.instagram.com/aznara_woman?igsh=MWI2anc2Z3Zsdnl2ZQ==" // Reemplaza con tu URL
+                              target="_blank"
+                              rel="noopener noreferrer"
+                             className="flex items-center px-3 py-2 rounded-md text-sm font-thin font-nunito text-gray-400 hover:bg-gray-700 hover:text-white"
+                            >
+                              <FaInstagram className="mr-2" /> Instagram Dama
+                            </a>
                         <a
                           href="https://wa.me/573203679240" // Reemplaza con tu número
                           target="_blank"
@@ -460,6 +492,22 @@ export default function Navbar() {
                         >
                           <FaFacebook className="mr-2" /> Facebook
                         </a>
+                        <a
+                              href="https://www.tiktok.com/@aznara.store?_t=ZS-8voIkkib1mB&_r=1" // Reemplaza con tu URL de TikTok
+                              target="_blank"
+                              rel="noopener noreferrer"
+                               className="flex items-center px-3 py-2 rounded-md text-sm font-thin font-nunito text-gray-400 hover:bg-gray-700 hover:text-white"
+                            >
+                              <FaTiktok className="mr-2" /> TikTok Caballero
+                            </a>
+                            <a
+                              href="https://www.tiktok.com/@aznara.woman?_t=ZS-8voIp4syg2k&_r=1" // Reemplaza con tu URL de TikTok
+                              target="_blank"
+                              rel="noopener noreferrer"
+                               className="flex items-center px-3 py-2 rounded-md text-sm font-thin font-nunito text-gray-400 hover:bg-gray-700 hover:text-white"
+                            >
+                              <FaTiktok className="mr-2" /> TikTok Dama
+                            </a>
                       </div>
                     )}
                   </div>
