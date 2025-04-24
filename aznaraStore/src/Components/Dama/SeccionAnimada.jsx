@@ -70,7 +70,7 @@ const SeccionAnimada = () => {
   };
 
   return (
-    <div className="w-full h-full bg-black flex justify-center items-center relative">
+    <div className="w-full h-full bg-women flex justify-center items-center relative">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-3/4 h-auto p-4">
         {/* Sección de imágenes */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
@@ -88,7 +88,7 @@ const SeccionAnimada = () => {
                 className={`absolute w-full h-full object-cover rounded-2xl transition-opacity duration-1000 ${imageIndices[sectionIndex] === imageIndex ? "opacity-100" : "opacity-0"}`}
               />
             ))}
-            <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold z-10 text-center">
+            <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-thin font-nunito z-10 text-center">
               {section.title}
             </span>
           </div>
@@ -96,11 +96,11 @@ const SeccionAnimada = () => {
         </div>
 
         {/* Columna para el texto */}
-        <div className="flex flex-col items-center justify-center text-white text-center md:ml-24">
-          <h2 className="text-2xl md:text-3xl font-bold leading-tight">
+        <div className="flex flex-col items-center justify-center text-black text-opacity-70 text-center md:ml-24">
+          <h2 className="text-2xl md:text-3xl font-thin font-nunito leading-tight">
             ¿Por qué comprar nuestros<br /> accesorios?
           </h2>
-          <p className="mt-4 text-gray-300 text-base md:text-2xl leading-snug md:leading-normal">
+          <p className="mt-4 text-black text-opacity-70 font-nunito  md:text-2xl leading-snug md:leading-normal">
             Productos de calidad<br />
             Sabemos que necesitas accesorios<br />
             de alta calidad y nosotros te<br />

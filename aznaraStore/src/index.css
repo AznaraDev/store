@@ -1,3 +1,14 @@
+/* filepath: src/index.css (o tu archivo CSS global) */
+@font-face {
+  font-family: 'Nunito'; /* Este nombre DEBE coincidir con el de tailwind.config.js */
+  src: url('/fonts/fonts.otf') format('opentype'); /* Ruta desde la raíz pública */
+  /* Opcional: especifica peso y estilo si es necesario */
+  /* font-weight: normal; */
+  /* font-style: normal; */
+}
+
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -41,36 +52,26 @@
   }
   .carousel-container {
     width: 100%;
-    overflow: hidden;
+    overflow: hidden; /* Oculta las imágenes fuera del contenedor */
   }
   
   .carousel-content {
     display: flex;
-    animation: slide 10s infinite;
+    animation: slide-left 20s linear infinite; /* Animación continua */
   }
   
   .carousel-image {
-    min-width: 100%;
-    transition: transform 1s ease;
-  }
-  .carousel-imageDama {
-    height: 50%; 
-    object-fit: cover; /* Para que la imagen se ajuste sin recortarse */
+    min-width: 100%; /* Cada imagen ocupa el 100% del ancho del contenedor */
+    height: 50vh; /* Mantiene la altura del banner */
+    object-fit: cover; /* Evita que las imágenes se deformen */
   }
   
-  
-  @keyframes slide {
+  @keyframes slide-left {
     0% {
       transform: translateX(0%);
     }
-    33% {
-      transform: translateX(-100%);
-    }
-    66% {
-      transform: translateX(-200%);
-    }
     100% {
-      transform: translateX(0%);
+      transform: translateX(-300%); /* Desplaza el ancho total de las 3 imágenes originales y duplicadas */
     }
   }
   .payment-logo {
@@ -90,5 +91,17 @@
     height: auto; /* Mantener proporción */
     object-fit: contain;
   }
-
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%); /* Comienza fuera de la pantalla */
+    }
+    100% {
+      transform: translateX(-100%); /* Se desplaza completamente hacia la izquierda */
+    }
+  }
+  
+  .animate-marquee {
+    display: flex;
+    animation: marquee 30s linear infinite; /* Ajusta la duración para que sea más lenta */
+  }
   

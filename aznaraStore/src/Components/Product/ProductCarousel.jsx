@@ -48,15 +48,15 @@ const ProductCarousel = () => {
           <SwiperSlide key={product.id_product}>
             <Link to={`/product/${product.id_product}`}>
               <div
-                className={`w-full max-w-xs mx-auto p-4 ${
-                  currentSection === 'Dama' ? 'bg-black' : 'bg-colorFooter'
-                } rounded-lg shadow-lg text-center`}
+                className={`w-full max-w-xs mx-auto p-2 ${
+                  currentSection === 'Dama' ? 'bg-black bg-opacity-70' : 'bg-colorFooter'
+                } rounded-xl shadow-lg text-center`}
               >
                 {product.isOffer && (
                   <span
                     className={`absolute font-semibold top-0 left-8 ${
                       currentSection === 'Dama'
-                        ? 'bg-gray-800 text-white'
+                        ? 'bg-gray-800  text-white'
                         : 'bg-gray-500 text-colorLogo'
                     } text-xl px-2 py-0 rounded-md`}
                   >
@@ -64,9 +64,9 @@ const ProductCarousel = () => {
                   </span>
                 )}
                 <h3
-                  className={`mt-2 -mb-4 text-lg font-semibold font-nunito uppercase ${
+                  className={` -mb-4 text-2xl font-thin font-nunito uppercase ${
                     currentSection === 'Dama'
-                      ? 'bg-colorFondoDama text-white'
+                      ? 'bg-women text-black text-opacity-70'
                       : 'bg-yellow-600 text-slate-800'
                   } p-2 rounded`}
                 >
@@ -75,14 +75,14 @@ const ProductCarousel = () => {
                 <img
                   src={product.Images[0]?.url || 'https://via.placeholder.com/150'}
                   alt={product.name}
-                  className="w-full h-80 object-contain rounded-2xl mb-2"
+                  className="w-full h-80 object-contain  rounded-2xl mb-2"
                 />
                 <p
                   className={`${
-                    currentSection === 'Dama' ? 'text-colorFondoDama' : 'text-gray-400'
-                  } font-nunito text-3xl font-semibold`}
+                    currentSection === 'Dama' ? 'text-women' : 'text-gray-400'
+                  } font-nunito text-2xl font-thin`}
                 >
-                  ${product.price}
+                   ${new Intl.NumberFormat('es-ES').format(product.price)}
                 </p>
               </div>
             </Link>
@@ -90,11 +90,11 @@ const ProductCarousel = () => {
         ))
       : (
         <SwiperSlide>
-          <div className="w-full max-w-xs mx-auto p-4 bg-gray-800 rounded-lg shadow-lg text-center">
+          <div className="w-full max-w-xs mx-auto  bg-gray-800 rounded-2xl shadow-lg text-center">
             <img
               src="https://via.placeholder.com/150"
               alt="Placeholder"
-              className="w-full h-72 object-contain rounded-2xl mb-4"
+              className="w-full h-72 object-contain  mb-4"
             />
             <h3 className="mt-2 text-lg font-semibold text-white font-nunito">Producto no disponible</h3>
             <p className="text-gray-400">$0.00</p>

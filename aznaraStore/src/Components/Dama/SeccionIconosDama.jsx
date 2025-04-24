@@ -19,7 +19,7 @@ const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
         alt={altText}
         className="w-full aspect-square object-cover shadow-lg"
       />
-      <span className="absolute inset-0 flex items-center justify-center text-white font-bold bg-black bg-opacity-50 rounded-md">
+      <span className="absolute inset-0 flex items-center justify-center text-white font-thin font-nunito text-2xl bg-black bg-opacity-50 rounded-md">
         {label}
       </span>
     </div>
