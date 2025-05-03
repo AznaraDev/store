@@ -273,13 +273,15 @@ const getUniqueColorProducts = (products) => {
 {/* Cambiado lg:w-1/2 a lg:w-2/5 */}
 <div className="w-full lg:w-2/5 p-6 lg:p-8 flex flex-col space-y-4 relative">
   {/* ... (contenido de la columna izquierda sin cambios) ... */}
-   <button
-      onClick={handleGoBack}
-      className="absolute top-2 left-4 bg-gray-800/50 text-white p-2 rounded-full hover:bg-gray-700/70 transition duration-300 z-20"
-      aria-label="Volver"
-    >
-      <FiChevronLeft size={24} />
-    </button>
+  <button
+  onClick={handleGoBack}
+  className="absolute top-2 left-4 bg-gray-800/50 text-colorLogo font-thin p-2 rounded-full hover:bg-gray-700/70 transition duration-300 z-20 flex items-center gap-1"
+  aria-label="Volver"
+>
+  <FiChevronLeft size={20} />
+  <span>Volver</span>
+</button>
+
 
   {/* Título del Producto */}
   <h2 className="text-2xl sm:text-3xl font-thin font-nunito text-white uppercase lg:mt-0">
@@ -382,13 +384,25 @@ const getUniqueColorProducts = (products) => {
 
   {/* Imagen Principal con Lupa - Tamaño ajustado */}
   {/* Mantenemos w-[350px] h-[350px] por ahora */}
-  <div className="relative overflow-hidden w-[350px] h-[350px] rounded-lg shadow-lg mb-4">
-    <img
-      src={selectedImage}
-      alt={selectedProduct.name}
-      className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-150"
-    />
-  </div>
+  <div className="relative overflow-hidden w-[350px] h-[350px] rounded-lg shadow-lg mb-4 group">
+  <img
+    src={selectedImage}
+    alt={selectedProduct.name}
+    className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-[2]"
+    style={{ transformOrigin: 'center center' }}
+    onMouseMove={(e) => {
+      const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - left) / width) * 100;
+      const y = ((e.clientY - top) / height) * 100;
+      e.currentTarget.style.transformOrigin = `${x}% ${y}%`;
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transformOrigin = 'center center';
+    }}
+  />
+</div>
+
+
 
 
   {/* Thumbnails */}
