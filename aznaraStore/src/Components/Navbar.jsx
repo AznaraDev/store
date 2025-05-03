@@ -49,7 +49,7 @@ export default function Navbar() {
   const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart', '/damas'];
   const handleLogoClick = () => {
     // Limpia la sección al hacer clic en el logo
-    setSection(null); // o setSection('') si prefieres una cadena vacía
+    setSection(''); // o setSection('') si prefieres una cadena vacía
   };
 
   useEffect(() => {
@@ -104,17 +104,15 @@ export default function Navbar() {
 
   if (isTransparent) {
     navbarBackgroundClass = 'bg-transparent';
+  } else if (isHomePage) { // Prioritize home page check when not transparent
+    navbarBackgroundClass = 'bg-black';
   } else if (section === 'Dama') {
-    // Si no es transparente y es Dama -> fondo women
+    // If not transparent, not home, and section is Dama -> bg-women
     navbarBackgroundClass = 'bg-women';
   } else {
-    // Si no es transparente y es Home, Caballero u otra -> fondo negro
+    // If not transparent, not home, and section is not Dama (or Caballero) -> bg-black
     navbarBackgroundClass = 'bg-black';
   }
-  const handleSearchChange = (event) => {
-    dispatch(setSearchTerm(event.target.value));
-    dispatch(fetchFilteredProducts(event.target.value, priceFilter, categoryFilter));
-  };
 
   const handlePriceChange = (event) => {
     const priceRange = event.target.value.split('-').map(Number);
