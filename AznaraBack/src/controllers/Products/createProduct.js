@@ -10,7 +10,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'ecommerce-products',
     transformation: [
-      { width: 300, height: 300, fit: 'scale' }
+      { width: 600, height: 600, crop: 'fill', gravity: 'auto' }
     ],
     format: async (req, file) => 'png',
     public_id: (req, file) => `${Date.now()}_${file.originalname.split('.')[0]}`,
