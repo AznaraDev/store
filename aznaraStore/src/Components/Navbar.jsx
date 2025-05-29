@@ -92,26 +92,49 @@ export default function Navbar() {
   }, [dispatch]);
 
 
-  
+ 
 
-  const isHomePage = location.pathname === '/';
+   const isHomePage = location.pathname === '/';
 
   // --- Lógica de Estilos Refinada ---
   let navbarBackgroundClass = '';
-  // Texto siempre blanco
-  const navbarTextColorClass = 'text-white';
-  const navbarHoverTextColorClass = 'hover:text-gray-400'; // O 'hover:opacity-80' si prefieres
+  let linkTextColorClass = 'text-white'; // Color por defecto para enlaces
+  let linkHoverTextColorClass = 'hover:text-gray-400'; // Hover por defecto
 
-  if (isTransparent) {
-    navbarBackgroundClass = 'bg-transparent';
-  } else if (isHomePage) { // Prioritize home page check when not transparent
-    navbarBackgroundClass = 'bg-black';
-  } else if (section === 'Dama') {
-    // If not transparent, not home, and section is Dama -> bg-women
-    navbarBackgroundClass = 'bg-women';
-  } else {
-    // If not transparent, not home, and section is not Dama (or Caballero) -> bg-black
-    navbarBackgroundClass = 'bg-black';
+  if (isHomePage) {
+    // Si estamos en la página de inicio, priorizar estos estilos
+    if (isTransparent) {
+      navbarBackgroundClass = 'bg-transparent';
+      linkTextColorClass = 'text-white'; // Siempre blanco en home transparente
+      linkHoverTextColorClass = 'hover:text-gray-300';
+    } else {
+      navbarBackgroundClass = 'bg-black'; // Fondo negro en home no transparente
+      linkTextColorClass = 'text-white';
+      linkHoverTextColorClass = 'hover:text-gray-300';
+    }
+  } else { // No estamos en la página de inicio
+    if (isTransparent) {
+      navbarBackgroundClass = 'bg-transparent';
+      if (section === 'Dama') {
+        // Si es transparente Y sección Dama
+        linkTextColorClass = 'text-gray-600';
+        linkHoverTextColorClass = 'hover:text-colorLogo';
+      } else {
+        // Si es transparente PERO NO es sección Dama (ej. Caballero)
+        linkTextColorClass = 'text-white'; // Texto blanco
+        linkHoverTextColorClass = 'hover:text-gray-300';
+      }
+    } else { // Navbar NO es transparente y NO es la home
+      if (section === 'Dama') {
+        navbarBackgroundClass = 'bg-women';
+        linkTextColorClass = 'text-black';
+        linkHoverTextColorClass = 'hover:text-pink-700';
+      } else { // Caballero u otras secciones no transparentes
+        navbarBackgroundClass = 'bg-black';
+        linkTextColorClass = 'text-white';
+        linkHoverTextColorClass = 'hover:text-gray-300';
+      }
+    }
   }
 
   const handlePriceChange = (event) => {
@@ -321,9 +344,9 @@ export default function Navbar() {
                   <div key={item.name} className="relative"> {/* Añadido relative aquí */}
                     {item.name === 'Contactanos' ? (
                       <> {/* Fragmento para agrupar botón y menú */}
-                        <button
-                          onClick={() => setShowMenu(!showMenu)} // Toggle para el menú de redes
-                          className={`text-2xl font-thin ${navbarTextColorClass} ${navbarHoverTextColorClass}`}
+                         <button
+                          onClick={() => setShowMenu(!showMenu)}
+                          className={`text-2xl font-thin ${linkTextColorClass} ${linkHoverTextColorClass}`} // Aplicar clases dinámicas
                           aria-current={item.current ? 'page' : undefined}
                         >
                           {item.name}
@@ -386,8 +409,7 @@ export default function Navbar() {
                     ) : (
                       <Link
                         to={item.href}
-                        // Aplicar color de texto y hover fijos (blanco)
-                        className={`text-2xl font-thin ${navbarTextColorClass} ${item.current ? 'opacity-75' : ''} ${navbarHoverTextColorClass}`}
+                        className={`text-2xl font-thin ${linkTextColorClass} ${item.current ? 'opacity-75' : ''} ${linkHoverTextColorClass}`} // Aplicar clases dinámicas
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
@@ -402,17 +424,16 @@ export default function Navbar() {
               <div className="flex items-center font-nunito font-light space-x-4">
                 <Link
                   to="/cart"
-                  // Aplicar color de texto y hover fijos (blanco)
-                  className={`relative p-2 ${navbarTextColorClass} ${navbarHoverTextColorClass}`}
+                  className={`relative p-2 ${linkTextColorClass} ${linkHoverTextColorClass}`} // Aplicar clases dinámicas
                 >
                   <ShoppingBagIcon className="h-6 w-6 sm:h-6 sm:w-6" aria-hidden="true" />
                 </Link>
 
+
                 {/* User dropdown */}
                 <Menu as="div" className="relative">
                   <Menu.Button
-                    // Aplicar color de texto fijo (blanco)
-                    className={`bg-transparent px-3 py-2 rounded-md text-2xl font-thin ${navbarTextColorClass}`}
+                    className={`bg-transparent px-3 py-2 rounded-md text-2xl font-thin ${linkTextColorClass} ${linkHoverTextColorClass}`} // Aplicar clases dinámicas
                   >
                     Menu
                   </Menu.Button>
@@ -422,11 +443,14 @@ export default function Navbar() {
                 </Menu>
               </div>
 
+            
               {/* Mobile menu button */}
               <div className="-mr-2 flex sm:hidden">
                 <Disclosure.Button
-                  // Botón móvil siempre blanco
-                  className={`inline-flex items-center justify-center rounded-md p-2 ${navbarTextColorClass} hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white`}
+                  // Botón móvil: mantener blanco si el fondo del panel móvil es oscuro,
+                  // o ajustar si el panel móvil también cambia de color.
+                  // Por ahora, lo dejamos como estaba, asumiendo que el panel móvil tiene fondo oscuro.
+                  className={`inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white`}
                 >
                   <span className="sr-only">Abrir menú</span>
                   {open ? (

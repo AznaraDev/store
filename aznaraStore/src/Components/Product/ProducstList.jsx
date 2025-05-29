@@ -104,11 +104,18 @@ const ProductsList = () => {
 
   return (
     <div className={`min-h-screen flex flex-col justify-center items-center ${
-        currentSection === 'Dama' ? 'bg-black' : 'bg-colorFooter'} py-16`}>
+        currentSection === 'Dama' ? 'bg-white' : 'bg-colorFooter'} py-16`}>
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 uppercase font-nunito font-thin">
           {currentProducts.map((product) => (
-            <div key={product.id_product} className="group relative max-w-xs">
+            <div 
+              key={product.id_product} 
+              className={`group relative max-w-xs rounded-lg ${ // Clases base para la card
+                currentSection === 'Dama' 
+                  ? 'shadow-silver-soft' // Aplicar sombra personalizada para Dama, sin fondo explícito aquí
+                  : '' // Fondo para otras secciones (puedes ajustar este color si es necesario)
+              }`}
+            >
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden">
                 <Link to={`/product/${product.id_product}`}>
                   <img
@@ -128,15 +135,24 @@ const ProductsList = () => {
                 )}
               </div>
               <div className="mt-4 px-4">
-                <h3 className="text-2xl font-thin font-nunito text-gray-300">
-                  <Link to={`/product/${product.id_product}`}>
+                <h3 
+                  className={`text-2xl font-thin font-nunito ${
+                    currentSection === 'Dama' ? 'text-gray-800' : 'text-gray-300' // Color condicional para el nombre
+                  }`}
+                >
+                  <Link 
+                    to={`/product/${product.id_product}`}
+                    className={currentSection === 'Dama' ? 'hover:text-colorDetalle' : 'hover:text-colorLogo'}
+                  >
                     {product.name}
                   </Link>
                 </h3>
-                <p className="text-lg font-thin font-nunito text-gray-300">
-                  {/* Formatear el precio */}
+                <p  
+                  className={`text-lg font-thin font-nunito ${
+                    currentSection === 'Dama' ? 'text-gray-700' : 'text-gray-300' // Color condicional para el precio
+                  }`}
+                >
                   ${new Intl.NumberFormat('es-ES').format(product.price)}
-                  {/* Puedes usar 'de-DE' o 'es-ES' u otro locale que use puntos como separador de miles */}
                 </p>
               </div>
               <div className="mt-4 mb-4 px-4 flex justify-between items-center">
