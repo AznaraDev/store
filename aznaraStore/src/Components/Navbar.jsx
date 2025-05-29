@@ -9,13 +9,7 @@ import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter
 import { useSection } from '../SectionContext';
 import { FaInstagram, FaWhatsapp, FaFacebook, FaTiktok } from 'react-icons/fa';
 
-const navigation = [
-  { name: 'Tienda', href: '/products', current: true },
-  // { name: 'Colecciones', href: '#about', current: false },
-  { name: 'Contactanos', href: '#footer', current: false },
-  // { name: 'Ofertas', href: '#', current: false },
-  
-];
+
 
 
 
@@ -40,6 +34,20 @@ export default function Navbar() {
   const categories = useSelector(state => state.categories.data);
   const userInfo = useSelector(state => state.userLogin.userInfo);
   console.log('User Info:', userInfo);
+
+    const handleStoreLinkClick = () => {
+    // Resetea el filtro de categoría cuando se hace clic en "Tienda"
+    dispatch(setCategoryFilter(null)); // o setCategoryFilter('')
+    // Opcional: también podrías resetear searchTerm aquí si lo deseas
+    // dispatch(setSearchTerm(''));
+    // La navegación a /products ya está manejada por el <Link>
+  };
+
+  const navigation = [
+    // Modifica el objeto de "Tienda"
+    { name: 'Tienda', href: '/products', current: true, onClick: handleStoreLinkClick },
+    { name: 'Contactanos', href: '#footer', current: false },
+  ];
 
 
   useEffect(() => {
@@ -409,6 +417,7 @@ export default function Navbar() {
                     ) : (
                       <Link
                         to={item.href}
+                         onClick={item.onClick} 
                         className={`text-2xl font-thin ${linkTextColorClass} ${item.current ? 'opacity-75' : ''} ${linkHoverTextColorClass}`} // Aplicar clases dinámicas
                         aria-current={item.current ? 'page' : undefined}
                       >

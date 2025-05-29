@@ -23,32 +23,32 @@ const ProductsList = () => {
   const error = useSelector((state) => state.error);
   const searchTerm = useSelector((state) => state.searchTerm);
   const userInfo = useSelector((state) => state.userLogin?.userInfo);
-
+  const categoryFilter = useSelector((state) => state.categoryFilter); 
  
 
-  useEffect(() => {
-    if (searchTerm) {
-      dispatch(fetchFilteredProducts(searchTerm));
-    } else {
-      dispatch(fetchProducts());
-    }
-  }, [dispatch, searchTerm]);
+ useEffect(() => {
+    // Siempre llamamos a fetchFilteredProducts.
+    // La acción construirá la URL basada en los parámetros proporcionados.
+    // Si searchTerm es '', no filtrará por término de búsqueda.
+    // Si categoryFilter es '' o null, la acción no lo añadirá a la URL.
+    // Los filtros de precio y oferta se pasan como null si no se usan directamente aquí.
+    dispatch(fetchFilteredProducts(searchTerm, null, categoryFilter, null));
+  }, [dispatch, searchTerm, categoryFilter]); // Añadir categoryFilter a las dependencias
 
-;
-
-  // Filtrar productos por sección actual
-  const filteredProducts = products.filter(
+  // Filtrar productos localmente por la sección actual (Dama, Caballero, Unisex)
+  // Esto se aplica DESPUÉS de que los productos hayan sido filtrados por categoría y término de búsqueda desde el backend/acción.
+  const sectionFilteredProducts = products.filter(
     (product) => product.section === currentSection || product.section === "Unisex"
   );
   
-
-
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(
+  // Aplicar paginación a los productos ya filtrados por sección (y previamente por categoría/búsqueda)
+  const currentProducts = sectionFilteredProducts.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
+
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -94,23 +94,39 @@ const ProductsList = () => {
     );
   }
 
+   // Comprobar si `products` (antes del filtro de sección) está vacío después de aplicar filtros de categoría/búsqueda
   if (!products || products.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-colorFooter py-16">
-        <p className="text-white text-lg">No hay productos disponibles.</p>
+      <div className={`min-h-screen flex flex-col justify-center items-center ${
+        currentSection === 'Dama' ? 'bg-white' : 'bg-colorFooter'} py-16`}>
+        <p className={`${currentSection === 'Dama' ? 'text-gray-700' : 'text-white'} text-lg`}>
+          No hay productos que coincidan con los filtros seleccionados.
+        </p>
+      </div>
+    );
+  }
+  
+  // Comprobar si `currentProducts` (después del filtro de sección y paginación) está vacío
+  if (!currentProducts || currentProducts.length === 0) {
+    return (
+      <div className={`min-h-screen flex flex-col justify-center items-center ${
+        currentSection === 'Dama' ? 'bg-white' : 'bg-colorFooter'} py-16`}>
+        <p className={`${currentSection === 'Dama' ? 'text-gray-700' : 'text-white'} text-lg`}>
+          No hay productos disponibles para esta sección y filtros.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen flex flex-col justify-center items-center ${
+    <div className={`min-h-screen flex flex-col  ${
         currentSection === 'Dama' ? 'bg-white' : 'bg-colorFooter'} py-16`}>
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 uppercase font-nunito font-thin">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 uppercase font-nunito font-thin mt-8">
           {currentProducts.map((product) => (
             <div 
               key={product.id_product} 
-              className={`group relative max-w-xs rounded-lg ${ // Clases base para la card
+              className={`group relative max-w-xs rounded-lg mx-auto ${
                 currentSection === 'Dama' 
                   ? 'shadow-silver-soft' // Aplicar sombra personalizada para Dama, sin fondo explícito aquí
                   : '' // Fondo para otras secciones (puedes ajustar este color si es necesario)
@@ -155,7 +171,7 @@ const ProductsList = () => {
                   ${new Intl.NumberFormat('es-ES').format(product.price)}
                 </p>
               </div>
-              <div className="mt-4 mb-4 px-4 flex justify-between items-center">
+             <div className="mt-auto pt-2 pb-4 px-4 flex justify-between items-center">
                 <button
                   onClick={() => handleButtonClick(product)}
                   className={`mt-4 flex items-center justify-center w-full ${
@@ -190,7 +206,7 @@ const ProductsList = () => {
           <nav className="block">
             <ul className="flex pl-0 rounded list-none flex-wrap">
               {Array.from(
-                { length: Math.ceil(filteredProducts.length / productsPerPage) },
+                { length: Math.ceil(sectionFilteredProducts.length / productsPerPage) },
                 (_, i) => (
                   <li key={i}>
                     <button
