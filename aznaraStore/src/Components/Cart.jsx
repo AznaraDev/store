@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { incrementQuantity, removeFromCart, clearCart, decrementQuantity } from '../Redux/Actions/actions';
 import { Link, useNavigate } from 'react-router-dom';
 import { SlTrash, SlMinus, SlPlus } from "react-icons/sl";
-import backgroundImage from '../assets/img/banner.png'; // Cambia esta ruta según tu imagen
+import backgroundImage from '../assets/img/Dama/portadaLogin.png'; // Cambia esta ruta según tu imagen
 
 const Cart = () => {
   const dispatch = useDispatch();
