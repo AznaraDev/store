@@ -382,14 +382,21 @@ export const updateOrderState = (id_orderDetail, newState, trackingNumber) => as
   }
 };
 
-export const updateProduct = (id, productData) => async (dispatch) => {
+export const updateProduct = (id, productFormData) => async (dispatch) => { 
   dispatch({ type: UPDATE_PRODUCT_REQUEST });
 
   try {
-    const response = await axios.put(`${BASE_URL}/product/updateProducts/${id}`, productData);
-    dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data.data.product });
+    
+    const response = await axios.put(`${BASE_URL}/product/updateProducts/${id}`, productFormData);
+    
+    dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data.product }); 
+  
   } catch (error) {
-    dispatch({ type: UPDATE_PRODUCT_FAILURE, payload: error.message });
+    console.error("Error in updateProduct action:", error.response ? error.response.data : error.message);
+    dispatch({ 
+      type: UPDATE_PRODUCT_FAILURE, 
+      payload: error.response && error.response.data.error ? error.response.data.error : error.message 
+    });
   }
 };
 
