@@ -43,11 +43,11 @@ export default function Navbar() {
     // La navegación a /products ya está manejada por el <Link>
   };
 
-  const navigation = [
-    // Modifica el objeto de "Tienda"
-    { name: 'Tienda', href: '/products', current: true, onClick: handleStoreLinkClick },
-    { name: 'Contactanos', href: '#footer', current: false },
-  ];
+  // const navigation = [
+  //   // Modifica el objeto de "Tienda"
+  //   { name: 'Tienda', href: '/products', current: true, onClick: handleStoreLinkClick },
+  //   { name: 'Contactanos', href: '#footer', current: false },
+  // ];
 
 
   useEffect(() => {
@@ -55,10 +55,31 @@ export default function Navbar() {
   }, [section]);
   
   const publicRoutes = ['/login', '/', '/register', '/products', '/productsCat/:categoryName', '/caballeros', '/cart', '/damas'];
+ 
+  const isHomePage = location.pathname === '/';
+ 
   const handleLogoClick = () => {
     // Limpia la sección al hacer clic en el logo
     setSection(''); // o setSection('') si prefieres una cadena vacía
   };
+    const handleGoBack = () => {
+    navigate(-1); // Navega a la página anterior
+  };
+
+   // Construcción dinámica de los items de navegación
+  let navigation = [];
+  if (isHomePage) {
+    navigation = [
+      { name: 'Contactanos', href: '#footer', current: false }, // 'Contactanos' siempre visible
+    ];
+  } else {
+    navigation = [
+      // 'href' es nominal, onClick hace el trabajo
+      { name: 'Tienda', href: '/products', current: location.pathname.startsWith('/products'), onClick: handleStoreLinkClick },
+      { name: 'Contactanos', href: '#footer', current: false },
+       { name: 'Volver', href: '#', onClick: handleGoBack, current: false },
+    ];
+  }
 
   useEffect(() => {
     const currentPath = window.location.pathname;
@@ -102,7 +123,7 @@ export default function Navbar() {
 
  
 
-   const isHomePage = location.pathname === '/';
+
 
   // --- Lógica de Estilos Refinada ---
   let navbarBackgroundClass = '';

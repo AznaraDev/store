@@ -118,42 +118,43 @@ const ProductsList = () => {
     );
   }
 
-  return (
-    <div className={`min-h-screen flex flex-col  ${
+ return (
+    <div className={`min-h-screen flex flex-col ${ // Contenedor flex principal
         currentSection === 'Dama' ? 'bg-white' : 'bg-colorFooter'} py-16`}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex-grow w-full"> {/* Añadido flex-grow y w-full */}
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 uppercase font-nunito font-thin mt-8">
           {currentProducts.map((product) => (
             <div 
               key={product.id_product} 
-              className={`group relative max-w-xs rounded-lg mx-auto ${
+              className={`group relative max-w-xs rounded-lg mx-auto flex flex-col ${ // Añadido flex flex-col para alinear el botón al final
                 currentSection === 'Dama' 
-                  ? 'shadow-silver-soft' // Aplicar sombra personalizada para Dama, sin fondo explícito aquí
-                  : '' // Fondo para otras secciones (puedes ajustar este color si es necesario)
+                  ? 'shadow-silver-soft' 
+                  : '' 
               }`}
             >
+              {/* Contenido de la card (imagen, nombre, precio) */}
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden">
                 <Link to={`/product/${product.id_product}`}>
                   <img
                     src={
-                      product.Images.length > 0
+                      product.Images && product.Images.length > 0 // Verificación de product.Images
                         ? product.Images[0].url
                         : "https://via.placeholder.com/150"
                     }
                     alt={product.name}
-                    className="h-full w-full object-cover object-center rounded-lg"
+                    className="h-full w-full object-cover object-center rounded-lg" // Mantenido rounded-lg para la imagen
                   />
                 </Link>
                 {product.isOffer && (
-                  <span className="absolute top-2 left-2 bg-gray-500 text-colorLogo text-xl px-2 py-0 rounded-md font-nunito font-thin">
+                  <span className="absolute top-2 left-2 bg-gray-500 text-colorLogo text-xl px-2 py-0 rounded-md font-nunito font-thin z-10">
                     OFERTA
                   </span>
                 )}
               </div>
-              <div className="mt-4 px-4">
+              <div className="mt-4 px-4"> {/* Contenedor para nombre y precio */}
                 <h3 
                   className={`text-2xl font-thin font-nunito ${
-                    currentSection === 'Dama' ? 'text-gray-800' : 'text-gray-300' // Color condicional para el nombre
+                    currentSection === 'Dama' ? 'text-gray-800' : 'text-gray-300'
                   }`}
                 >
                   <Link 
@@ -165,24 +166,25 @@ const ProductsList = () => {
                 </h3>
                 <p  
                   className={`text-lg font-thin font-nunito ${
-                    currentSection === 'Dama' ? 'text-gray-700' : 'text-gray-300' // Color condicional para el precio
+                    currentSection === 'Dama' ? 'text-gray-700' : 'text-gray-300'
                   }`}
                 >
                   ${new Intl.NumberFormat('es-ES').format(product.price)}
                 </p>
               </div>
-             <div className="mt-auto pt-2 pb-4 px-4 flex justify-between items-center">
+              {/* Contenedor del botón, empujado al final */}
+              <div className="mt-auto pt-2 pb-4 px-4 flex justify-between items-center"> 
                 <button
                   onClick={() => handleButtonClick(product)}
-                  className={`mt-4 flex items-center justify-center w-full ${
-                    currentSection === 'Dama' ? 'bg-women hover:bg-white ': 'bg-colorLogo'} font-nunito font-thin text-gray-900 py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300`}
+                  className={`mt-4 flex items-center justify-center w-full ${ // mt-4 aquí es opcional si mt-auto funciona bien
+                    currentSection === 'Dama' ? 'bg-women hover:bg-white border border-gray-300': 'bg-colorLogo'} font-nunito font-thin ${currentSection === 'Dama' ? 'text-black' : 'text-gray-900'} py-2 px-4 rounded-lg ${currentSection !== 'Dama' ? 'hover:bg-yellow-700' : 'hover:bg-gray-100'} transition-colors duration-300`}
                 >
                   <FiShoppingCart className={`mr-2 ${
-        currentSection === 'Dama' ? 'text-black' : 'text-colorFooter'} `} /> Añadir al carrito
+                    currentSection === 'Dama' ? 'text-black' : 'text-colorFooter'} `} /> Añadir al carrito
                 </button>
               </div>
               {userInfo && userInfo.role === "Admin" && (
-                <div className="absolute top-2 right-2 flex space-x-2">
+                <div className="absolute top-2 right-2 flex space-x-2 z-10"> {/* z-10 para asegurar visibilidad sobre otros elementos de la card */}
                   <button
                     className="bg-gray-100 text-gray-700 p-2 rounded-full hover:bg-gray-200"
                     onClick={() => handleEditProduct(product.id_product)}
@@ -200,31 +202,31 @@ const ProductsList = () => {
             </div>
           ))}
         </div>
+      </div> {/* Fin del div con flex-grow */}
 
-        {/* Paginación */}
-        <div className="mt-8 flex justify-center">
-          <nav className="block">
-            <ul className="flex pl-0 rounded list-none flex-wrap">
-              {Array.from(
-                { length: Math.ceil(sectionFilteredProducts.length / productsPerPage) },
-                (_, i) => (
-                  <li key={i}>
-                    <button
-                      className={`${
-                        currentPage === i + 1
-                          ? "bg-gray-600 text-white hover:bg-gray-400"
-                          : "bg-gray-700 text-gray-200 hover:bg-gray-300"
-                      } px-3 py-2 ml-1 rounded`}
-                      onClick={() => paginate(i + 1)}
-                    >
-                      {i + 1}
-                    </button>
-                  </li>
-                )
-              )}
-            </ul>
-          </nav>
-        </div>
+      {/* Paginación */}
+      <div className="mt-8 flex justify-center pb-8"> {/* Añadido pb-8 para un poco de espacio inferior */}
+        <nav className="block">
+          <ul className="flex pl-0 rounded list-none flex-wrap">
+            {Array.from(
+              { length: Math.ceil(sectionFilteredProducts.length / productsPerPage) },
+              (_, i) => (
+                <li key={i}>
+                  <button
+                    className={`${
+                      currentPage === i + 1
+                        ? (currentSection === 'Dama' ? "bg-gray-400 text-black" : "bg-gray-600 text-white hover:bg-gray-400")
+                        : (currentSection === 'Dama' ? "bg-gray-200 text-black hover:bg-gray-300" : "bg-gray-700 text-gray-200 hover:bg-gray-300")
+                    } px-3 py-2 ml-1 rounded`}
+                    onClick={() => paginate(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                </li>
+              )
+            )}
+          </ul>
+        </nav>
       </div>
     </div>
   );
