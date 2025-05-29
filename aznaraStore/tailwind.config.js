@@ -15,6 +15,10 @@ export default {
         nunito: ['Nunito', 'sans-serif'], 
 
       },
+       boxShadow: { 
+         'silver-soft': '0 0 15px 2px rgba(192, 192, 192, 0.6)', 
+        
+      }
     },
   },
   variants: {
