@@ -57,12 +57,14 @@ import {
   FETCH_SB_REQUEST,
   FETCH_SB_SUCCESS,
   FETCH_SB_FAILURE,
+  SET_SUBCATEGORY_FILTER,
 } from "../Actions/actions-type";
 
 const initialState = {
   searchTerm: "",
   priceFilter: { min: null, max: null },
-  categoryFilter: "",
+  categoryFilter: null, // Es mejor null que "" para indicar "sin filtro"
+  subCategoryFilter: null, 
   searchResults: [],
   loading: false,
   product: null,
@@ -664,6 +666,22 @@ const rootReducer = (state = initialState, action) => {
           loading: false,
           error: action.payload,
         },
+      };
+       case SET_CATEGORY_FILTER:
+      return {
+        ...state,
+        categoryFilter: action.payload,
+        subCategoryFilter: null, // <--- RESETEAR SUBCATEGORÍA AL CAMBIAR CATEGORÍA
+        // Opcional: resetear también la página actual si la tienes en Redux
+        // currentPage: 1, 
+      };
+
+    case SET_SUBCATEGORY_FILTER: // <--- AÑADIR CASO PARA SUBCATEGORÍA
+      return {
+        ...state,
+        subCategoryFilter: action.payload,
+        // Opcional: resetear también la página actual si la tienes en Redux
+        // currentPage: 1,
       };
     default:
       return state;

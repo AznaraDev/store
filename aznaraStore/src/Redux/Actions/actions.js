@@ -59,6 +59,7 @@ import {
   FETCH_SB_REQUEST,
   FETCH_SB_SUCCESS,
   FETCH_SB_FAILURE,
+  SET_SUBCATEGORY_FILTER,
 
 } from './actions-type';
 
@@ -305,33 +306,67 @@ export const setCategoryFilter = (category) => ({
   payload: category,
 });
 
-export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName, isOffer) => async (dispatch) => {
+// Debes añadir la acción para setSubCategoryFilter si no la tienes definida
+
+export const setSubCategoryFilter = (subCategoryName) => ({
+  type: SET_SUBCATEGORY_FILTER,
+  payload: subCategoryName,
+});
+
+export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName, isOffer, subCategoryName) => async (dispatch) => { // Añadir subCategoryName
   dispatch({ type: FETCH_PRODUCTS_REQUEST });
 
   try {
-    let url = `${BASE_URL}/product?search=${searchTerm}`;
+    // Es mejor construir la URL parte por parte para evitar múltiples '?' o '&' incorrectos.
+    let url = `${BASE_URL}/product?`;
+    const params = [];
+
+    if (searchTerm) {
+      params.push(`search=${encodeURIComponent(searchTerm)}`);
+    }
     
     if (priceFilter && priceFilter.min !== null && priceFilter.max !== null) {
-      url += `&minPrice=${priceFilter.min}&maxPrice=${priceFilter.max}`;
+      params.push(`minPrice=${priceFilter.min}`);
+      params.push(`maxPrice=${priceFilter.max}`);
     }
     
     if (categoryName) {
-      url += `&categoryName=${categoryName}`;
-    }
-    if (isOffer) {
-      url += `&isOffer=true`;
+      params.push(`categoryName=${encodeURIComponent(categoryName)}`);
     }
 
-    const response = await fetch(url);
-    const data = await response.json();
+    if (subCategoryName) { // Añadir el parámetro de subcategoría
+      params.push(`subCategoryName=${encodeURIComponent(subCategoryName)}`);
+    }
 
-    if (!data.error && data.data && data.data.products) {
-      dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: data.data.products });
+    if (isOffer !== null && isOffer !== undefined) { // Comprobar explícitamente
+      params.push(`isOffer=${isOffer}`); // Asumiendo que el backend espera true/false
+    }
+
+    url += params.join('&');
+    
+    // Si no hay parámetros, la URL podría terminar en '?', la quitamos.
+    if (url.endsWith('?')) {
+        url = url.slice(0, -1);
+    }
+
+    // Considera usar axios consistentemente si ya lo usas en otras partes
+    const response = await axios.get(url); // Cambiado a axios para consistencia
+    // const response = await fetch(url);
+    // const data = await response.json();
+
+    // Con axios, la data está en response.data
+    if (!response.data.error && response.data.data && response.data.data.products) {
+      dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data.data.products });
     } else {
-      dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: data.message });
+      // Si usas axios y esperas un error de la API, puede estar en response.data.message o response.data.error
+      dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: response.data.message || 'Error fetching filtered products' });
     }
   } catch (error) {
-    dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: error.message });
+    // El error de Axios suele tener error.response.data.message
+    dispatch({ 
+        type: FETCH_PRODUCTS_FAILURE, 
+        payload: error.response && error.response.data.message ? error.response.data.message : error.message 
+    });
   }
 };
 
@@ -382,14 +417,21 @@ export const updateOrderState = (id_orderDetail, newState, trackingNumber) => as
   }
 };
 
-export const updateProduct = (id, productData) => async (dispatch) => {
+export const updateProduct = (id, productFormData) => async (dispatch) => { 
   dispatch({ type: UPDATE_PRODUCT_REQUEST });
 
   try {
-    const response = await axios.put(`${BASE_URL}/product/updateProducts/${id}`, productData);
-    dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data.data.product });
+    
+    const response = await axios.put(`${BASE_URL}/product/updateProducts/${id}`, productFormData);
+    
+    dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data.product }); 
+  
   } catch (error) {
-    dispatch({ type: UPDATE_PRODUCT_FAILURE, payload: error.message });
+    console.error("Error in updateProduct action:", error.response ? error.response.data : error.message);
+    dispatch({ 
+      type: UPDATE_PRODUCT_FAILURE, 
+      payload: error.response && error.response.data.error ? error.response.data.error : error.message 
+    });
   }
 };
 
