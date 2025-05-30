@@ -69,6 +69,8 @@ const getUniqueColorProducts = (products) => {
           ? product.Images[0].url
           : "https://via.placeholder.com/600"
       );
+      setSelectedColor("");
+      setSelectedSize("");
     }
   }, [product]);
 
@@ -106,26 +108,68 @@ const getUniqueColorProducts = (products) => {
 
   const getAvailableColors = () => {
     if (!selectedProduct || !similarProducts) return [];
-
     const matchingProducts = similarProducts.filter(
       (p) => p.id_SB === selectedProduct.id_SB && p.price === selectedProduct.price
     );
-
     return [...new Set(matchingProducts.flatMap((p) => p.colors))];
   };
 
   const getAvailableSizes = () => {
-    if (!selectedProduct || !similarProducts) return [];
-
+    if (!selectedProduct || !similarProducts || !selectedColor) return []; // Necesita un color seleccionado
     const matchingProducts = similarProducts.filter(
       (p) =>
         p.id_SB === selectedProduct.id_SB &&
         p.colors.includes(selectedColor) &&
         p.price === selectedProduct.price
     );
-
     return [...new Set(matchingProducts.flatMap((p) => p.sizes))];
   };
+  
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+    setSelectedSize(""); // Resetear talle al cambiar color
+    const matchingProduct = similarProducts.find(
+      (p) =>
+        p.id_SB === selectedProduct.id_SB &&
+        p.price === selectedProduct.price &&
+        p.colors.includes(color)
+    );
+
+    if (matchingProduct && matchingProduct.Images && matchingProduct.Images.length > 0) {
+      setSelectedImage(matchingProduct.Images[0].url);
+    } else if (selectedProduct && selectedProduct.Images && selectedProduct.Images.length > 0 && !color) {
+      // Si se deselecciona el color, volver a la imagen principal del producto actual
+      setSelectedImage(selectedProduct.Images[0].url);
+    }
+  };
+
+  // Efecto para auto-seleccionar color si solo hay uno
+  useEffect(() => {
+    if (selectedProduct && similarProducts) {
+      const availableColors = getAvailableColors();
+      if (availableColors.length === 1 && selectedColor !== availableColors[0]) {
+        handleColorChange(availableColors[0]); // Usar handleColorChange para actualizar imagen también
+      }
+    }
+  }, [selectedProduct, similarProducts]); // Depende de selectedProduct y similarProducts
+
+  // Efecto para auto-seleccionar talle si solo hay uno y un color está seleccionado
+  useEffect(() => {
+    if (selectedColor && selectedProduct && similarProducts) {
+      const availableSizes = getAvailableSizes();
+      if (availableSizes.length === 1 && selectedSize !== availableSizes[0]) {
+        setSelectedSize(availableSizes[0]);
+      } else if (availableSizes.length !== 1 && selectedSize && !availableSizes.includes(selectedSize)) {
+        // Si el talle seleccionado ya no es válido y no hay un único nuevo talle, resetear.
+        setSelectedSize("");
+      }
+    } else if (!selectedColor && selectedSize !== "") {
+        // Si no hay color seleccionado, resetear talle
+        setSelectedSize("");
+    }
+  }, [selectedColor, selectedProduct, similarProducts]); // Depende de selectedColor
+
+
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -163,21 +207,6 @@ const getUniqueColorProducts = (products) => {
   };
 
   
-
-  const handleColorChange = (color) => {
-    setSelectedColor(color);
-    const matchingProduct = similarProducts.find(
-      (p) =>
-        p.id_SB === selectedProduct.id_SB &&
-        p.price === selectedProduct.price &&
-        p.colors.includes(color)
-    );
-
-    if (matchingProduct && matchingProduct.Images && matchingProduct.Images.length > 0) {
-      setSelectedImage(matchingProduct.Images[0].url);
-    }
-  };
-
   const scrollLeft = () => {
     if (containerRef.current) {
       containerRef.current.scrollBy({
@@ -235,7 +264,8 @@ const getUniqueColorProducts = (products) => {
   const handleNext = () => {
     setStartIndex((prev) => Math.min(prev + itemsToShow, similarProducts.length - itemsToShow));
   };
-
+const availableColors = getAvailableColors();
+  const availableSizes = selectedColor ? getAvailableSizes() : [];
   const visibleProducts = uniqueColorProducts.slice(startIndex, startIndex + itemsToShow);
 
   if (loading) {
@@ -269,10 +299,9 @@ const getUniqueColorProducts = (products) => {
       {/* Contenedor del "modal" de detalles - Aplicando fondo condicional */}
       <div className={`${backgroundClass} text-gray-200 rounded-lg shadow-xl w-full max-w-5xl mx-auto flex flex-col lg:flex-row overflow-hidden mb-12`}>
 
-{/* --- Columna Izquierda: Detalles --- */}
-{/* Cambiado lg:w-1/2 a lg:w-2/5 */}
+
 <div className="w-full lg:w-2/5 p-6 lg:p-8 flex flex-col space-y-4 relative">
-  {/* ... (contenido de la columna izquierda sin cambios) ... */}
+ 
   <button
   onClick={handleGoBack}
   className="absolute top-2 left-4 bg-gray-800/50 text-colorLogo font-thin p-2 rounded-full hover:bg-gray-700/70 transition duration-300 z-20 flex items-center gap-1"
@@ -312,42 +341,59 @@ const getUniqueColorProducts = (products) => {
     </span>
   </div>
 
-  {/* Selector de Color */}
-  <div className="space-y-1">
-    <label htmlFor="colors" className="block text-sm font-thin font-nunito text-gray-400">Color:</label>
-    <select
-      id="colors"
-      value={selectedColor}
-      onChange={(e) => handleColorChange(e.target.value)}
-      className="w-full bg-gray-700/50 border border-gray-600 font-thin font-nunito rounded py-2 px-3 text-white focus:ring-colorLogo focus:border-colorLogo"
-      required
-    >
-      <option value="" disabled>Seleccionar color</option>
-      {getAvailableColors().map((color, index) => (
-        <option key={index} value={color}>{color}</option>
-      ))}
-    </select>
-  </div>
+  {/* Selector de Color Modificado */}
+        <div className="space-y-1">
+          <label htmlFor="colors" className="block text-sm font-thin font-nunito text-gray-400">Color:</label>
+          {availableColors.length === 1 ? (
+            <p className="w-full bg-gray-700/50 border border-transparent font-thin font-nunito rounded py-2 px-3 text-white">
+              {availableColors[0]}
+            </p>
+          ) : availableColors.length > 1 ? (
+            <select
+              id="colors"
+              value={selectedColor}
+              onChange={(e) => handleColorChange(e.target.value)}
+              className="w-full bg-gray-700/50 border border-gray-600 font-thin font-nunito rounded py-2 px-3 text-white focus:ring-colorLogo focus:border-colorLogo"
+              required
+            >
+              <option value="" disabled>Seleccionar color</option>
+              {availableColors.map((color, index) => (
+                <option key={index} value={color}>{color}</option>
+              ))}
+            </select>
+          ) : (
+            <p className="text-sm text-gray-500">No hay colores disponibles.</p>
+          )}
+        </div>
 
-  {/* Selector de Talle */}
-  {selectedColor && (
-    <div className="space-y-1">
-      <label htmlFor="sizes" className="block text-sm font-thin font-nunito text-gray-400">Talle:</label>
-      <select
-        id="sizes"
-        value={selectedSize}
-        onChange={(e) => setSelectedSize(e.target.value)}
-        className="w-full bg-gray-700/50 border font-thin font-nunito border-gray-600 rounded py-2 px-3 text-white focus:ring-colorLogo focus:border-colorLogo"
-        required
-        disabled={!selectedColor}
-      >
-        <option value="" disabled>Seleccionar talle</option>
-        {getAvailableSizes().map((size, index) => (
-          <option key={index} value={size}>{size}</option>
-        ))}
-      </select>
-    </div>
-  )}
+        {/* Selector de Talle Modificado */}
+        {/* Solo mostrar si hay un color seleccionado o si el color se auto-seleccionó */}
+        {(selectedColor || availableColors.length === 1) && (
+          <div className="space-y-1">
+            <label htmlFor="sizes" className="block text-sm font-thin font-nunito text-gray-400">Talle:</label>
+            {availableSizes.length === 1 ? (
+              <p className="w-full bg-gray-700/50 border border-transparent font-thin font-nunito rounded py-2 px-3 text-white">
+                {availableSizes[0]}
+              </p>
+            ) : availableSizes.length > 1 ? (
+              <select
+                id="sizes"
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+                className="w-full bg-gray-700/50 border font-thin font-nunito border-gray-600 rounded py-2 px-3 text-white focus:ring-colorLogo focus:border-colorLogo"
+                required
+                disabled={!selectedColor && availableColors.length !==1} // Deshabilitar si no hay color y no es único
+              >
+                <option value="" disabled>Seleccionar talle</option>
+                {availableSizes.map((size, index) => (
+                  <option key={index} value={size}>{size}</option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-sm text-gray-500">Selecciona un color para ver talles o no hay talles disponibles.</p>
+            )}
+          </div>
+        )}
 
   {/* Botón Añadir al carrito */}
   <div className="flex items-center space-x-4 pt-4">
@@ -382,9 +428,8 @@ const getUniqueColorProducts = (products) => {
     </span>
   )}
 
-  {/* Imagen Principal con Lupa - Tamaño ajustado */}
-  {/* Mantenemos w-[350px] h-[350px] por ahora */}
-  <div className="relative overflow-hidden w-[350px] h-[350px] rounded-lg shadow-lg mb-4 group">
+  
+  <div className="relative overflow-hidden w-[450px] h-[450px] rounded-lg shadow-lg mb-4 group">
   <img
     src={selectedImage}
     alt={selectedProduct.name}

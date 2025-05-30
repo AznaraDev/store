@@ -1,5 +1,7 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+//import { useDispatch } from 'redux-react-hook'; // Corrección: Debería ser 'react-redux'
+import { useDispatch } from 'react-redux'; // Descomenta esta y comenta la de arriba
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import { fetchFilteredProducts, setCategoryFilter } from '../Redux/Actions/actions';
 import anillo1 from '../assets/img/Hombre/manilla.png';
 import anillo2 from '../assets/img/Hombre/anillos.png';
@@ -8,9 +10,9 @@ import reloj1 from '../assets/img/Hombre/reloj.png';
 
 // Componente reutilizable para cada categoría
 const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
-  <a
-    href={`#${categoryName}`}
-    className="block mx-auto text-center"
+  // Quitar el <a> tag si la navegación se maneja completamente por onClick
+  <div
+    className="block mx-auto text-center cursor-pointer" // Añadido cursor-pointer
     onClick={() => onClick(categoryName)}
   >
     <div className="relative p-4 hover:scale-105 transition-transform duration-300">
@@ -23,23 +25,26 @@ const CategoryCard = ({ image, altText, label, categoryName, onClick }) => (
         {label}
       </span>
     </div>
-  </a>
+  </div>
 );
 
 const SeccionIconosH = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Inicializar useNavigate
 
   // Función para manejar el clic en una categoría
   const handleCategoryClick = (categoryName) => {
     dispatch(setCategoryFilter(categoryName));
-    dispatch(fetchFilteredProducts('', { min: null, max: null }, categoryName));
+    // Opcional: dispatch(fetchFilteredProducts('', { min: null, max: null }, categoryName));
+    // ProductsList en /products ya hará el fetch.
+    navigate('/products'); // Navegar a la lista de productos
   };
 
   // Datos de las categorías
   const categories = [
     { image: reloj1, altText: 'Relojes', label: 'Relojes', categoryName: 'Relojes' },
     { image: anillo1, altText: 'Manillas', label: 'Manillas', categoryName: 'Manillas' },
-    { image: anillo2, altText: 'Anillos', label: 'Anillos', categoryName: 'Anillos' },
+    { image: anillo2, altText: 'Anillos', label: 'Anillos', categoryName: 'Anillos' }, // Asegúrate que 'Anillos' coincida con tu backend
     { image: dije1, altText: 'Cadenas', label: 'Cadenas', categoryName: 'Cadenas' },
   ];
 

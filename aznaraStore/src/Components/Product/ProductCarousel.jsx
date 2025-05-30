@@ -49,7 +49,7 @@ const ProductCarousel = () => {
             <Link to={`/product/${product.id_product}`}>
               <div
                 className={`w-full max-w-xs mx-auto p-2 ${
-                  currentSection === 'Dama' ? 'bg-black bg-opacity-70' : 'bg-colorFooter'
+                  currentSection === 'Dama' ? 'shadow-silver-soft' : 'bg-colorFooter'
                 } rounded-xl shadow-lg text-center`}
               >
                 {product.isOffer && (
@@ -79,7 +79,7 @@ const ProductCarousel = () => {
                 />
                 <p
                   className={`${
-                    currentSection === 'Dama' ? 'text-women' : 'text-gray-400'
+                    currentSection === 'Dama' ? 'text-black text-opacity-70' : 'text-gray-400'
                   } font-nunito text-2xl font-thin`}
                 >
                    ${new Intl.NumberFormat('es-ES').format(product.price)}

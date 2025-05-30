@@ -1,10 +1,10 @@
-const { Product, Image, Category } = require('../../data');
+const { Product, Image, Category, SubCategory } = require('../../data');
 const response = require('../../utils/response');
 const { Op } = require('sequelize');
 
 module.exports = async (req, res) => {
   try {
-    const { search, price, categoryId, categoryName } = req.query;
+    const { search, price, categoryId, categoryName, subCategoryName } = req.query;
 
     let whereClause = {
       [Op.and]: [],
@@ -34,7 +34,14 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Construir la consulta de productos
+     if (subCategoryName) {
+      whereClause[Op.and].push({
+        '$SubCategory.name_SB$': { [Op.iLike]: `%${subCategoryName}%` }, // Asegúrate que el alias y nombre de columna sean correctos
+      });
+    }
+
+
+      // Construir la consulta de productos
     const products = await Product.findAll({
       where: whereClause,
       include: [
@@ -43,6 +50,14 @@ module.exports = async (req, res) => {
           model: Category,
           attributes: ['id_category', 'name_category'],
         },
+        { //  AÑADIR ESTO PARA INCLUIR SUBCATEGORÍA
+          model: SubCategory,
+          attributes: ['id_SB', 'name_SB'], // O los atributos que necesites
+          // required: false // Usa false si un producto puede no tener subcategoría y aun así quieres que aparezca
+                           // Si usas true (o lo omites, que es el default para include directo),
+                           // solo traerá productos que TENGAN una subcategoría.
+                           // Si también filtras por subCategoryName, 'required: true' podría ser implícito o deseado.
+        },
       ],
     });
 
@@ -50,6 +65,7 @@ module.exports = async (req, res) => {
       products: products,
     });
   } catch (error) {
+    console.error('Error fetching all products:', error); // Añadir un log más específico
     response(res, 500, { error: error.message });
   }
 };
