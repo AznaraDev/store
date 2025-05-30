@@ -4,7 +4,7 @@ import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ShoppingBagIcon } from '@her
 import { Link, useNavigate, useLocation } from 'react-router-dom'; // Agrega useNavigate para la redirección
 import logo from '../assets/img/logoCompleto.png';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
+import { setSearchTerm, fetchFilteredProducts, setPriceFilter, setCategoryFilter,setSubCategoryFilter, fetchCategories, logout } from '../Redux/Actions/actions';
 //import { SectionContext } from '../SectionContext';
 import { useSection } from '../SectionContext';
 import { FaInstagram, FaWhatsapp, FaFacebook, FaTiktok } from 'react-icons/fa';
@@ -37,17 +37,12 @@ export default function Navbar() {
 
     const handleStoreLinkClick = () => {
     // Resetea el filtro de categoría cuando se hace clic en "Tienda"
-    dispatch(setCategoryFilter(null)); // o setCategoryFilter('')
-    // Opcional: también podrías resetear searchTerm aquí si lo deseas
-    // dispatch(setSearchTerm(''));
-    // La navegación a /products ya está manejada por el <Link>
+    dispatch(setCategoryFilter(null));
+    dispatch(setSubCategoryFilter(null)); // o setCategoryFilter('')
+    
   };
 
-  // const navigation = [
-  //   // Modifica el objeto de "Tienda"
-  //   { name: 'Tienda', href: '/products', current: true, onClick: handleStoreLinkClick },
-  //   { name: 'Contactanos', href: '#footer', current: false },
-  // ];
+
 
 
   useEffect(() => {

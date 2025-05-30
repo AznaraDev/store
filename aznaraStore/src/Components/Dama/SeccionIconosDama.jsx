@@ -40,7 +40,7 @@ const SeccionIconosDama = () => {
   const categories = [
     { image: Relojes, altText: 'Relojes', label: 'Relojes', categoryName: 'Relojes' },
     { image: Manillas, altText: 'Manillas', label: 'Manillas', categoryName: 'Manillas' },
-    { image: Anillos, altText: 'Anillos', label: 'Anillos', categoryName: 'anilllos' }, // Ejemplo: si tu backend usa 'anilllos'
+    { image: Anillos, altText: 'Anillos', label: 'Anillos', categoryName: 'Anillos' }, // Ejemplo: si tu backend usa 'anilllos'
     { image: Cadenas, altText: 'Cadenas', label: 'Cadenas', categoryName: 'Cadenas' },
     { image: Aretes, altText: 'Aretes', label: 'Aretes', categoryName: 'Aretes' }, // O el nombre que use tu backend
   ];
