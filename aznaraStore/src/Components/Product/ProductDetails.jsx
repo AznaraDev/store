@@ -107,12 +107,9 @@ const getUniqueColorProducts = (products) => {
   console.log("Dimensiones usadas para largeImage (en render):", largeImageDimensions);
 
   const getAvailableColors = () => {
-    if (!selectedProduct || !similarProducts) return [];
-    const matchingProducts = similarProducts.filter(
-      (p) => p.id_SB === selectedProduct.id_SB && p.price === selectedProduct.price
-    );
-    return [...new Set(matchingProducts.flatMap((p) => p.colors))];
-  };
+  if (!selectedProduct) return [];
+  return selectedProduct.colors || [];
+};
 
   const getAvailableSizes = () => {
     if (!selectedProduct || !similarProducts || !selectedColor) return []; // Necesita un color seleccionado
