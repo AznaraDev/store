@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductById, updateProduct } from '../../Redux/Actions/actions'; 
+import { fetchProductById, updateProduct, fetchCategories, fetchSB } from '../../Redux/Actions/actions'; 
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
@@ -8,7 +8,9 @@ const UpdateProduct = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const product = useSelector((state) => state.product); 
+    const product = useSelector((state) => state.product);
+    const categories = useSelector((state) => state.categories.data);
+    const subCategories = useSelector((state) => state.subCategories.data); 
 
     const [formData, setFormData] = useState({
       name: '',
@@ -20,13 +22,21 @@ const UpdateProduct = () => {
       sizes: '',   
       colors: '',
       materials: '',
-      isOffer: false, 
+      isOffer: false,
+      id_category: '', 
+      id_SB: '', 
       
     });
 
     const [existingImages, setExistingImages] = useState([]); 
     const [newImageFiles, setNewImageFiles] = useState([]); 
     const [imagesToDelete, setImagesToDelete] = useState([]); 
+
+
+    useEffect(() => {
+      dispatch(fetchCategories());
+      dispatch(fetchSB());
+    }, [dispatch]);
 
     useEffect(() => {
       if (id) {
@@ -43,11 +53,13 @@ const UpdateProduct = () => {
           stock: product.stock || 0,
           section: product.section || '',
           name_SB: product.name_SB || '',
-          // Para sizes, colors, materials, si son JSON strings en el backend y quieres editarlos como texto:
+          // Para sizes, colors, materials, si son Cargar como en el ejemplo: s en el backend y quieres editarlos como texto:
           sizes: typeof product.sizes === 'object' ? JSON.stringify(product.sizes) : product.sizes || '',
           colors: typeof product.colors === 'object' ? JSON.stringify(product.colors) : product.colors || '',
           materials: typeof product.materials === 'object' ? JSON.stringify(product.materials) : product.materials || '',
           isOffer: product.isOffer || false,
+          id_category: product.id_category || '', 
+          id_SB: product.id_SB || '',     
         });
        
         setExistingImages(product.Images || []);
@@ -85,11 +97,17 @@ const UpdateProduct = () => {
       dataToSend.append('section', formData.section);
       dataToSend.append('name_SB', formData.name_SB);
       dataToSend.append('isOffer', formData.isOffer);
+      dataToSend.append('id_category', formData.id_category);
+      dataToSend.append('id_SB', formData.id_SB);
 
      
-      dataToSend.append('sizes', formData.sizes); 
-      dataToSend.append('colors', formData.colors);
-      dataToSend.append('materials', formData.materials);
+  const sizesArray = formData.sizes.split(',').map(s => s.trim()).filter(Boolean);
+  const colorsArray = formData.colors.split(',').map(c => c.trim()).filter(Boolean);
+  const materialsArray = formData.materials.split(',').map(m => m.trim()).filter(Boolean);
+
+  dataToSend.append('sizes', JSON.stringify(sizesArray));
+  dataToSend.append('colors', JSON.stringify(colorsArray));
+  dataToSend.append('materials', JSON.stringify(materialsArray));
 
 
       // Añadir nuevas imágenes
@@ -153,6 +171,53 @@ const UpdateProduct = () => {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
                 />
               </div>
+               <div>
+                <label htmlFor="id_category" className="block text-sm font-medium text-gray-700">Categoría</label>
+                <select
+                  name="id_category"
+                  id="id_category"
+                  value={formData.id_category}
+                  onChange={handleChange}
+                  className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+                >
+                  <option value="">Seleccionar categoría</option>
+                  {categories && categories.length > 0 ? (
+                    categories.map((category) => (
+                      <option key={category.id_category} value={category.id_category}>
+                        {category.name_category}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled value="">No hay categorías disponibles</option>
+                  )}
+                </select>
+              </div>
+
+              {/* NUEVO: Select de Subcategoría */}
+              <div>
+                <label htmlFor="id_SB" className="block text-sm font-medium text-gray-700">Subcategoría</label>
+                <select
+                  name="id_SB"
+                  id="id_SB"
+                  value={formData.id_SB}
+                  onChange={handleChange}
+                  className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+                >
+                  <option value="">Seleccionar subcategoría</option>
+                  {subCategories && subCategories.length > 0 ? (
+                    subCategories.map((sb) => (
+                      sb && sb.id_SB ? (
+                        <option key={sb.id_SB} value={sb.id_SB}>
+                          {sb.name_SB}
+                        </option>
+                      ) : null
+                    ))
+                  ) : (
+                    <option disabled value="">No hay subcategorías disponibles</option>
+                  )}
+                </select>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700">Precio</label>
@@ -167,21 +232,18 @@ const UpdateProduct = () => {
                 <label htmlFor="section" className="block text-sm font-medium text-gray-700">Sección</label>
                 <input type="text" name="section" id="section" value={formData.section} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
               </div>
+            
               <div>
-                <label htmlFor="name_SB" className="block text-sm font-medium text-gray-700">Nombre Subcategoría</label>
-                <input type="text" name="name_SB" id="name_SB" value={formData.name_SB} onChange={handleChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
+                <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">Talles (Cargar separados por coma )</label>
+                <input type="text" name="sizes" id="sizes" value={formData.sizes} onChange={handleChange} placeholder='Ej: S, M' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
               </div>
               <div>
-                <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">Talles (JSON string)</label>
-                <input type="text" name="sizes" id="sizes" value={formData.sizes} onChange={handleChange} placeholder='Ej: ["S", "M"] o {"S": 10, "M": 5}' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
+                <label htmlFor="colors" className="block text-sm font-medium text-gray-700">Colores (Cargar separados por coma )</label>
+                <input type="text" name="colors" id="colors" value={formData.colors} onChange={handleChange} placeholder='Ej: Rojo, Azul ' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
               </div>
               <div>
-                <label htmlFor="colors" className="block text-sm font-medium text-gray-700">Colores (JSON string)</label>
-                <input type="text" name="colors" id="colors" value={formData.colors} onChange={handleChange} placeholder='Ej: ["Rojo", "Azul"] o {"Rojo": true}' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
-              </div>
-              <div>
-                <label htmlFor="materials" className="block text-sm font-medium text-gray-700">Materiales (JSON string)</label>
-                <input type="text" name="materials" id="materials" value={formData.materials} onChange={handleChange} placeholder='Ej: ["Algodón", "Poliéster"]' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
+                <label htmlFor="materials" className="block text-sm font-medium text-gray-700">Materiales (Cargar separados por coma )</label>
+                <input type="text" name="materials" id="materials" value={formData.materials} onChange={handleChange} placeholder='Ej: Oro, Cuero' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
               </div>
                <div className="flex items-center">
                 <input
