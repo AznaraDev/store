@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
     const { id } = req.params;
     const {
       name, description, price, stock, section, name_SB, sizes, colors, materials, isOffer,
-      imagesToDelete // Espera un array de IDs de imágenes a eliminar (e.g., "[1,2,3]")
+      imagesToDelete, id_category, id_SB 
     } = req.body;
 
     const newImageFiles = req.files; // Nuevas imágenes subidas
@@ -88,7 +88,8 @@ module.exports = async (req, res) => {
       if (isOffer !== undefined) product.isOffer = isOffer === 'true' || isOffer === true;
       if (section !== undefined) product.section = section;
       if (name_SB !== undefined) product.name_SB = name_SB;
-      
+      if (id_category !== undefined) product.id_category = id_category; 
+      if (id_SB !== undefined) product.id_SB = id_SB;                   
       // Para arrays/JSON, parsearlos si vienen como string
       if (sizes !== undefined) product.sizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
       if (colors !== undefined) product.colors = typeof colors === 'string' ? JSON.parse(colors) : colors;
