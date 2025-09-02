@@ -10,5 +10,11 @@ router.use("/user", require("./userRouter"))
 router.use("/auth", require("./authRouter"))
 router.use("/eventos", require("./webhookRouter"))
 
+// ✅ RUTAS TAXXA
+router.use("/buyer", require("./buyerRouter"))
+router.use("/bill", require("./billRouter"))
+router.use("/invoice", require("./invoiceRouter"))
+router.use("/seller", require("./sellerRouter"))
+
 
 module.exports = router;

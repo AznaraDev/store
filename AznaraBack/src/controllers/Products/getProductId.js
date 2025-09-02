@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
       include: [
         {
           model: Image,
+          as: 'Images'  // ✅ Agregado alias requerido
         },
         {
           model: Category,
@@ -37,6 +38,7 @@ module.exports = async (req, res) => {
       include: [
         {
           model: Image,
+          as: 'Images'  // ✅ Agregado alias requerido
         },
         {
           model: Category,

@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
     const products = await Product.findAll({
       where: whereClause,
       include: [
-        { model: Image },
+        { model: Image, as: 'Images' },  // ✅ Agregado alias requerido
         {
           model: Category,
           attributes: ['id_category', 'name_category'],
