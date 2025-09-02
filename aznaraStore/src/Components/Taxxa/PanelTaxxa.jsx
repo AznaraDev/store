@@ -5,7 +5,8 @@ import {  FaListAlt, FaClock } from 'react-icons/fa';
 import DashboardLayout from '../Dashboard/DashboardLayout';
 
 const PanelTaxxa = () => {
-  const { user } = useSelector(state => state.auth);
+  // ✅ Usar el estado correcto de userLogin
+  const { userInfo: user } = useSelector(state => state.userLogin || {});
 
   // Verificar si el usuario tiene permisos para acceder
   const hasPermission = user && (user.role === 'owner' || user.role === 'admin');

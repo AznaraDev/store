@@ -7,7 +7,8 @@ import DashboardLayout from '../Dashboard/DashboardLayout';
 
 const SellerSetting = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector(state => state.auth);
+  // ✅ Usar el estado correcto de userLogin
+  const { userInfo: user } = useSelector(state => state.userLogin || {});
   
   // 🔧 ESTADO SIMPLIFICADO - Solo campos esenciales
   const [formData, setFormData] = useState({
