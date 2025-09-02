@@ -51,7 +51,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { User, Product,  Category, Delivery, OrderDetail, Payment, Image, OrderProduct, SubCategory } = sequelize.models;
+const { User, Product,  Category, Delivery, OrderDetail, Payment, Image, Bill, Invoice, Buyer, SubCategory } = sequelize.models;
 
 OrderDetail.hasMany(Product, {
   foreignKey: 'id_orderDetail',
@@ -80,10 +80,10 @@ Delivery.belongsTo(OrderDetail, { foreignKey: 'id_orderDetail' });
 
 //Order ---> Payment
 Payment.belongsTo(OrderDetail, { foreignKey: 'id_orderDetail' });
-OrderDetail.hasMany(Payment, { foreignKey: 'id_orderDetail' });
+OrderDetail.hasMany(Payment, { foreignKey: 'id_orderDetail', as: 'payments' });
 
 //Product ---> Image
-Product.hasMany(Image, { foreignKey: 'id_product' });
+Product.hasMany(Image, { foreignKey: 'id_product', as: 'Images' });
 Image.belongsTo(Product, { foreignKey: 'id_product' });
 
 Category.hasMany(SubCategory, {foreignKey: 'id_category'})
@@ -92,6 +92,14 @@ SubCategory.belongsTo(Category, {foreingKey: 'id_category'})
 Product.belongsTo(SubCategory,{foreignKey:"id_SB"})
 SubCategory.hasMany(Product,{foreignKey: "id_SB"})
 
+User.hasMany(Buyer, {foreignKey: "n_document"})
+Buyer.belongsTo(User, {foreignKey: "n_document"})
+
+OrderDetail.hasMany(Bill, { foreignKey: 'orderDetailId', as: 'bills' });
+Bill.belongsTo(OrderDetail, { foreignKey: 'orderDetailId', as: 'orderDetail' });
+
+Bill.hasOne(Invoice, { foreignKey: 'billId', as: 'invoice' });
+Invoice.belongsTo(Bill, { foreignKey: 'billId', as: 'bill' });
 
 //---------------------------------------------------------------------------------//
 module.exports = {

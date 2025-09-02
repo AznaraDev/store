@@ -4,6 +4,7 @@ module.exports = (sequelize) => {
   sequelize.define(
     'User',
     {
+      
       n_document: {
         type: DataTypes.STRING,
         primaryKey: true,

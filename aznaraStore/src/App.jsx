@@ -25,6 +25,14 @@ import WhatsappButton from "./Components/WhatsappButton";
 import LandingDama from "./Components/Dama/LandingDama";
 import { SectionProvider } from "./SectionContext";
 
+// Importar componentes Taxxa
+import PanelTaxxa from "./Components/Taxxa/PanelTaxxa";
+import FacturasPendientes from "./Components/Taxxa/FacturasPendientes";
+import InvoiceList from "./Components/Taxxa/InvoiceList";
+import FacturaManual from "./Components/Taxxa/FacturaManual";
+import SellerSetting from "./Components/Taxxa/SellerSetting";
+import TaxxaTestComponent from "./Components/Taxxa/TaxxaTestComponent";
+
   function App() {
     return (
       <SectionProvider>
@@ -61,6 +69,26 @@ import { SectionProvider } from "./SectionContext";
             <Route path="/category" element={<CreateCategory/>}/>  
             <Route path="/sb" element={<CreateSB/>}/>  
             <Route path="/productsCat/:categoryName" element={<FilteredProducts />} />     
+            
+            {/* Rutas Taxxa - Sistema de Facturación */}
+            <Route path="/taxxa" element={<PrivateRoute>
+              <PanelTaxxa />
+            </PrivateRoute>} />
+            <Route path="/pendientInvoices" element={<PrivateRoute>
+              <FacturasPendientes />
+            </PrivateRoute>} />
+            <Route path="/invoices" element={<PrivateRoute>
+              <InvoiceList />
+            </PrivateRoute>} />
+            <Route path="/manual-invoice" element={<PrivateRoute>
+              <FacturaManual />
+            </PrivateRoute>} />
+            <Route path="/seller-settings" element={<PrivateRoute>
+              <SellerSetting />
+            </PrivateRoute>} />
+            <Route path="/taxxa-test" element={<PrivateRoute>
+              <TaxxaTestComponent />
+            </PrivateRoute>} />
           </Routes>
         </div>
         <Footer/>
