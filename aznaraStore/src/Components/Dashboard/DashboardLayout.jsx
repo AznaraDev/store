@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 
 const DashboardLayout = ({ children }) => {
   const location = useLocation();
-  const { userInfo } = useSelector(state => state.userLogin);
+  
+  // ✅ Validación segura del estado del usuario
+  const userLoginState = useSelector(state => state.userLogin || {});
+  const { userInfo } = userLoginState;
 
   // Verificar si el usuario tiene permisos de admin/comercio
   const hasAdminPermissions = userInfo && (userInfo.role === 'Admin' || userInfo.role === 'comercio');
