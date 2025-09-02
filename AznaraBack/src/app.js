@@ -6,11 +6,28 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const { passport, initialize } = require('./passport');
-const { JWT_SECRET_KEY } = require('./config/envs');
+const { JWT_SECRET_KEY, FRONTEND_URL } = require('./config/envs');
 const path = require('path');
 
 
 const app = express();
+
+// Configuración de CORS apropiada para deployment
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173', 
+    'https://store-sable-two.vercel.app', // ✅ Dominio de Vercel
+    FRONTEND_URL // ✅ Variable de entorno
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  preflightContinue: false,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -22,19 +39,8 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-app.use(cors());
 app.use(morgan('dev'));
 app.use('/', routes);
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); 
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  next();
-});
 app.use(passport.initialize());
 
 app.use('*', (req, res, next) => {

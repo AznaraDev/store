@@ -12,6 +12,7 @@ module.exports = {
     WOMPI_EVENT_KEY: process.env.EVENTS_SECRET_KEY,
     USERNAME: process.env.USERNAME,
     ACCESS_KEY: process.env.ACCESS_KEY,
-    PARTNER_ID: process.env.PARTNER_ID
+    PARTNER_ID: process.env.PARTNER_ID,
+    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173'  // ✅ Variable para el frontend
    
 }  
