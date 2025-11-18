@@ -27,6 +27,9 @@ module.exports = async (req, res) => {
       return response(res, 404, { error: "Product not found" });
     }
 
+    // El modelo Product ya tiene getters que parsean automáticamente sizes, colors y materials
+    const parsedProduct = product.toJSON();
+
     // Obtener los productos que tengan el mismo id_SB, id_category, y section
     const relatedProducts = await Product.findAll({
       where: {
@@ -51,9 +54,12 @@ module.exports = async (req, res) => {
       ],
     });
 
+    // El modelo Product ya tiene getters que parsean automáticamente
+    const parsedRelatedProducts = relatedProducts.map(relProd => relProd.toJSON());
+
     return response(res, 200, {
-      product,
-      relatedProducts, // Enviar el producto principal y los productos relacionados
+      product: parsedProduct,
+      relatedProducts: parsedRelatedProducts, // Enviar el producto principal y los productos relacionados
     });
   } catch (error) {
     console.error('Error fetching product and related products:', error);

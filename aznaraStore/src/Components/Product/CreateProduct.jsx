@@ -14,10 +14,11 @@ const CreateProduct = () => {
   const [sbId, setSbId] = useState("");
   const [images, setImages] = useState([]);
   const [sizes, setSizes] = useState(""); // Cambiado de arreglo a cadena
-  const [colors, setColors] = useState(""); // Cambiado de arreglo a cadena
+  const [color, setColor] = useState(""); // UN SOLO COLOR por producto
   const [materials, setMaterials] = useState(""); // Cambiado de arreglo a cadena
   const [isOffer, setIsOffer] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [showVariantInfo, setShowVariantInfo] = useState(true);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.categories.data);
@@ -50,9 +51,17 @@ const CreateProduct = () => {
       !stock ||
       !categoryId ||
       !sbId ||
+      !color ||
       images.length === 0
     ) {
-      setAlertMessage("Por favor complete todos los campos y seleccione al menos una imagen.");
+      setAlertMessage("Por favor complete todos los campos requeridos y seleccione al menos una imagen.");
+      return;
+    }
+
+    // Validar que solo haya un color
+    const colorTrimmed = color.trim();
+    if (colorTrimmed.includes(",")) {
+      setAlertMessage("⚠️ Solo puedes ingresar UN color por producto. Para otros colores, crea productos separados.");
       return;
     }
 
@@ -65,9 +74,9 @@ const CreateProduct = () => {
       id_category: categoryId,
       id_SB: sbId,
       images,
-      sizes: sizes.split(",").map(size => size.trim()), // Convertir cadena en arreglo
-      colors: colors.split(",").map(color => color.trim()), // Convertir cadena en arreglo
-      materials: materials.split(",").map(material => material.trim()), // Convertir cadena en arreglo
+      sizes: sizes ? sizes.split(",").map(size => size.trim()).filter(s => s) : [], // Convertir cadena en arreglo
+      colors: [colorTrimmed], // UN SOLO COLOR como arreglo
+      materials: materials ? materials.split(",").map(material => material.trim()).filter(m => m) : [], // Convertir cadena en arreglo
       isOffer,
     };
     console.log(productData);
@@ -89,7 +98,7 @@ const CreateProduct = () => {
       setSbId("");
       setImages([]);
       setSizes(""); // Limpiar campo de talles
-      setColors(""); // Limpiar campo de colores
+      setColor(""); // Limpiar campo de color
       setMaterials(""); // Limpiar campo de materiales
       setSection("");
       setIsOffer(false);
@@ -110,6 +119,54 @@ const CreateProduct = () => {
   return (
     <div className="bg-colorFooter min-h-screen pt-16">
       <form className="max-w-4xl mx-auto mt-10 p-6 bg-gray-300 rounded-lg shadow-xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* Banner informativo */}
+        {showVariantInfo && (
+          <div className="col-span-1 md:col-span-2 bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-blue-600 text-blue-800 p-5 rounded-lg shadow-md relative">
+            <button
+              onClick={() => setShowVariantInfo(false)}
+              className="absolute top-2 right-2 text-blue-600 hover:text-blue-900 font-bold text-xl"
+            >
+              ✕
+            </button>
+            <p className="font-bold text-lg mb-3 flex items-center">
+              <span className="text-2xl mr-2">🎨</span>
+              Regla de Oro: UN COLOR = UN PRODUCTO
+            </p>
+            <div className="bg-white/60 p-3 rounded-md mb-3">
+              <p className="text-sm font-semibold mb-2">
+                ✅ Para que las variantes funcionen correctamente:
+              </p>
+              <ul className="text-sm list-none space-y-2 ml-4">
+                <li className="flex items-start">
+                  <span className="text-green-600 font-bold mr-2">1.</span>
+                  <span><strong>Ingresa SOLO UN color</strong> en el campo "Color"</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-600 font-bold mr-2">2.</span>
+                  <span>Usa el <strong>mismo nombre y subcategoría</strong> para todas las variantes</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-600 font-bold mr-2">3.</span>
+                  <span>Sube <strong>imágenes específicas</strong> de ese color</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-600 font-bold mr-2">4.</span>
+                  <span>Puedes tener <strong>múltiples talles y materiales</strong> (separados por coma)</span>
+                </li>
+              </ul>
+            </div>
+            <div className="bg-yellow-100 border border-yellow-300 p-3 rounded-md">
+              <p className="text-sm font-semibold mb-1">📋 Ejemplo: "Anillo Solitario"</p>
+              <div className="text-xs space-y-1 ml-2">
+                <p>• Producto 1: Color = <strong>"Oro Amarillo"</strong>, Materiales = "Enchapado, Macizo"</p>
+                <p>• Producto 2: Color = <strong>"Oro Blanco"</strong>, Materiales = "Enchapado, Macizo"</p>
+                <p>• Producto 3: Color = <strong>"Plata"</strong>, Materiales = "Enchapado, Macizo"</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div className="space-y-6">
           <h2 className="text-3xl font-bold font-nunito bg-yellow-600 p-4 rounded mb-4 text-center text-gray-600">
             Crear nuevo producto
@@ -266,41 +323,58 @@ const CreateProduct = () => {
 
           <div>
             <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">
-              Talles (separados por coma)
+              Talles <span className="text-gray-400 text-xs">(opcional, separados por coma)</span>
             </label>
             <input
               type="text"
               value={sizes}
               onChange={(e) => setSizes(e.target.value)}
-              placeholder="Talles (ej: S, M, L)"
-              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+              placeholder="ej: S, M, L, XL"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-blue-500 focus:border-blue-500"
             />
+            <p className="text-gray-500 text-xs mt-1">💡 Puedes agregar múltiples talles para este color</p>
           </div>
 
           <div>
-            <label htmlFor="colors" className="block text-sm font-medium text-gray-700">
-              Colores (separados por coma)
+            <label htmlFor="color" className="block text-sm font-medium text-gray-700">
+              Color * <span className="text-red-500 text-xs">(Solo UN color)</span>
             </label>
             <input
               type="text"
-              value={colors}
-              onChange={(e) => setColors(e.target.value)}
-              placeholder="Colores (ej: Rojo, Azul)"
-              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+              value={color}
+              onChange={(e) => {
+                const value = e.target.value;
+                setColor(value);
+                // Advertir si detectamos coma
+                if (value.includes(",")) {
+                  setAlertMessage("⚠️ Solo un color por producto. Para otros colores, crea productos separados.");
+                } else if (alertMessage.includes("color")) {
+                  setAlertMessage("");
+                }
+              }}
+              placeholder="ej: Oro Amarillo"
+              className={`mt-1 block w-full bg-gray-100 border rounded-md py-2 px-3 text-sm ${
+                color.includes(",") ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
+              }`}
+              required
             />
+            {color.includes(",") && (
+              <p className="text-red-500 text-xs mt-1">❌ Elimina las comas. Ingresa solo un color.</p>
+            )}
           </div>
 
           <div>
             <label htmlFor="materials" className="block text-sm font-medium text-gray-700">
-              Materiales (separados por coma)
+              Materiales <span className="text-gray-400 text-xs">(opcional, separados por coma)</span>
             </label>
             <input
               type="text"
               value={materials}
               onChange={(e) => setMaterials(e.target.value)}
-              placeholder="Materiales (ej: Algodón, Poliester)"
-              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm"
+              placeholder="ej: Enchapado, Macizo, Acero"
+              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-blue-500 focus:border-blue-500"
             />
+            <p className="text-gray-500 text-xs mt-1">💡 Especifica los materiales disponibles para este color</p>
           </div>
 
           <div>

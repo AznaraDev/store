@@ -104,9 +104,114 @@ const OrdersList = () => {
                 <div className="font-semibold bg-gray-700 text-white px-2 py-1 rounded">Estado Pedido: {order.state_order}</div>
               </div>
               <div>Cantidad: {order.quantity}</div>
-              <div>Monto: ${order.amount}</div>
+              <div>Monto: ${new Intl.NumberFormat('es-ES').format(order.amount)}</div>
               <div className="font-semibold">N° Pedido: {order.id_orderDetail}</div>
-              <div>
+              
+              {/* Información de entrega */}
+              <div className="mt-3 p-3 bg-blue-50 rounded border border-blue-200">
+                <div className="font-semibold text-blue-800 mb-2">📦 Información de Entrega:</div>
+                <div className="font-semibold">Tipo: {order.address}</div>
+                
+                {order.address === 'Envio a domicilio' ? (
+                  <>
+                    <div className="mt-2">
+                      <strong>Destinatario:</strong> {order.recipient_name || 'No especificado'}
+                    </div>
+                    <div>
+                      <strong>Teléfono:</strong> {order.recipient_phone || 'No especificado'}
+                    </div>
+                    <div>
+                      <strong>Ciudad:</strong> {order.city || 'No especificada'}
+                    </div>
+                    <div>
+                      <strong>Dirección:</strong> {order.deliveryAddress || 'No especificada'}
+                    </div>
+                    {order.postal_code && (
+                      <div>
+                        <strong>Código Postal:</strong> {order.postal_code}
+                      </div>
+                    )}
+                    {order.delivery_notes && (
+                      <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                        <strong>Notas:</strong> {order.delivery_notes}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="mt-2 text-green-700 font-semibold">
+                    🏪 El cliente retirará en el local
+                  </div>
+                )}
+              </div>
+
+              {/* Productos del pedido */}
+              {order.cart_items && order.cart_items.length > 0 ? (
+                <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                  <div className="font-semibold text-gray-800 mb-3">🛍️ Productos del Pedido:</div>
+                  <div className="space-y-3">
+                    {order.cart_items.map((item, index) => (
+                      <div key={index} className="flex items-center space-x-4 p-2 bg-white rounded border">
+                        {item.image && (
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className="w-20 h-20 object-cover rounded"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <div className="font-semibold text-gray-800">{item.name}</div>
+                          <div className="text-sm text-gray-600">
+                            Precio: ${new Intl.NumberFormat('es-ES').format(item.price)}
+                          </div>
+                          {item.selectedColor && (
+                            <div className="text-sm text-gray-600">
+                              Color: {item.selectedColor}
+                            </div>
+                          )}
+                          {item.selectedSize && (
+                            <div className="text-sm text-gray-600">
+                              Talle: {item.selectedSize}
+                            </div>
+                          )}
+                          {item.selectedMaterial && (
+                            <div className="text-sm text-gray-600">
+                              Material: {item.selectedMaterial}
+                            </div>
+                          )}
+                          <div className="text-sm text-gray-600">
+                            Cantidad: {item.quantity}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : order.products && order.products.length > 0 ? (
+                <div className="mt-3 p-3 bg-gray-50 rounded border border-gray-200">
+                  <div className="font-semibold text-gray-800 mb-3">🛍️ Productos del Pedido:</div>
+                  <div className="space-y-3">
+                    {order.products.map((product) => (
+                      <div key={product.id_product} className="flex items-center space-x-4 p-2 bg-white rounded border">
+                        {product.Images && product.Images.length > 0 && (
+                          <img 
+                            src={product.Images[0].url} 
+                            alt={product.name}
+                            className="w-20 h-20 object-cover rounded"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <div className="font-semibold text-gray-800">{product.name}</div>
+                          <div className="text-sm text-gray-600">
+                            Precio: ${new Intl.NumberFormat('es-ES').format(product.price)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+              
+              <div className="mt-3">
                 <select
                   onChange={(e) => handleStateChange(order.id_orderDetail, e.target.value)}
                   value={selectedStates[order.id_orderDetail] || order.state_order}

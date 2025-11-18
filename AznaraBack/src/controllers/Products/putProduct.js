@@ -90,10 +90,30 @@ module.exports = async (req, res) => {
       if (name_SB !== undefined) product.name_SB = name_SB;
       if (id_category !== undefined) product.id_category = id_category; 
       if (id_SB !== undefined) product.id_SB = id_SB;                   
-      // Para arrays/JSON, parsearlos si vienen como string
-      if (sizes !== undefined) product.sizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
-      if (colors !== undefined) product.colors = typeof colors === 'string' ? JSON.parse(colors) : colors;
-      if (materials !== undefined) product.materials = typeof materials === 'string' ? JSON.parse(materials) : materials;
+      
+      // Para arrays/JSON: siempre parsear si es string, el setter del modelo hará el stringify
+      if (sizes !== undefined) {
+        try {
+          product.sizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
+        } catch (e) {
+          // Si JSON.parse falla, asumir que ya es un array
+          product.sizes = sizes;
+        }
+      }
+      if (colors !== undefined) {
+        try {
+          product.colors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+        } catch (e) {
+          product.colors = colors;
+        }
+      }
+      if (materials !== undefined) {
+        try {
+          product.materials = typeof materials === 'string' ? JSON.parse(materials) : materials;
+        } catch (e) {
+          product.materials = materials;
+        }
+      }
 
       // 1. Eliminar imágenes marcadas para borrado
       if (imagesToDelete) {

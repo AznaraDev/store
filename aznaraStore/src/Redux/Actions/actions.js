@@ -265,7 +265,7 @@ export const login = (email, password) => async (dispatch) => {
       // Decodifica el token para obtener el rol del usuario
       const decodedToken = jwtDecode(data.data.token);
       const userInfo = {
-        token: data.token,
+        token: data.data.token,
         role: decodedToken.role,
         n_document: decodedToken.n_document, // Agregar n_document desde el token decodificado
         message: data.message,

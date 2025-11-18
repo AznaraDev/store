@@ -13,6 +13,11 @@ const Checkout = () => {
   const currentDate = new Date().toISOString().split("T")[0];
   const [address, setAddress] = useState("Retira en local");
   const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [recipientName, setRecipientName] = useState("");
+  const [recipientPhone, setRecipientPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [deliveryNotes, setDeliveryNotes] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,8 +34,14 @@ const Checkout = () => {
     state_order: "Pedido Realizado",
     n_document: userInfo ? userInfo.n_document : "",
     id_product: cart.items.map((item) => item.id_product),
+    cart_items: cart.items,
     address,
     deliveryAddress: address === "Envio a domicilio" ? deliveryAddress : null,
+    recipient_name: address === "Envio a domicilio" ? recipientName : null,
+    recipient_phone: address === "Envio a domicilio" ? recipientPhone : null,
+    city: address === "Envio a domicilio" ? city : null,
+    postal_code: address === "Envio a domicilio" ? postalCode : null,
+    delivery_notes: address === "Envio a domicilio" ? deliveryNotes : null,
   });
 
   // Manejar creación de orden exitosa
@@ -93,19 +104,26 @@ const Checkout = () => {
     setOrderData((prevData) => ({
       ...prevData,
       id_product: cart.items.map((item) => item.id_product),
+      cart_items: cart.items,
       amount: cart.totalPrice,
       quantity: cart.totalItems,
     }));
   }, [cart]);
 
-  // Actualizar dirección de entrega
+  // Actualizar dirección de entrega y datos de envío
   useEffect(() => {
     setOrderData((prevData) => ({
       ...prevData,
       address,
+      cart_items: cart.items,
       deliveryAddress: address === "Envio a domicilio" ? deliveryAddress : null,
+      recipient_name: address === "Envio a domicilio" ? recipientName : null,
+      recipient_phone: address === "Envio a domicilio" ? recipientPhone : null,
+      city: address === "Envio a domicilio" ? city : null,
+      postal_code: address === "Envio a domicilio" ? postalCode : null,
+      delivery_notes: address === "Envio a domicilio" ? deliveryNotes : null,
     }));
-  }, [address, deliveryAddress]);
+  }, [address, deliveryAddress, recipientName, recipientPhone, city, postalCode, deliveryNotes]);
 
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
@@ -126,9 +144,23 @@ const Checkout = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Validar dirección de entrega si es necesario
-    if (address === "Envio a domicilio" && !deliveryAddress) {
-      Swal.fire("Error", "Por favor ingresa la dirección de envío", "error");
-      return;
+    if (address === "Envio a domicilio") {
+      if (!deliveryAddress) {
+        Swal.fire("Error", "Por favor ingresa la dirección de envío", "error");
+        return;
+      }
+      if (!recipientName) {
+        Swal.fire("Error", "Por favor ingresa el nombre del destinatario", "error");
+        return;
+      }
+      if (!recipientPhone) {
+        Swal.fire("Error", "Por favor ingresa el teléfono del destinatario", "error");
+        return;
+      }
+      if (!city) {
+        Swal.fire("Error", "Por favor ingresa la ciudad", "error");
+        return;
+      }
     }
     dispatch(createOrder(orderData));
   };
@@ -170,19 +202,86 @@ const Checkout = () => {
           </select>
         </div>
         {address === "Envio a domicilio" && (
-          <div className="mb-4">
-            <label className="block text-sm font-nunito font-semibold text-gray-700">
-              Dirección de envío:
-            </label>
-            <input
-              id="deliveryAddress"
-              type="text"
-              value={deliveryAddress}
-              onChange={handleDeliveryAddressChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              required
-            />
-          </div>
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-nunito font-semibold text-gray-700">
+                Nombre completo del destinatario: *
+              </label>
+              <input
+                id="recipientName"
+                type="text"
+                value={recipientName}
+                onChange={(e) => setRecipientName(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-nunito font-semibold text-gray-700">
+                Teléfono de contacto: *
+              </label>
+              <input
+                id="recipientPhone"
+                type="tel"
+                value={recipientPhone}
+                onChange={(e) => setRecipientPhone(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-nunito font-semibold text-gray-700">
+                Ciudad: *
+              </label>
+              <input
+                id="city"
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-nunito font-semibold text-gray-700">
+                Dirección de envío: *
+              </label>
+              <input
+                id="deliveryAddress"
+                type="text"
+                value={deliveryAddress}
+                onChange={handleDeliveryAddressChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Calle, número, apto/oficina"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-nunito font-semibold text-gray-700">
+                Código postal (opcional):
+              </label>
+              <input
+                id="postalCode"
+                type="text"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-nunito font-semibold text-gray-700">
+                Notas adicionales (opcional):
+              </label>
+              <textarea
+                id="deliveryNotes"
+                value={deliveryNotes}
+                onChange={(e) => setDeliveryNotes(e.target.value)}
+                rows="3"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Referencias, instrucciones especiales..."
+              />
+            </div>
+          </>
         )}
         <div className="mb-4">
           <h3

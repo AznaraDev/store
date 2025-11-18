@@ -6,6 +6,7 @@ const getAllUsers = require('./getAllUsers');
 const getUserByDocument = require('./getUserByDocument');
 const authUser = require('./authUser')
 const suscription = require('./suscription')
+const getCustomers = require('./getCustomers')
 
 module.exports = {
   createUsers,
@@ -14,5 +15,6 @@ module.exports = {
   getAllUsers,
   getUserByDocument,
   authUser,
-  suscription
+  suscription,
+  getCustomers
 };

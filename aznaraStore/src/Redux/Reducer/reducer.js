@@ -104,7 +104,33 @@ import {
   CREATE_MANUAL_INVOICE_FAILURE,
   CLEAR_MANUAL_INVOICE_DATA,
   CLEAR_TAXXA_STATE,
-  SET_TAXXA_ERROR
+  SET_TAXXA_ERROR,
+  
+  // Stock action types
+  FETCH_DASHBOARD_REQUEST,
+  FETCH_DASHBOARD_SUCCESS,
+  FETCH_DASHBOARD_FAILURE,
+  ADD_STOCK_REQUEST,
+  ADD_STOCK_SUCCESS,
+  ADD_STOCK_FAILURE,
+  REMOVE_STOCK_REQUEST,
+  REMOVE_STOCK_SUCCESS,
+  REMOVE_STOCK_FAILURE,
+  ADJUST_STOCK_REQUEST,
+  ADJUST_STOCK_SUCCESS,
+  ADJUST_STOCK_FAILURE,
+  FETCH_STOCK_HISTORY_REQUEST,
+  FETCH_STOCK_HISTORY_SUCCESS,
+  FETCH_STOCK_HISTORY_FAILURE,
+  FETCH_LOW_STOCK_REQUEST,
+  FETCH_LOW_STOCK_SUCCESS,
+  FETCH_LOW_STOCK_FAILURE,
+  FETCH_OUT_OF_STOCK_REQUEST,
+  FETCH_OUT_OF_STOCK_SUCCESS,
+  FETCH_OUT_OF_STOCK_FAILURE,
+  SET_STOCK_SECTION_FILTER,
+  SET_STOCK_STATUS_FILTER,
+  CLEAR_STOCK_FILTERS,
 } from "../Actions/actions-type";
 
 const initialState = {
@@ -262,6 +288,63 @@ const initialState = {
     loading: false,
     error: null,
     message: null
+  },
+  
+  // ===============================
+  // 📦 STOCK MANAGEMENT STATE
+  // ===============================
+  stock: {
+    // Dashboard data
+    dashboard: {
+      products: [],
+      stats: {
+        general: {},
+        bySection: []
+      },
+      pagination: {
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 0
+      },
+      loading: false,
+      error: null
+    },
+    
+    // Stock operations
+    operation: {
+      loading: false,
+      success: false,
+      error: null,
+      data: null
+    },
+    
+    // Stock history
+    history: {
+      data: [],
+      pagination: {
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 0
+      },
+      loading: false,
+      error: null
+    },
+    
+    // Stock alerts
+    alerts: {
+      lowStock: [],
+      outOfStock: [],
+      loading: false,
+      error: null
+    },
+    
+    // Filters
+    filters: {
+      section: 'all',
+      stockStatus: 'all'
+    }
   }
 };
 
@@ -1259,6 +1342,236 @@ const rootReducer = (state = initialState, action) => {
             loading: false,
             error: null,
             success: false
+          }
+        }
+      };
+
+    // ===============================
+    // 📦 STOCK MANAGEMENT CASES
+    // ===============================
+    
+    // Dashboard Cases
+    case FETCH_DASHBOARD_REQUEST:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          dashboard: {
+            ...state.stock.dashboard,
+            loading: true,
+            error: null
+          }
+        }
+      };
+
+    case FETCH_DASHBOARD_SUCCESS:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          dashboard: {
+            products: action.payload.products || [],
+            stats: action.payload.stats || { general: {}, bySection: [] },
+            pagination: action.payload.pagination || state.stock.dashboard.pagination,
+            loading: false,
+            error: null
+          }
+        }
+      };
+
+    case FETCH_DASHBOARD_FAILURE:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          dashboard: {
+            ...state.stock.dashboard,
+            loading: false,
+            error: action.payload
+          }
+        }
+      };
+
+    // Stock Operations Cases
+    case ADD_STOCK_REQUEST:
+    case REMOVE_STOCK_REQUEST:
+    case ADJUST_STOCK_REQUEST:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          operation: {
+            loading: true,
+            success: false,
+            error: null,
+            data: null
+          }
+        }
+      };
+
+    case ADD_STOCK_SUCCESS:
+    case REMOVE_STOCK_SUCCESS:
+    case ADJUST_STOCK_SUCCESS:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          operation: {
+            loading: false,
+            success: true,
+            error: null,
+            data: action.payload
+          }
+        }
+      };
+
+    case ADD_STOCK_FAILURE:
+    case REMOVE_STOCK_FAILURE:
+    case ADJUST_STOCK_FAILURE:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          operation: {
+            loading: false,
+            success: false,
+            error: action.payload,
+            data: null
+          }
+        }
+      };
+
+    // Stock History Cases
+    case FETCH_STOCK_HISTORY_REQUEST:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          history: {
+            ...state.stock.history,
+            loading: true,
+            error: null
+          }
+        }
+      };
+
+    case FETCH_STOCK_HISTORY_SUCCESS:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          history: {
+            data: action.payload.movements || [],
+            pagination: action.payload.pagination || state.stock.history.pagination,
+            loading: false,
+            error: null
+          }
+        }
+      };
+
+    case FETCH_STOCK_HISTORY_FAILURE:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          history: {
+            ...state.stock.history,
+            loading: false,
+            error: action.payload
+          }
+        }
+      };
+
+    // Stock Alerts Cases
+    case FETCH_LOW_STOCK_REQUEST:
+    case FETCH_OUT_OF_STOCK_REQUEST:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          alerts: {
+            ...state.stock.alerts,
+            loading: true,
+            error: null
+          }
+        }
+      };
+
+    case FETCH_LOW_STOCK_SUCCESS:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          alerts: {
+            ...state.stock.alerts,
+            lowStock: action.payload.products || [],
+            loading: false,
+            error: null
+          }
+        }
+      };
+
+    case FETCH_OUT_OF_STOCK_SUCCESS:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          alerts: {
+            ...state.stock.alerts,
+            outOfStock: action.payload.products || [],
+            loading: false,
+            error: null
+          }
+        }
+      };
+
+    case FETCH_LOW_STOCK_FAILURE:
+    case FETCH_OUT_OF_STOCK_FAILURE:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          alerts: {
+            ...state.stock.alerts,
+            loading: false,
+            error: action.payload
+          }
+        }
+      };
+
+    // Filter Cases
+    case SET_STOCK_SECTION_FILTER:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          filters: {
+            ...state.stock.filters,
+            section: action.payload
+          }
+        }
+      };
+
+    case SET_STOCK_STATUS_FILTER:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          filters: {
+            ...state.stock.filters,
+            stockStatus: action.payload
+          }
+        }
+      };
+
+    case CLEAR_STOCK_FILTERS:
+      return {
+        ...state,
+        stock: {
+          ...state.stock,
+          filters: {
+            section: 'all',
+            stockStatus: 'all'
           }
         }
       };
