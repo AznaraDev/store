@@ -4,68 +4,137 @@ const { Op } = require('sequelize');
 
 module.exports = async (req, res) => {
   try {
-    const { search, price, categoryId, categoryName, subCategoryName } = req.query;
+    const { 
+      search, 
+      price, 
+      categoryId, 
+      categoryName, 
+      subCategoryName,
+      section, // Nuevo: filtro por sección
+      page = 1, // Paginación
+      limit = 20,
+      sortBy = 'createdAt', // Ordenamiento
+      sortOrder = 'DESC',
+      inStock // Nuevo: solo productos con stock
+    } = req.query;
 
     let whereClause = {
       [Op.and]: [],
     };
 
-    // Filtro por nombre y/o precio de Product
+    // Filtro por búsqueda (nombre)
     if (search) {
       whereClause[Op.and].push({
-        [Op.or]: [
-          { name: { [Op.iLike]: `%${search}%` } },
-          { price: { [Op.eq]: price } },
-        ],
+        name: { [Op.iLike]: `%${search}%` }
       });
     }
 
-    // Filtro por id_category de Category
+    // Filtro por precio
+    if (price) {
+      whereClause[Op.and].push({
+        price: { [Op.eq]: price }
+      });
+    }
+
+    // Filtro por sección (Dama, Caballero, Unisex)
+    if (section) {
+      whereClause[Op.and].push({
+        section: section
+      });
+    }
+
+    // Filtro por stock
+    if (inStock === 'true') {
+      whereClause[Op.and].push({
+        stock: { [Op.gt]: 0 }
+      });
+    }
+
+    // Filtro por id_category
     if (categoryId) {
       whereClause[Op.and].push({
-        '$Category.id_category$': categoryId,
+        id_category: categoryId
       });
     }
 
-    // Filtro por name_category de Category
+    // Preparar includes con filtros condicionales
+    const includeArray = [
+      { model: Image, as: 'Images' }
+    ];
+
+    // Filtro por nombre de categoría
     if (categoryName) {
-      whereClause[Op.and].push({
-        '$Category.name_category$': { [Op.iLike]: `%${categoryName}%` },
+      includeArray.push({
+        model: Category,
+        attributes: ['id_category', 'name_category'],
+        where: {
+          name_category: { [Op.iLike]: `%${categoryName}%` }
+        },
+        required: true // INNER JOIN
+      });
+    } else {
+      includeArray.push({
+        model: Category,
+        attributes: ['id_category', 'name_category'],
+        required: false // LEFT JOIN
       });
     }
 
-     if (subCategoryName) {
-      whereClause[Op.and].push({
-        '$SubCategory.name_SB$': { [Op.iLike]: `%${subCategoryName}%` }, // Asegúrate que el alias y nombre de columna sean correctos
+    // Filtro por nombre de subcategoría
+    if (subCategoryName) {
+      includeArray.push({
+        model: SubCategory,
+        attributes: ['id_SB', 'name_SB'],
+        where: {
+          name_SB: { [Op.iLike]: `%${subCategoryName}%` }
+        },
+        required: true // INNER JOIN
+      });
+    } else {
+      includeArray.push({
+        model: SubCategory,
+        attributes: ['id_SB', 'name_SB'],
+        required: false // LEFT JOIN
       });
     }
 
+    // Limpiar array vacío
+    if (whereClause[Op.and].length === 0) {
+      delete whereClause[Op.and];
+    }
 
-      // Construir la consulta de productos
-    const products = await Product.findAll({
+    // Calcular offset para paginación
+    const offset = (page - 1) * limit;
+
+    // Validar campo de ordenamiento
+    const validSortFields = ['createdAt', 'name', 'price', 'stock'];
+    const orderField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
+    const order = sortOrder.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+
+    // Construir la consulta de productos
+    const { count, rows: products } = await Product.findAndCountAll({
       where: whereClause,
-      include: [
-        { model: Image, as: 'Images' },  // ✅ Agregado alias requerido
-        {
-          model: Category,
-          attributes: ['id_category', 'name_category'],
-        },
-        { //  AÑADIR ESTO PARA INCLUIR SUBCATEGORÍA
-          model: SubCategory,
-          attributes: ['id_SB', 'name_SB'], // O los atributos que necesites
-          // required: false // Usa false si un producto puede no tener subcategoría y aun así quieres que aparezca
-                           // Si usas true (o lo omites, que es el default para include directo),
-                           // solo traerá productos que TENGAN una subcategoría.
-                           // Si también filtras por subCategoryName, 'required: true' podría ser implícito o deseado.
-        },
-      ],
+      include: includeArray,
+      order: [[orderField, order]],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      distinct: true
     });
+
+    // El modelo Product ya tiene getters que parsean automáticamente
+    const parsedProducts = products.map(product => product.toJSON());
 
     response(res, 200, {
-      products: products,
+      products: parsedProducts,
+      pagination: {
+        total: count,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(count / limit)
+      }
     });
   } catch (error) {
-    console.error('Error fetching all products:', error); // Añadir un log más específico
+    console.error('Error fetching all products:', error);
     response(res, 500, { error: error.message });
   }
 };

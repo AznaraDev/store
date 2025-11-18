@@ -80,16 +80,35 @@ useEffect(() => {
       (product) => product.section === currentSection || product.section === "Unisex"
     );
   }, [allProductsFromState, currentSection]);
+
+  // Agrupar productos por variantes (mismo nombre + subcategoría)
+  // Solo mostrar UN producto por cada grupo de variantes
+  const uniqueProducts = useMemo(() => {
+    const seen = new Map();
+    const unique = [];
+    
+    sectionFilteredProducts.forEach(product => {
+      // Crear una clave única basada en nombre + subcategoría
+      const key = `${product.name}-${product.id_SB}`;
+      
+      if (!seen.has(key)) {
+        seen.set(key, true);
+        unique.push(product);
+      }
+    });
+    
+    return unique;
+  }, [sectionFilteredProducts]);
   
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  // Aplicar paginación a los productos ya filtrados por sección
+  // Aplicar paginación a los productos ya filtrados y agrupados
   const currentProducts = useMemo(() => {
-    return sectionFilteredProducts.slice(
+    return uniqueProducts.slice(
       indexOfFirstProduct,
       indexOfLastProduct
     );
-  }, [sectionFilteredProducts, indexOfFirstProduct, indexOfLastProduct]);
+  }, [uniqueProducts, indexOfFirstProduct, indexOfLastProduct]);
 
 
 
@@ -258,7 +277,13 @@ useEffect(() => {
         {/* Grid de productos */}
         {currentProducts.length > 0 ? (
           <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 uppercase font-nunito font-thin mt-8">
-            {currentProducts.map((product) => (
+            {currentProducts.map((product) => {
+              // Contar cuántas variantes de color tiene este producto
+              const variantCount = sectionFilteredProducts.filter(
+                p => p.name === product.name && p.id_SB === product.id_SB
+              ).length;
+              
+              return (
               <div 
                 key={product.id_product} 
                 className={`group relative max-w-xs rounded-lg mx-auto flex flex-col ${
@@ -283,6 +308,14 @@ useEffect(() => {
                   {product.isOffer && (
                     <span className="absolute top-2 left-2 bg-gray-500 text-colorLogo text-xl px-2 py-0 rounded-md font-nunito font-thin z-10">
                       OFERTA
+                    </span>
+                  )}
+                  {variantCount > 1 && (
+                    <span className={`absolute top-2 right-2 ${
+                      currentSection === 'Dama' ? 'bg-pink-600' : 'bg-colorLogo/90'
+                    } text-white text-xs px-2 py-1 rounded-full font-medium z-10 flex items-center gap-1`}>
+                      <span className="text-sm">{variantCount}</span>
+                      <span className="text-[10px]">colores</span>
                     </span>
                   )}
                 </div>
@@ -334,7 +367,8 @@ useEffect(() => {
                   </div>
                 )}
               </div>
-            ))}
+            );
+            })}
           </div>
         ) : (
           // Este mensaje se muestra si allProductsFromState tiene productos,
@@ -351,12 +385,12 @@ useEffect(() => {
 
       {/* Paginación */}
       {/* Solo mostrar paginación si hay más productos que los que caben en una página */}
-      {sectionFilteredProducts.length > productsPerPage && (
+      {uniqueProducts.length > productsPerPage && (
         <div className="mt-auto flex justify-center pb-8"> {/* mt-auto para empujar al fondo si el contenido es poco */}
           <nav className="block">
             <ul className="flex pl-0 rounded list-none flex-wrap">
               {Array.from(
-                { length: Math.ceil(sectionFilteredProducts.length / productsPerPage) },
+                { length: Math.ceil(uniqueProducts.length / productsPerPage) },
                 (_, i) => (
                   <li key={i}>
                     <button

@@ -1,5 +1,5 @@
 // controllers/getAllorders.js
-const { OrderDetail, Product } = require('../../data');
+const { OrderDetail, Product, Image } = require('../../data');
 const response = require('../../utils/response');
 
 module.exports = async (req, res) => {
@@ -9,7 +9,13 @@ module.exports = async (req, res) => {
  include: {
  model: Product,
  as: 'products',
- attributes: ['id_product'], // Selecciona el id_product de los productos
+ include: [
+   {
+     model: Image,
+     as: 'Images',
+     attributes: ['id_image', 'url']
+   }
+ ]
  },
  order: [['createdAt', 'DESC']]
  });
@@ -44,8 +50,23 @@ const formattedOrders = orders.map(order => ({
  amount: order.amount,
  quantity: order.quantity,
  state_order: order.state_order,
- product_ids: order.products.map(product => product.id_product), // Mapea solo los id_product
- trackingNumber: order.trackingNumber, 
+ address: order.address,
+ deliveryAddress: order.deliveryAddress,
+ recipient_name: order.recipient_name,
+ recipient_phone: order.recipient_phone,
+ city: order.city,
+ postal_code: order.postal_code,
+ delivery_notes: order.delivery_notes,
+ trackingNumber: order.trackingNumber,
+ cart_items: order.cart_items,
+ products: order.products.map(product => ({
+   id_product: product.id_product,
+   name: product.name,
+   price: product.price,
+   sizes: product.sizes,
+   colors: product.colors,
+   Images: product.Images
+ }))
 }));
 
 return response(res, 200, { orders: formattedOrders });

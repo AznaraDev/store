@@ -13,13 +13,32 @@ function generarFirmaIntegridad(id_orderDetail, monto, moneda, secretoIntegridad
 
 module.exports = async (req, res) => {
   try {
-    const { date, amount, quantity, state_order, id_product, address, deliveryAddress, n_document } = req.body;
+    const { 
+      date, 
+      amount, 
+      quantity, 
+      state_order, 
+      id_product, 
+      address, 
+      deliveryAddress, 
+      recipient_name,
+      recipient_phone,
+      city,
+      postal_code,
+      delivery_notes,
+      cart_items,
+      n_document 
+    } = req.body;
 
     if (!date || !amount || !quantity || !state_order || !id_product || !address ) {
       return response(res, 400, { error: "Missing Ordering Data" });
     }
-    if (address === 'Envio a domicilio' && !deliveryAddress) {
-      return response(res, 400, { error: "Missing delivery address" });
+    
+    // Validar campos requeridos para envío a domicilio
+    if (address === 'Envio a domicilio') {
+      if (!deliveryAddress || !recipient_name || !recipient_phone || !city) {
+        return response(res, 400, { error: "Missing required delivery information" });
+      }
     }
 
     const lastOrder = await OrderDetail.findOne({ order: [['createdAt', 'DESC']] });
@@ -42,6 +61,12 @@ module.exports = async (req, res) => {
       state_order,
       address,
       deliveryAddress: address === 'Envio a domicilio' ? deliveryAddress : null,
+      recipient_name: address === 'Envio a domicilio' ? recipient_name : null,
+      recipient_phone: address === 'Envio a domicilio' ? recipient_phone : null,
+      city: address === 'Envio a domicilio' ? city : null,
+      postal_code: address === 'Envio a domicilio' ? postal_code : null,
+      delivery_notes: address === 'Envio a domicilio' ? delivery_notes : null,
+      cart_items: cart_items || null,
       n_document,
       integritySignature,
     };

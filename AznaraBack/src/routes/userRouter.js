@@ -6,7 +6,8 @@ const {
   deleteUser,
   getAllUsers,
   getUserByDocument,
-  suscription
+  suscription,
+  getCustomers
 } = require("../controllers/Users");
 const { authenticate, authorize } = require("../controllers/Users/authMiddleware");
 
@@ -21,6 +22,9 @@ router.delete("/:n_document", authenticate, authorize(['Admin']), deleteUser);
 
 // Ruta para obtener todos los usuarios
 router.get("/", authenticate, authorize(['Admin']), getAllUsers);
+
+// Ruta para obtener clientes con compras
+router.get("/customers/list", authenticate, authorize(['Admin']), getCustomers);
 
 // Ruta para obtener un usuario por documento
 router.get("/:n_document", authenticate, authorize(['Admin', 'User']), getUserByDocument);

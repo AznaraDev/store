@@ -30,7 +30,8 @@ const UpdateProduct = () => {
 
     const [existingImages, setExistingImages] = useState([]); 
     const [newImageFiles, setNewImageFiles] = useState([]); 
-    const [imagesToDelete, setImagesToDelete] = useState([]); 
+    const [imagesToDelete, setImagesToDelete] = useState([]);
+    const [alertMessage, setAlertMessage] = useState(''); 
 
 
     useEffect(() => {
@@ -53,10 +54,10 @@ const UpdateProduct = () => {
           stock: product.stock || 0,
           section: product.section || '',
           name_SB: product.name_SB || '',
-          // Para sizes, colors, materials, si son Cargar como en el ejemplo: s en el backend y quieres editarlos como texto:
-          sizes: typeof product.sizes === 'object' ? JSON.stringify(product.sizes) : product.sizes || '',
-          colors: typeof product.colors === 'object' ? JSON.stringify(product.colors) : product.colors || '',
-          materials: typeof product.materials === 'object' ? JSON.stringify(product.materials) : product.materials || '',
+          // Convertir arrays a strings separados por comas para edición
+          sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : product.sizes || '',
+          colors: Array.isArray(product.colors) ? product.colors.join(', ') : product.colors || '',
+          materials: Array.isArray(product.materials) ? product.materials.join(', ') : product.materials || '',
           isOffer: product.isOffer || false,
           id_category: product.id_category || '', 
           id_SB: product.id_SB || '',     
@@ -68,6 +69,14 @@ const UpdateProduct = () => {
 
     const handleChange = (e) => {
       const { name, value, type, checked } = e.target;
+      
+      // Validar color único
+      if (name === 'colors' && value.includes(',')) {
+        setAlertMessage('⚠️ Solo puedes ingresar UN color por producto. Para otros colores, edita o crea productos separados.');
+      } else if (name === 'colors' && alertMessage.includes('color')) {
+        setAlertMessage('');
+      }
+      
       setFormData((prevState) => ({
         ...prevState,
         [name]: type === 'checkbox' ? checked : value,
@@ -147,6 +156,25 @@ const UpdateProduct = () => {
         <div className="container mx-auto px-4 py-8 rounded-lg shadow-md">
           <div className="max-w-lg mx-auto bg-white p-6 rounded-lg mt-10 mb-10">
             <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Actualizar Producto</h1>
+            
+            {/* Banner informativo */}
+            <div className="mb-6 bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-blue-600 text-blue-800 p-4 rounded-lg">
+              <p className="font-bold text-sm mb-2 flex items-center">
+                <span className="text-xl mr-2">🎨</span>
+                Recuerda: UN COLOR = UN PRODUCTO
+              </p>
+              <p className="text-xs">
+                Para crear variantes de color, debes crear productos separados con el mismo nombre y subcategoría.
+              </p>
+            </div>
+
+            {/* Mensaje de alerta */}
+            {alertMessage && (
+              <div className="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded">
+                <p className="text-sm">{alertMessage}</p>
+              </div>
+            )}
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Campos existentes del formulario */}
               <div>
@@ -234,16 +262,54 @@ const UpdateProduct = () => {
               </div>
             
               <div>
-                <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">Talles (Cargar separados por coma )</label>
-                <input type="text" name="sizes" id="sizes" value={formData.sizes} onChange={handleChange} placeholder='Ej: S, M' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
+                <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">
+                  Talles <span className="text-gray-400 text-xs">(opcional, separados por coma)</span>
+                </label>
+                <input 
+                  type="text" 
+                  name="sizes" 
+                  id="sizes" 
+                  value={formData.sizes} 
+                  onChange={handleChange} 
+                  placeholder='ej: S, M, L, XL' 
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" 
+                />
+                <p className="text-gray-500 text-xs mt-1">💡 Puedes agregar múltiples talles para este color</p>
               </div>
               <div>
-                <label htmlFor="colors" className="block text-sm font-medium text-gray-700">Colores (Cargar separados por coma )</label>
-                <input type="text" name="colors" id="colors" value={formData.colors} onChange={handleChange} placeholder='Ej: Rojo, Azul ' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
+                <label htmlFor="colors" className="block text-sm font-medium text-gray-700">
+                  Color * <span className="text-red-500 text-xs">(Solo UN color)</span>
+                </label>
+                <input 
+                  type="text" 
+                  name="colors" 
+                  id="colors" 
+                  value={formData.colors} 
+                  onChange={handleChange} 
+                  placeholder='ej: Oro Amarillo' 
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none sm:text-sm ${
+                    formData.colors.includes(',') ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-yellow-500 focus:border-yellow-500'
+                  }`}
+                  required
+                />
+                {formData.colors.includes(',') && (
+                  <p className="text-red-500 text-xs mt-1">❌ Elimina las comas. Ingresa solo un color.</p>
+                )}
               </div>
               <div>
-                <label htmlFor="materials" className="block text-sm font-medium text-gray-700">Materiales (Cargar separados por coma )</label>
-                <input type="text" name="materials" id="materials" value={formData.materials} onChange={handleChange} placeholder='Ej: Oro, Cuero' className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" />
+                <label htmlFor="materials" className="block text-sm font-medium text-gray-700">
+                  Materiales <span className="text-gray-400 text-xs">(opcional, separados por coma)</span>
+                </label>
+                <input 
+                  type="text" 
+                  name="materials" 
+                  id="materials" 
+                  value={formData.materials} 
+                  onChange={handleChange} 
+                  placeholder='ej: Oro, Plata, Cuero' 
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" 
+                />
+                <p className="text-gray-500 text-xs mt-1">💡 Si usas varios materiales, sepáralos con coma</p>
               </div>
                <div className="flex items-center">
                 <input

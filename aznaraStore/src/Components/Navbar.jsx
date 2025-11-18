@@ -247,79 +247,13 @@ export default function Navbar() {
           <Menu.Item>
             {({ active }) => (
               <Link
-                to="/allOrders"
+                to="/admin"
                 className={classNames(
                   active ? 'bg-gray-100' : '',
-                  'block px-4 py-2 text-sm text-gray-700'
+                  'block px-4 py-2 text-sm text-gray-700 font-semibold'
                 )}
               >
-                Pedidos
-              </Link>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <Link
-                to="/createProducts"
-                className={classNames(
-                  active ? 'bg-gray-100' : '',
-                  'block px-4 py-2 text-sm text-gray-700'
-                )}
-              >
-                Crear Productos
-              </Link>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <Link
-                to="/taxxa"
-                className={classNames(
-                  active ? 'bg-gray-100' : '',
-                  'block px-4 py-2 text-sm text-gray-700'
-                )}
-              >
-                🧾 Panel Taxxa
-              </Link>
-            )}
-          </Menu.Item>
-          
-          <Menu.Item>
-            {({ active }) => (
-              <Link
-                to="/register"
-                className={classNames(
-                  active ? 'bg-gray-100' : '',
-                  'block px-4 py-2 text-sm text-gray-700'
-                )}
-              >
-                Crear Administrador
-              </Link>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <Link
-                to="/category"
-                className={classNames(
-                  active ? 'bg-gray-100' : '',
-                  'block px-4 py-2 text-sm text-gray-700'
-                )}
-              >
-                Nueva Categoría
-              </Link>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <Link
-                to="/sb"
-                className={classNames(
-                  active ? 'bg-gray-100' : '',
-                  'block px-4 py-2 text-sm text-gray-700'
-                )}
-              >
-                Nueva SubCategoría
+                🏠 Panel de Administración
               </Link>
             )}
           </Menu.Item>
@@ -591,16 +525,7 @@ export default function Navbar() {
                    </>
                  ) : ( // Admin o comercio
                    <>
-                     <Disclosure.Button as={Link} to="/allOrders" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Pedidos</Disclosure.Button>
-                     <Disclosure.Button as={Link} to="/createProducts" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Crear Productos</Disclosure.Button>
-                     
-                     {/* Enlaces de Taxxa */}
-                     <Disclosure.Button as={Link} to="/taxxa" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">🧾 Panel Taxxa</Disclosure.Button>
-                     
-                     
-                     <Disclosure.Button as={Link} to="/register" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Crear Administrador</Disclosure.Button>
-                     <Disclosure.Button as={Link} to="/category" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Nueva Categoría</Disclosure.Button>
-                     <Disclosure.Button as={Link} to="/sb" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Nueva SubCategoría</Disclosure.Button>
+                     <Disclosure.Button as={Link} to="/admin" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-bold font-nunito text-gray-100 hover:bg-gray-700 hover:text-white">🏠 Panel de Administración</Disclosure.Button>
                      <Disclosure.Button as="button" onClick={() => { handleLogout(); close(); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Salir</Disclosure.Button>
                    </>
                  )}

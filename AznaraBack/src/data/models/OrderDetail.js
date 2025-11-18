@@ -30,6 +30,36 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true, 
       },
+      recipient_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: 'Nombre completo del destinatario para el envío'
+      },
+      recipient_phone: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: 'Teléfono de contacto del destinatario'
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: 'Ciudad de entrega'
+      },
+      postal_code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: 'Código postal'
+      },
+      delivery_notes: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        comment: 'Notas adicionales para la entrega (ej: referencias, instrucciones)'
+      },
+      cart_items: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        comment: 'Array of cart items with variant details (selectedColor, selectedSize, selectedMaterial, name, price, image, etc.)'
+      },
       state_order: {
         type: DataTypes.ENUM('Pedido Realizado', 'En Preparación', 'Listo para entregar', 'Envío Realizado', 'Retirado'),
         allowNull: false,
@@ -38,6 +68,11 @@ module.exports = (sequelize) => {
       integritySignature: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      reference: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: 'Referencia única de Wompi para rastrear la transacción'
       },
       transaction_status: {
         type: DataTypes.ENUM('Pendiente', 'Aprobado', 'Rechazado', 'Fallido', 'Cancelado'),
@@ -66,6 +101,13 @@ module.exports = (sequelize) => {
     },
     {
       paranoid: true,
+      indexes: [
+        {
+          unique: true,
+          fields: ['reference'],
+          name: 'orderdetails_reference_unique'
+        }
+      ]
     }
   );
 };

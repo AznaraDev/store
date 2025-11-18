@@ -1,4 +1,4 @@
-const { Product, Image } = require('../../data');
+const { Product, Image, StockMovement } = require('../../data');
 const response = require('../../utils/response');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
         name,
         description,
         price: parseFloat(price),
-        stock: parseInt(stock, 10),
+        stock: parseInt(stock, 10) || 0,
         id_category,
         id_SB,
         sizes: sizes ? JSON.parse(sizes) : null,
@@ -63,6 +63,19 @@ module.exports = async (req, res) => {
         section,
         isOffer: isOffer === 'true' 
       });
+
+      // Registrar movimiento inicial de stock si hay stock
+      if (product.stock > 0) {
+        await StockMovement.create({
+          id_product: product.id_product,
+          movement_type: 'entrada',
+          quantity: product.stock,
+          previous_stock: 0,
+          new_stock: product.stock,
+          reason: 'Stock inicial al crear producto',
+          performed_by: req.body.performed_by || 'Sistema'
+        });
+      }
 
       if (images && images.length > 0) {
         const imagePromises = images.map(async (image) => {

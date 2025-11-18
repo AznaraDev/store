@@ -59,7 +59,23 @@ module.exports = (sequelize) => {
 
       stock: {
         type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
+      
+      min_stock: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 5,
+        comment: 'Stock mínimo para alerta'
+      },
+      
+      max_stock: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 100,
+        comment: 'Stock máximo recomendado'
+      },
+      
       isOffer: {
       type: DataTypes.BOOLEAN,
       defaultValue: false

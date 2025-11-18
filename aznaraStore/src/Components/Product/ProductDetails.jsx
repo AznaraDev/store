@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById, addToCart } from "../../Redux/Actions/actions";
 import { useParams, useNavigate } from "react-router-dom";
@@ -7,6 +7,19 @@ import hombre from "../../assets/img/anillosBanner.jpg";
 import dama from "../../assets/img/Dama/bannerPortada.png";
 import { useSection } from "../../SectionContext"; // Asegúrate que la ruta sea correcta
 
+// Helper para parsear campos JSON de forma segura
+const parseJsonField = (field) => {
+  if (Array.isArray(field)) return field;
+  if (typeof field === 'string') {
+    try {
+      const parsed = JSON.parse(field);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -17,23 +30,12 @@ const ProductDetails = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+  const [selectedMaterial, setSelectedMaterial] = useState("");
   const [selectedImage, setSelectedImage] = useState(""); 
-  const [startIndex, setStartIndex] = useState(0);
-  const itemsToShow = 5; 
   const containerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [largeImageDimensions, setLargeImageDimensions] = useState({ width: 1200, height: 1200 });
-  const [backgroundPosition, setBackgroundPosition] = useState("center");
-
-  const handleMouseMove = (e) => {
-    const { left, top, width, height } = e.target.getBoundingClientRect();
-    const x = ((e.pageX - left - window.scrollX) / width) * 100;
-    const y = ((e.pageY - top - window.scrollY) / height) * 100;
-    setBackgroundPosition(`${x}% ${y}%`);
-  };
-
-
 
   const { product, similarProducts, loading, error } = useSelector((state) => ({
     product: state.product,
@@ -46,11 +48,15 @@ const getUniqueColorProducts = (products) => {
   const uniqueColorsMap = new Map();
 
   products.forEach((product) => {
-    product.colors.forEach((color) => {
-      if (!uniqueColorsMap.has(color)) {
-        uniqueColorsMap.set(color, product);
-      }
-    });
+    const colors = parseJsonField(product.colors);
+    
+    if (colors.length > 0) {
+      colors.forEach((color) => {
+        if (!uniqueColorsMap.has(color)) {
+          uniqueColorsMap.set(color, product);
+        }
+      });
+    }
   });
 
   return Array.from(uniqueColorsMap.values());
@@ -69,7 +75,23 @@ const getUniqueColorProducts = (products) => {
           ? product.Images[0].url
           : "https://via.placeholder.com/600"
       );
-      setSelectedColor("");
+      
+      // Auto-seleccionar el color del producto actual
+      const productColors = parseJsonField(product.colors);
+      if (productColors.length > 0) {
+        setSelectedColor(productColors[0]);
+      } else {
+        setSelectedColor("");
+      }
+      
+      // Auto-seleccionar el material si solo hay uno
+      const productMaterials = parseJsonField(product.materials);
+      if (productMaterials.length === 1) {
+        setSelectedMaterial(productMaterials[0]);
+      } else {
+        setSelectedMaterial("");
+      }
+      
       setSelectedSize("");
     }
   }, [product]);
@@ -106,39 +128,103 @@ const getUniqueColorProducts = (products) => {
   }, [selectedImage]);
   console.log("Dimensiones usadas para largeImage (en render):", largeImageDimensions);
 
-  const getAvailableColors = () => {
-  if (!selectedProduct) return [];
-  return selectedProduct.colors || [];
-};
+  const getAvailableColors = useCallback(() => {
+    if (!selectedProduct || !similarProducts) return [];
+    // Obtener todos los colores únicos de todos los productos similares con la misma subcategoría
+    const allColors = new Set();
+    similarProducts.forEach((p) => {
+      if (p.id_SB === selectedProduct.id_SB) {
+        const colors = parseJsonField(p.colors);
+        colors.forEach(color => allColors.add(color));
+      }
+    });
+    return Array.from(allColors);
+  }, [selectedProduct, similarProducts]);
 
-  const getAvailableSizes = () => {
+  const getAvailableMaterials = useCallback(() => {
+    if (!selectedProduct || !similarProducts) return [];
+    // Obtener todos los materiales únicos de todos los productos similares con la misma subcategoría
+    const allMaterials = new Set();
+    similarProducts.forEach((p) => {
+      if (p.id_SB === selectedProduct.id_SB) {
+        const materials = parseJsonField(p.materials);
+        materials.forEach(material => allMaterials.add(material));
+      }
+    });
+    return Array.from(allMaterials);
+  }, [selectedProduct, similarProducts]);
+
+  const getAvailableSizes = useCallback(() => {
     if (!selectedProduct || !similarProducts || !selectedColor) return []; // Necesita un color seleccionado
     const matchingProducts = similarProducts.filter(
       (p) =>
         p.id_SB === selectedProduct.id_SB &&
-        p.colors.includes(selectedColor) &&
+        parseJsonField(p.colors).includes(selectedColor) &&
         p.price === selectedProduct.price
     );
-    return [...new Set(matchingProducts.flatMap((p) => p.sizes))];
-  };
+    return [...new Set(matchingProducts.flatMap((p) => parseJsonField(p.sizes)))];
+  }, [selectedProduct, similarProducts, selectedColor]);
   
-  const handleColorChange = (color) => {
+  const handleColorChange = useCallback((color) => {
     setSelectedColor(color);
     setSelectedSize(""); // Resetear talle al cambiar color
+    
+    if (!color) {
+      // Si se deselecciona el color, volver al producto original
+      if (product && product.Images && product.Images.length > 0) {
+        setSelectedImage(product.Images[0].url);
+      }
+      return;
+    }
+    
+    // Buscar el primer producto que tenga este color y material (si está seleccionado)
     const matchingProduct = similarProducts.find(
-      (p) =>
-        p.id_SB === selectedProduct.id_SB &&
-        p.price === selectedProduct.price &&
-        p.colors.includes(color)
+      (p) => {
+        const pColors = parseJsonField(p.colors);
+        const pMaterials = parseJsonField(p.materials);
+        return (
+          p.id_SB === selectedProduct.id_SB &&
+          pColors.includes(color) &&
+          (!selectedMaterial || pMaterials.includes(selectedMaterial))
+        );
+      }
     );
 
-    if (matchingProduct && matchingProduct.Images && matchingProduct.Images.length > 0) {
-      setSelectedImage(matchingProduct.Images[0].url);
-    } else if (selectedProduct && selectedProduct.Images && selectedProduct.Images.length > 0 && !color) {
-      // Si se deselecciona el color, volver a la imagen principal del producto actual
-      setSelectedImage(selectedProduct.Images[0].url);
+    if (matchingProduct) {
+      // Actualizar el producto seleccionado y su imagen
+      setSelectedProduct(matchingProduct);
+      if (matchingProduct.Images && matchingProduct.Images.length > 0) {
+        setSelectedImage(matchingProduct.Images[0].url);
+      }
     }
-  };
+  }, [product, similarProducts, selectedProduct, selectedMaterial]);
+
+  const handleMaterialChange = useCallback((material) => {
+    setSelectedMaterial(material);
+    setSelectedSize(""); // Resetear talle al cambiar material
+    
+    if (!material) return;
+    
+    // Buscar el primer producto que tenga este material y color (si está seleccionado)
+    const matchingProduct = similarProducts.find(
+      (p) => {
+        const pMaterials = parseJsonField(p.materials);
+        const pColors = parseJsonField(p.colors);
+        return (
+          p.id_SB === selectedProduct.id_SB &&
+          pMaterials.includes(material) &&
+          (!selectedColor || pColors.includes(selectedColor))
+        );
+      }
+    );
+
+    if (matchingProduct) {
+      setSelectedProduct(matchingProduct);
+      if (matchingProduct.Images && matchingProduct.Images.length > 0) {
+        setSelectedImage(matchingProduct.Images[0].url);
+      }
+    }
+  }, [similarProducts, selectedProduct, selectedColor]);
 
   // Efecto para auto-seleccionar color si solo hay uno
   useEffect(() => {
@@ -148,7 +234,7 @@ const getUniqueColorProducts = (products) => {
         handleColorChange(availableColors[0]); // Usar handleColorChange para actualizar imagen también
       }
     }
-  }, [selectedProduct, similarProducts]); // Depende de selectedProduct y similarProducts
+  }, [selectedProduct, similarProducts, selectedColor, getAvailableColors, handleColorChange]); // Depende de selectedProduct y similarProducts
 
   // Efecto para auto-seleccionar talle si solo hay uno y un color está seleccionado
   useEffect(() => {
@@ -164,7 +250,7 @@ const getUniqueColorProducts = (products) => {
         // Si no hay color seleccionado, resetear talle
         setSelectedSize("");
     }
-  }, [selectedColor, selectedProduct, similarProducts]); // Depende de selectedColor
+  }, [selectedColor, selectedProduct, similarProducts, selectedSize, getAvailableSizes]); // Depende de selectedColor
 
 
 
@@ -182,6 +268,7 @@ const getUniqueColorProducts = (products) => {
       ...selectedProduct,
       selectedSize,
       selectedColor,
+      selectedMaterial: selectedMaterial || parseJsonField(selectedProduct.materials)[0] || 'No especificado',
     };
 
     dispatch(addToCart(productToAdd));
@@ -195,6 +282,7 @@ const getUniqueColorProducts = (products) => {
     setSelectedProduct(relatedProduct);
     setSelectedSize("");
     setSelectedColor("");
+    setSelectedMaterial("");
 
     setSelectedImage(
       relatedProduct.Images && relatedProduct.Images.length > 0
@@ -254,16 +342,8 @@ const getUniqueColorProducts = (products) => {
   return new Intl.NumberFormat('es-ES').format(price);
 };
 
-  const handlePrevious = () => {
-    setStartIndex((prev) => Math.max(prev - itemsToShow, 0));
-  };
-
-  const handleNext = () => {
-    setStartIndex((prev) => Math.min(prev + itemsToShow, similarProducts.length - itemsToShow));
-  };
 const availableColors = getAvailableColors();
   const availableSizes = selectedColor ? getAvailableSizes() : [];
-  const visibleProducts = uniqueColorProducts.slice(startIndex, startIndex + itemsToShow);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -310,23 +390,44 @@ const availableColors = getAvailableColors();
 
 
   {/* Título del Producto */}
-  <h2 className="text-2xl sm:text-3xl font-thin font-nunito text-white uppercase lg:mt-0">
-    {selectedProduct.name}
-  </h2>
+  <div className="flex items-start gap-3">
+    <h2 className="text-2xl sm:text-3xl font-thin font-nunito text-white uppercase lg:mt-0 flex-1">
+      {selectedProduct.name}
+    </h2>
+    {availableColors.length > 1 && (
+      <div className="bg-colorLogo/20 border border-colorLogo/50 rounded-full px-3 py-1 flex items-center gap-1 mt-1">
+        <span className="text-colorLogo text-xs font-medium">{availableColors.length}</span>
+        <span className="text-colorLogo text-xs">colores</span>
+      </div>
+    )}
+  </div>
 
   {/* Descripción / Características */}
   <div className="text-sm text-gray-300 space-y-1">
      <h3 className="font-thin font-nunito text-base text-gray-100 mb-1">Características:</h3>
-     {selectedProduct.description?.split('\n').map((line, index) => (
-       <p key={index}>{line.trim()}</p>
-     )) || <p>No hay descripción disponible.</p>}
+     {selectedProduct.description ? (
+       selectedProduct.description.split('\n').map((line, index) => {
+         const trimmedLine = line.trim();
+         // Ignorar líneas que parecen JSON arrays
+         if (trimmedLine.startsWith('[') && trimmedLine.endsWith(']')) {
+           return null;
+         }
+         // Ignorar líneas con formato "CAMPO: [...]"
+         if (/^[A-Z\s]+:\s*\[.*\]$/.test(trimmedLine)) {
+           return null;
+         }
+         return trimmedLine ? <p key={index}>{trimmedLine}</p> : null;
+       })
+     ) : (
+       <p>No hay descripción disponible.</p>
+     )}
      {/* Mostrar materiales si existen */}
-     {selectedProduct.materials && selectedProduct.materials.length > 0 && (
-       <p className="pt-2"><span className="font-thin font-nunito text-gray-100">Material:</span> {selectedProduct.materials.join(', ')}</p>
+     {parseJsonField(selectedProduct.materials).length > 0 && (
+       <p className="pt-2"><span className="font-thin font-nunito text-gray-100">Material:</span> {parseJsonField(selectedProduct.materials).join(', ')}</p>
      )}
   </div>
 
-  {/* Precios */}
+  {/* Precio */}
   <div className="flex items-baseline space-x-3">
     {selectedProduct.isOffer && selectedProduct.originalPrice && (
       <span className="text-xl font-thin font-nunito text-gray-400 line-through">
@@ -337,6 +438,60 @@ const availableColors = getAvailableColors();
       ${formatPrice(selectedProduct.price)}
     </span>
   </div>
+
+  {/* Variantes de Color Disponibles - Visual */}
+  {availableColors.length > 1 && (
+    <div className="space-y-2">
+      <label className="block text-sm font-thin font-nunito text-gray-400">
+        Colores Disponibles ({availableColors.length}):
+      </label>
+      <div className="flex flex-wrap gap-2">
+        {availableColors.map((color, index) => {
+          // Encontrar el producto con este color para mostrar su imagen
+          const colorProduct = similarProducts.find(p => 
+            p.id_SB === selectedProduct.id_SB && 
+            parseJsonField(p.colors).includes(color)
+          );
+          const colorImage = colorProduct?.Images?.[0]?.url || selectedProduct.Images?.[0]?.url;
+          const isSelected = selectedColor === color;
+          
+          return (
+            <button
+              key={index}
+              onClick={() => handleColorChange(color)}
+              className={`group relative overflow-hidden rounded-lg transition-all duration-200 ${
+                isSelected 
+                  ? 'ring-2 ring-colorLogo ring-offset-2 ring-offset-gray-800 scale-105' 
+                  : 'ring-1 ring-gray-600 hover:ring-gray-400 hover:scale-105'
+              }`}
+              title={color}
+            >
+              <div className="w-16 h-16 relative">
+                <img 
+                  src={colorImage} 
+                  alt={color}
+                  className="w-full h-full object-cover"
+                />
+                <div className={`absolute inset-0 bg-black transition-opacity ${
+                  isSelected ? 'opacity-0' : 'opacity-20 group-hover:opacity-0'
+                }`} />
+              </div>
+              <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent px-1 py-1 ${
+                isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+              } transition-opacity`}>
+                <p className="text-[10px] text-white text-center font-medium truncate">{color}</p>
+              </div>
+              {isSelected && (
+                <div className="absolute top-0 right-0 bg-colorLogo text-black rounded-bl-lg px-1">
+                  <span className="text-xs">✓</span>
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  )}
 
   {/* Selector de Color Modificado */}
         <div className="space-y-1">
@@ -362,6 +517,31 @@ const availableColors = getAvailableColors();
             <p className="text-sm text-gray-500">No hay colores disponibles.</p>
           )}
         </div>
+
+        {/* Selector de Material */}
+        {(selectedColor || availableColors.length === 1) && getAvailableMaterials().length > 0 && (
+          <div className="space-y-1">
+            <label htmlFor="materials" className="block text-sm font-thin font-nunito text-gray-400">Material:</label>
+            {getAvailableMaterials().length === 1 ? (
+              <p className="w-full bg-gray-700/50 border border-transparent font-thin font-nunito rounded py-2 px-3 text-white">
+                {getAvailableMaterials()[0]}
+              </p>
+            ) : (
+              <select
+                id="materials"
+                value={selectedMaterial}
+                onChange={(e) => handleMaterialChange(e.target.value)}
+                className="w-full bg-gray-700/50 border border-gray-600 font-thin font-nunito rounded py-2 px-3 text-white focus:ring-colorLogo focus:border-colorLogo"
+                required
+              >
+                <option value="" disabled>Seleccionar material</option>
+                {getAvailableMaterials().map((material, index) => (
+                  <option key={index} value={material}>{material}</option>
+                ))}
+              </select>
+            )}
+          </div>
+        )}
 
         {/* Selector de Talle Modificado */}
         {/* Solo mostrar si hay un color seleccionado o si el color se auto-seleccionó */}

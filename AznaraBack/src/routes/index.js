@@ -9,6 +9,8 @@ router.use("/order", require('./orderDetailRouter'))
 router.use("/user", require("./userRouter"))
 router.use("/auth", require("./authRouter"))
 router.use("/eventos", require("./webhookRouter"))
+router.use("/payment", require("./paymentRouter"))
+router.use("/stock", require("./stockRouter"))
 
 // ✅ RUTAS TAXXA
 router.use("/buyer", require("./buyerRouter"))
