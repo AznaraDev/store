@@ -8,6 +8,7 @@ import { BASE_URL } from '../Config';
 const OrdersList = () => {
   const [filterState, setFilterState] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' o 'desc'
   const [trackingNumbers, setTrackingNumbers] = useState({});
   const [selectedStates, setSelectedStates] = useState({});
   const dispatch = useDispatch();
@@ -137,6 +138,18 @@ const OrdersList = () => {
     return true;
   });
 
+  // Ordenar por fecha
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    
+    if (sortOrder === 'desc') {
+      return dateB - dateA; // Más recientes primero
+    } else {
+      return dateA - dateB; // Más antiguos primero
+    }
+  });
+
   const handleFilterChange = (e) => {
     setFilterState(e.target.value);
   };
@@ -182,9 +195,22 @@ const OrdersList = () => {
             <option value="Retirado">Retirado</option>
           </select>
         </div>
+
+        {/* Ordenar por fecha */}
+        <div className="mb-4">
+          <label className="mr-2 text-gray-200 font-nunito font-semibold">Ordenar por fecha:</label>
+          <select
+            onChange={(e) => setSortOrder(e.target.value)}
+            value={sortOrder}
+            className="bg-gray-600 text-gray-200 font-nunito px-2 py-1 rounded"
+          >
+            <option value="desc">Más recientes primero</option>
+            <option value="asc">Más antiguos primero</option>
+          </select>
+        </div>
         
         <div className="grid grid-cols-1 gap-4">
-          {filteredOrders.map(order => (
+          {sortedOrders.map(order => (
             <div key={order.id_orderDetail} className={`border rounded p-4 ${order.state_order === 'Envío Realizado' ? 'bg-green-100' : 'bg-white'}`}>
               <div className="flex justify-between items-center mb-2">
                 <div className="font-semibold">Fecha: {order.date}</div>
