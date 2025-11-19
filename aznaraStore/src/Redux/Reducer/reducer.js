@@ -59,6 +59,29 @@ import {
   FETCH_SB_FAILURE,
   SET_SUBCATEGORY_FILTER,
   
+  // Categories CRUD
+  CREATE_CATEGORY_REQUEST,
+  CREATE_CATEGORY_SUCCESS,
+  CREATE_CATEGORY_FAILURE,
+  UPDATE_CATEGORY_REQUEST,
+  UPDATE_CATEGORY_SUCCESS,
+  UPDATE_CATEGORY_FAILURE,
+  DELETE_CATEGORY_REQUEST,
+  DELETE_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
+  FETCH_SUBCATEGORIES_REQUEST,
+  FETCH_SUBCATEGORIES_SUCCESS,
+  FETCH_SUBCATEGORIES_FAILURE,
+  CREATE_SUBCATEGORY_REQUEST,
+  CREATE_SUBCATEGORY_SUCCESS,
+  CREATE_SUBCATEGORY_FAILURE,
+  UPDATE_SUBCATEGORY_REQUEST,
+  UPDATE_SUBCATEGORY_SUCCESS,
+  UPDATE_SUBCATEGORY_FAILURE,
+  DELETE_SUBCATEGORY_REQUEST,
+  DELETE_SUBCATEGORY_SUCCESS,
+  DELETE_SUBCATEGORY_FAILURE,
+  
   // Taxxa action types
   FETCH_BUYER_REQUEST,
   FETCH_BUYER_SUCCESS,
@@ -393,6 +416,137 @@ const rootReducer = (state = initialState, action) => {
           error: action.payload,
         },
       };
+
+    // ==================== CATEGORY CRUD ====================
+    case CREATE_CATEGORY_REQUEST:
+    case UPDATE_CATEGORY_REQUEST:
+    case DELETE_CATEGORY_REQUEST:
+      return {
+        ...state,
+        categories: {
+          ...state.categories,
+          loading: true,
+        },
+      };
+
+    case CREATE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        categories: {
+          ...state.categories,
+          loading: false,
+          data: [...state.categories.data, action.payload],
+          error: null,
+        },
+      };
+
+    case UPDATE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        categories: {
+          ...state.categories,
+          loading: false,
+          data: state.categories.data.map(cat =>
+            cat.id_category === action.payload.id_category ? action.payload : cat
+          ),
+          error: null,
+        },
+      };
+
+    case DELETE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        categories: {
+          ...state.categories,
+          loading: false,
+          data: state.categories.data.filter(cat => cat.id_category !== action.payload),
+          error: null,
+        },
+      };
+
+    case CREATE_CATEGORY_FAILURE:
+    case UPDATE_CATEGORY_FAILURE:
+    case DELETE_CATEGORY_FAILURE:
+      return {
+        ...state,
+        categories: {
+          ...state.categories,
+          loading: false,
+          error: action.payload,
+        },
+      };
+
+    // ==================== SUBCATEGORY CRUD ====================
+    case FETCH_SUBCATEGORIES_REQUEST:
+    case CREATE_SUBCATEGORY_REQUEST:
+    case UPDATE_SUBCATEGORY_REQUEST:
+    case DELETE_SUBCATEGORY_REQUEST:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: true,
+        },
+      };
+
+    case FETCH_SUBCATEGORIES_SUCCESS:
+      return {
+        ...state,
+        subCategories: {
+          loading: false,
+          data: action.payload,
+          error: null,
+        },
+      };
+
+    case CREATE_SUBCATEGORY_SUCCESS:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: false,
+          data: [...(state.subCategories.data || []), action.payload],
+          error: null,
+        },
+      };
+
+    case UPDATE_SUBCATEGORY_SUCCESS:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: false,
+          data: state.subCategories.data.map(sub =>
+            sub.id_subCategory === action.payload.id_subCategory ? action.payload : sub
+          ),
+          error: null,
+        },
+      };
+
+    case DELETE_SUBCATEGORY_SUCCESS:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: false,
+          data: state.subCategories.data.filter(sub => sub.id_subCategory !== action.payload),
+          error: null,
+        },
+      };
+
+    case FETCH_SUBCATEGORIES_FAILURE:
+    case CREATE_SUBCATEGORY_FAILURE:
+    case UPDATE_SUBCATEGORY_FAILURE:
+    case DELETE_SUBCATEGORY_FAILURE:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          loading: false,
+          error: action.payload,
+        },
+      };
+
 
     case FETCH_PRODUCT_REQUEST:
       return {

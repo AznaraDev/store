@@ -105,6 +105,17 @@ const DashboardLayout = ({ children }) => {
       ]
     },
     {
+      title: '📁 Categorías',
+      items: [
+        {
+          name: 'Gestionar Categorías',
+          href: '/admin/categories',
+          icon: '📁',
+          current: location.pathname === '/admin/categories'
+        }
+      ]
+    },
+    {
       title: '🧾 Facturación (Taxxa)',
       items: [
         {

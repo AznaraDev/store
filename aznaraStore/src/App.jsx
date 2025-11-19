@@ -38,6 +38,8 @@ import DashboardLayout from "./Components/Dashboard/DashboardLayout";
 import AdminDashboard from "./Components/Dashboard/AdminDashboard";
 import ProductsDashboard from "./Components/Dashboard/ProductsDashboard";
 import CustomersList from "./Components/Dashboard/CustomersList";
+import CategoriesManager from "./Components/Dashboard/CategoriesManager";
+
 
   function App() {
     return (
@@ -90,6 +92,11 @@ import CustomersList from "./Components/Dashboard/CustomersList";
             <Route path="/admin/customers" element={<PrivateRoute>
               <DashboardLayout>
                 <CustomersList />
+              </DashboardLayout>
+            </PrivateRoute>} />
+            <Route path="/admin/categories" element={<PrivateRoute>
+              <DashboardLayout>
+                <CategoriesManager />
               </DashboardLayout>
             </PrivateRoute>} />
             
