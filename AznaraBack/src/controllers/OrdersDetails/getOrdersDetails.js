@@ -1,22 +1,57 @@
 // controllers/getAllorders.js
-const { OrderDetail, Product, Image } = require('../../data');
+const { OrderDetail, Product, Image, User } = require('../../data');
 const response = require('../../utils/response');
+const { Op } = require('sequelize');
 
 module.exports = async (req, res) => {
  try {
- const { latest } = req.query;
+ const { latest, n_document, name, search } = req.query;
+ 
+ // Construir filtros dinámicos
+ let whereClause = {};
+ let userWhereClause = {};
+ 
+ // Filtro por documento específico
+ if (n_document) {
+   whereClause.n_document = n_document;
+ }
+ 
+ // Filtro por nombre (buscar en User)
+ if (name) {
+   userWhereClause.name = {
+     [Op.iLike]: `%${name}%` // Búsqueda parcial, case insensitive
+   };
+ }
+ 
+ // Filtro de búsqueda general (documento o nombre)
+ if (search) {
+   userWhereClause[Op.or] = [
+     { name: { [Op.iLike]: `%${search}%` } },
+     { n_document: { [Op.iLike]: `%${search}%` } }
+   ];
+ }
+ 
  const orders = await OrderDetail.findAll({
- include: {
- model: Product,
- as: 'products',
+ where: whereClause,
  include: [
    {
-     model: Image,
-     as: 'Images',
-     attributes: ['id_image', 'url']
+     model: Product,
+     as: 'products',
+     include: [
+       {
+         model: Image,
+         as: 'Images',
+         attributes: ['id_image', 'url']
+       }
+     ]
+   },
+   {
+     model: User,
+     attributes: ['n_document', 'name', 'email', 'phone'],
+     where: Object.keys(userWhereClause).length > 0 ? userWhereClause : undefined,
+     required: Object.keys(userWhereClause).length > 0 // Solo hacer INNER JOIN si hay filtro de usuario
    }
- ]
- },
+ ],
  order: [['createdAt', 'DESC']]
  });
 
@@ -58,7 +93,14 @@ const formattedOrders = orders.map(order => ({
  postal_code: order.postal_code,
  delivery_notes: order.delivery_notes,
  trackingNumber: order.trackingNumber,
+ transaction_status: order.transaction_status,
  cart_items: order.cart_items,
+ customer: order.User ? {
+   n_document: order.User.n_document,
+   name: order.User.name,
+   email: order.User.email,
+   phone: order.User.phone
+ } : null,
  products: order.products.map(product => ({
    id_product: product.id_product,
    name: product.name,

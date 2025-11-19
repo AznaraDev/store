@@ -22,6 +22,8 @@ module.exports = {
     createUsers:catchedAsync(require("./Users/createUsers")),
     getOrderDetailID:catchedAsync(require("./OrdersDetails/getOrderDetailID")),
     updateOrderDetail:catchedAsync(require("./OrdersDetails/updateOrderDetail")),
+    deleteOrderDetail:catchedAsync(require("./OrdersDetails/deleteOrderDetail")),
+    removeProductFromOrder:catchedAsync(require("./OrdersDetails/removeProductFromOrder")),
     webhook:catchedAsync(require("./webhook")),
     suscription:catchedAsync(require("./Users/suscription")),
     

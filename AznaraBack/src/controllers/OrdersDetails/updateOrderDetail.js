@@ -1,4 +1,4 @@
-const { OrderDetail } = require("../../data");
+const { OrderDetail, Product, StockMovement } = require("../../data");
 const response = require("../../utils/response");
 
 module.exports = async (req, res) => {
@@ -38,6 +38,44 @@ module.exports = async (req, res) => {
       return response(res, 400, { error: "Invalid transaction_status value" });
     }
 
+    // Guardar el estado anterior de la transacción
+    const previousTransactionStatus = orderDetail.transaction_status;
+    
+    // Devolver stock si el pedido se cancela
+    if (transaction_status === 'Cancelado' && previousTransactionStatus !== 'Cancelado') {
+      // Procesar devolución de stock si hay cart_items
+      if (orderDetail.cart_items && Array.isArray(orderDetail.cart_items) && orderDetail.cart_items.length > 0) {
+        for (const item of orderDetail.cart_items) {
+          if (item.id_product && item.quantity) {
+            const product = await Product.findByPk(item.id_product);
+            
+            if (product) {
+              const previousStock = product.stock || 0;
+              const quantityToReturn = parseInt(item.quantity);
+              const newStock = previousStock + quantityToReturn;
+              
+              // Actualizar stock del producto
+              await product.update({ stock: newStock });
+              
+              // Registrar movimiento de stock
+              await StockMovement.create({
+                id_product: item.id_product,
+                movement_type: 'devolucion',
+                quantity: quantityToReturn,
+                previous_stock: previousStock,
+                new_stock: newStock,
+                reason: 'Devolución - Pedido cancelado',
+                performed_by: req.user?.n_document || 'Sistema',
+                reference_id: orderDetail.id_orderDetail,
+                notes: `Cancelación de pedido ${orderDetail.id_orderDetail} - ${item.name || 'Producto'}`
+              });
+              
+              console.log(`Stock devuelto: ${item.name}, cantidad: ${quantityToReturn}, nuevo stock: ${newStock}`);
+            }
+          }
+        }
+      }
+    }
     
     if (state_order) {
       orderDetail.state_order = state_order;
