@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { BASE_URL } from '../../Config';
 import {
+  FETCH_CATEGORIES_REQUEST,
+  FETCH_CATEGORIES_SUCCESS,
+  FETCH_CATEGORIES_FAILURE,
   CREATE_CATEGORY_REQUEST,
   CREATE_CATEGORY_SUCCESS,
   CREATE_CATEGORY_FAILURE,
@@ -25,6 +28,31 @@ import {
 } from './actions-type';
 
 // ==================== CATEGORÍAS ====================
+
+/**
+ * Obtener todas las categorías
+ */
+export const fetchCategories = () => async (dispatch) => {
+  try {
+    dispatch({ type: FETCH_CATEGORIES_REQUEST });
+
+    const { data } = await axios.get(`${BASE_URL}/category`);
+
+    dispatch({
+      type: FETCH_CATEGORIES_SUCCESS,
+      payload: data.data,
+    });
+
+    return { success: true, data: data.data };
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch({
+      type: FETCH_CATEGORIES_FAILURE,
+      payload: errorMessage,
+    });
+    return { success: false, error: errorMessage };
+  }
+};
 
 /**
  * Crear nueva categoría
