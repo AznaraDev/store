@@ -51,5 +51,13 @@ module.exports = {
     // ✅ TAXXA CONTROLLERS - SELLER DATA
     createSellerData:catchedAsync(require("./Taxxa/sellerDataControllers").createSellerData),
     getSellerData:catchedAsync(require("./Taxxa/sellerDataControllers").getSellerData),
-    updateSellerData:catchedAsync(require("./Taxxa/sellerDataControllers").updateSellerData)
+    updateSellerData:catchedAsync(require("./Taxxa/sellerDataControllers").updateSellerData),
+    
+    // ✅ CATEGORY & SUBCATEGORY CONTROLLERS
+    updateCategory:catchedAsync(require("./Category/updateCategory")),
+    deleteCategory:catchedAsync(require("./Category/deleteCategory")),
+    createSubCategory:catchedAsync(require("./SubCategory/createSubCategory")),
+    getSubCategories:catchedAsync(require("./SubCategory/getSubCategories")),
+    updateSubCategory:catchedAsync(require("./SubCategory/updateSubCategory")),
+    deleteSubCategory:catchedAsync(require("./SubCategory/deleteSubCategory"))
 }
