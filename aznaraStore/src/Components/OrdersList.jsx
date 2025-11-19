@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllOrders, updateOrderState } from '../Redux/Actions/actions';
 import Swal from 'sweetalert2';
+import axios from 'axios';
+import { BASE_URL } from '../Config';
 
 const OrdersList = () => {
   const [filterState, setFilterState] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [trackingNumbers, setTrackingNumbers] = useState({});
   const [selectedStates, setSelectedStates] = useState({});
   const dispatch = useDispatch();
   const { orders, loading, error } = useSelector(state => state.ordersGeneral);
+  const { userInfo } = useSelector(state => state.userLogin);
 
   useEffect(() => {
     dispatch(fetchAllOrders());
@@ -57,11 +61,80 @@ const OrdersList = () => {
     return states.filter(state => state !== currentState);
   };
 
-  const filteredOrders = orders.filter(order => {
-    if (!filterState) {
-      return true; 
+  const handleDeleteOrder = async (id_orderDetail) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará la orden y devolverá el stock. No se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`${BASE_URL}/order/${id_orderDetail}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` }
+        });
+        
+        Swal.fire('Eliminado!', 'La orden ha sido eliminada exitosamente.', 'success');
+        dispatch(fetchAllOrders());
+      } catch (error) {
+        Swal.fire('Error', error.response?.data?.error || 'Error al eliminar la orden', 'error');
+      }
     }
-    return order.state_order === filterState; 
+  };
+
+  const handleDeleteProduct = async (id_orderDetail, id_product, productName) => {
+    const result = await Swal.fire({
+      title: '¿Eliminar producto?',
+      text: `¿Deseas eliminar "${productName}" de esta orden? Se devolverá el stock.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(`${BASE_URL}/order/${id_orderDetail}/product/${id_product}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` }
+        });
+        
+        if (response.data.data.orderDeleted) {
+          Swal.fire('Eliminado!', 'La orden completa ha sido eliminada al no quedar productos.', 'success');
+        } else {
+          Swal.fire('Eliminado!', 'El producto ha sido eliminado de la orden.', 'success');
+        }
+        dispatch(fetchAllOrders());
+      } catch (error) {
+        Swal.fire('Error', error.response?.data?.error || 'Error al eliminar el producto', 'error');
+      }
+    }
+  };
+
+  const filteredOrders = orders.filter(order => {
+    // Filtro por estado
+    if (filterState && order.state_order !== filterState) {
+      return false;
+    }
+    
+    // Filtro por búsqueda (nombre o documento del cliente)
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const customerName = order.customer?.name?.toLowerCase() || '';
+      const customerDocument = order.customer?.n_document?.toLowerCase() || '';
+      
+      if (!customerName.includes(searchLower) && !customerDocument.includes(searchLower)) {
+        return false;
+      }
+    }
+    
+    return true;
   });
 
   const handleFilterChange = (e) => {
@@ -80,6 +153,20 @@ const OrdersList = () => {
     <div className="bg-colorFooter min-h-screen pt-16 pb-16">
       <div className="container mx-auto px-4 py-8 mt-20">
         <h2 className="text-2xl font-semibold mb-4 font-nunito text-gray-300 bg-colorDetalle p-2 rounded">Lista de Pedidos</h2>
+        
+        {/* Buscador por cliente */}
+        <div className="mb-4">
+          <label className="mr-2 text-gray-200 font-nunito font-semibold">Buscar por cliente:</label>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Nombre o documento..."
+            className="bg-gray-600 text-gray-200 font-nunito px-3 py-2 rounded w-full md:w-96"
+          />
+        </div>
+
+        {/* Filtro por estado */}
         <div className="mb-4">
           <label className="mr-2 text-gray-200 font-nunito font-semibold">Filtrar por estado:</label>
           <select
@@ -103,6 +190,18 @@ const OrdersList = () => {
                 <div className="font-semibold">Fecha: {order.date}</div>
                 <div className="font-semibold bg-gray-700 text-white px-2 py-1 rounded">Estado Pedido: {order.state_order}</div>
               </div>
+              
+              {/* Información del cliente */}
+              {order.customer && (
+                <div className="mb-2 bg-blue-50 p-2 rounded">
+                  <div className="font-semibold text-blue-900">Cliente:</div>
+                  <div className="text-sm">Nombre: {order.customer.name}</div>
+                  <div className="text-sm">Documento: {order.customer.n_document}</div>
+                  {order.customer.email && <div className="text-sm">Email: {order.customer.email}</div>}
+                  {order.customer.phone && <div className="text-sm">Teléfono: {order.customer.phone}</div>}
+                </div>
+              )}
+              
               <div>Cantidad: {order.quantity}</div>
               <div>Monto: ${new Intl.NumberFormat('es-ES').format(order.amount)}</div>
               <div className="font-semibold">N° Pedido: {order.id_orderDetail}</div>
@@ -150,7 +249,7 @@ const OrdersList = () => {
                   <div className="font-semibold text-gray-800 mb-3">🛍️ Productos del Pedido:</div>
                   <div className="space-y-3">
                     {order.cart_items.map((item, index) => (
-                      <div key={index} className="flex items-center space-x-4 p-2 bg-white rounded border">
+                      <div key={index} className="flex items-center space-x-4 p-2 bg-white rounded border relative">
                         {item.image && (
                           <img 
                             src={item.image} 
@@ -182,6 +281,14 @@ const OrdersList = () => {
                             Cantidad: {item.quantity}
                           </div>
                         </div>
+                        {/* Botón eliminar producto */}
+                        <button
+                          onClick={() => handleDeleteProduct(order.id_orderDetail, item.id_product, item.name)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                          title="Eliminar producto"
+                        >
+                          🗑️
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -191,7 +298,7 @@ const OrdersList = () => {
                   <div className="font-semibold text-gray-800 mb-3">🛍️ Productos del Pedido:</div>
                   <div className="space-y-3">
                     {order.products.map((product) => (
-                      <div key={product.id_product} className="flex items-center space-x-4 p-2 bg-white rounded border">
+                      <div key={product.id_product} className="flex items-center space-x-4 p-2 bg-white rounded border relative">
                         {product.Images && product.Images.length > 0 && (
                           <img 
                             src={product.Images[0].url} 
@@ -249,6 +356,14 @@ const OrdersList = () => {
                 disabled={order.state_order === 'Envío Realizado'}
               >
                 Confirmar Cambio de Estado
+              </button>
+              
+              {/* Botón eliminar orden */}
+              <button
+                onClick={() => handleDeleteOrder(order.id_orderDetail)}
+                className="mt-2 ml-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-nunito font-semibold"
+              >
+                🗑️ Eliminar Orden
               </button>
             </div>
           ))}

@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import CreateProduct from "./Components/Product/CreateProduct"
 import ProductsList from "./Components/Product/ProducstList";
 import ProductDetails from "./Components/Product/ProductDetails";
@@ -100,37 +100,13 @@ import CategoriesManager from "./Components/Dashboard/CategoriesManager";
               </DashboardLayout>
             </PrivateRoute>} />
             
-            {/* Rutas Taxxa - Sistema de Facturación con DashboardLayout */}
-            <Route path="/taxxa" element={<PrivateRoute>
-              <DashboardLayout>
-                <PanelTaxxa />
-              </DashboardLayout>
-            </PrivateRoute>} />
-            <Route path="/pendientInvoices" element={<PrivateRoute>
-              <DashboardLayout>
-                <FacturasPendientes />
-              </DashboardLayout>
-            </PrivateRoute>} />
-            <Route path="/invoices" element={<PrivateRoute>
-              <DashboardLayout>
-                <InvoiceList />
-              </DashboardLayout>
-            </PrivateRoute>} />
-            <Route path="/manual-invoice" element={<PrivateRoute>
-              <DashboardLayout>
-                <FacturaManual />
-              </DashboardLayout>
-            </PrivateRoute>} />
-            <Route path="/seller-settings" element={<PrivateRoute>
-              <DashboardLayout>
-                <SellerSetting />
-              </DashboardLayout>
-            </PrivateRoute>} />
-            <Route path="/taxxa-test" element={<PrivateRoute>
-              <DashboardLayout>
-                <TaxxaTestComponent />
-              </DashboardLayout>
-            </PrivateRoute>} />
+            {/* Rutas Taxxa - Sistema de Facturación */}
+            <Route path="/taxxa" element={<PrivateRoute><PanelTaxxa /></PrivateRoute>} />
+            <Route path="/pendientInvoices" element={<PrivateRoute><FacturasPendientes /></PrivateRoute>} />
+            <Route path="/invoices" element={<PrivateRoute><InvoiceList /></PrivateRoute>} />
+            <Route path="/manual-invoice" element={<PrivateRoute><FacturaManual /></PrivateRoute>} />
+            <Route path="/seller-settings" element={<PrivateRoute><SellerSetting /></PrivateRoute>} />
+            <Route path="/taxxa-test" element={<PrivateRoute><TaxxaTestComponent /></PrivateRoute>} />
           </Routes>
         </div>
         <Footer/>

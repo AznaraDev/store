@@ -105,17 +105,6 @@ const DashboardLayout = ({ children }) => {
       ]
     },
     {
-      title: '📁 Categorías',
-      items: [
-        {
-          name: 'Gestionar Categorías',
-          href: '/admin/categories',
-          icon: '📁',
-          current: location.pathname === '/admin/categories'
-        }
-      ]
-    },
-    {
       title: '🧾 Facturación (Taxxa)',
       items: [
         {
@@ -153,18 +142,6 @@ const DashboardLayout = ({ children }) => {
     {
       title: '⚙️ Configuración',
       items: [
-        {
-          name: 'Categorías',
-          href: '/category',
-          icon: '🏷️',
-          current: location.pathname === '/category'
-        },
-        {
-          name: 'Subcategorías',
-          href: '/sb',
-          icon: '🔖',
-          current: location.pathname === '/sb'
-        },
         {
           name: 'Crear Admin',
           href: '/register',
