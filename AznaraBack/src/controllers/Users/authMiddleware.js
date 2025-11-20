@@ -23,7 +23,10 @@ const authenticate = (req, res, next) => {
     next();
   } catch (error) {
     console.log('❌ Error verificando token:', error.message);
-    response(res, 400, "Token no válido.");
+    if (error.name === 'TokenExpiredError') {
+      return response(res, 401, "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+    }
+    return response(res, 400, "Token no válido.");
   }
 };
 
