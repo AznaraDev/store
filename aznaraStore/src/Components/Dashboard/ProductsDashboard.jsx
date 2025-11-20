@@ -408,7 +408,9 @@ const ProductsDashboard = () => {
             <span className="text-2xl mr-3">❌</span>
             <div>
               <p className="text-red-800 font-semibold">Error al cargar productos</p>
-              <p className="text-red-600 text-sm mt-1">{error}</p>
+              <p className="text-red-600 text-sm mt-1">
+                {typeof error === 'object' ? error.message || JSON.stringify(error) : error}
+              </p>
               <button
                 onClick={() => dispatch(fetchDashboard({}))}
                 className="mt-3 px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700"

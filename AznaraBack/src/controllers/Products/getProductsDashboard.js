@@ -1,4 +1,4 @@
-const { Product, Image, Category, SubCategory, sequelize } = require('../../data');
+const { Product, Image, Category, SubCategory, Material, sequelize } = require('../../data');
 const response = require('../../utils/response');
 const { Op, fn, col } = require('sequelize');
 
@@ -84,6 +84,12 @@ module.exports = async (req, res) => {
           model: SubCategory,
           attributes: ['id_SB', 'name_SB'],
         },
+        {
+          model: Material,
+          as: 'materials',
+          attributes: ['id_material', 'name', 'description'],
+          through: { attributes: [] } // No incluir campos de la tabla intermedia
+        }
       ],
       attributes: [
         'id_product',
@@ -97,7 +103,6 @@ module.exports = async (req, res) => {
         'isOffer',
         'sizes',
         'colors',
-        'materials',
         'createdAt',
         'updatedAt'
       ],
