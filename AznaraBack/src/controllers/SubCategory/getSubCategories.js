@@ -22,11 +22,11 @@ module.exports = async (req, res) => {
       include: [
         {
           model: Category,
-          as: 'category',
-          attributes: ['id_category', 'name', 'section']
+          as: 'Category',
+          attributes: ['id_category', 'name_category']
         }
       ],
-      order: [['name', 'ASC']]
+      order: [['name_SB', 'ASC']]
     });
 
     return response(res, 200, {

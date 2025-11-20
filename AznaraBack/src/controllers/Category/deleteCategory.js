@@ -21,24 +21,24 @@ module.exports = async (req, res) => {
 
     // Verificar si hay subcategorías asociadas
     const subCategoriesCount = await SubCategory.count({
-      where: { categoryId: id }
+      where: { id_category: id }
     });
 
     if (subCategoriesCount > 0) {
       return response(res, 400, { 
-        error: `No se puede eliminar la categoría "${category.name}" porque tiene ${subCategoriesCount} subcategoría(s) asociada(s)`,
+        error: `No se puede eliminar la categoría "${category.name_category}" porque tiene ${subCategoriesCount} subcategoría(s) asociada(s)`,
         subCategoriesCount 
       });
     }
 
     // Verificar si hay productos asociados
     const productsCount = await Product.count({
-      where: { categoryId: id }
+      where: { id_category: id }
     });
 
     if (productsCount > 0) {
       return response(res, 400, { 
-        error: `No se puede eliminar la categoría "${category.name}" porque tiene ${productsCount} producto(s) asociado(s)`,
+        error: `No se puede eliminar la categoría "${category.name_category}" porque tiene ${productsCount} producto(s) asociado(s)`,
         productsCount 
       });
     }
@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
     await category.destroy();
 
     return response(res, 200, {
-      message: `Categoría "${category.name}" eliminada exitosamente`
+      message: `Categoría "${category.name_category}" eliminada exitosamente`
     });
 
   } catch (error) {

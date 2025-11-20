@@ -20,12 +20,12 @@ module.exports = async (req, res) => {
 
     // Verificar si hay productos asociados
     const productsCount = await Product.count({
-      where: { subCategoryId: id }
+      where: { id_SB: id }
     });
 
     if (productsCount > 0) {
       return response(res, 400, { 
-        error: `No se puede eliminar la subcategoría "${subCategory.name}" porque tiene ${productsCount} producto(s) asociado(s)`,
+        error: `No se puede eliminar la subcategoría "${subCategory.name_SB}" porque tiene ${productsCount} producto(s) asociado(s)`,
         productsCount 
       });
     }
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     await subCategory.destroy();
 
     return response(res, 200, {
-      message: `Subcategoría "${subCategory.name}" eliminada exitosamente`
+      message: `Subcategoría "${subCategory.name_SB}" eliminada exitosamente`
     });
 
   } catch (error) {

@@ -8,7 +8,7 @@ const response = require("../../utils/response");
 module.exports = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, section } = req.body;
+    const { name } = req.body;
 
     if (!name) {
       return response(res, 400, { error: "El nombre es requerido" });
@@ -21,9 +21,9 @@ module.exports = async (req, res) => {
     }
 
     // Verificar que el nuevo nombre no esté duplicado (si cambió)
-    if (name !== category.name) {
+    if (name !== category.name_category) {
       const existingCategory = await Category.findOne({
-        where: { name }
+        where: { name_category: name }
       });
 
       if (existingCategory) {
@@ -35,8 +35,7 @@ module.exports = async (req, res) => {
 
     // Actualizar
     await category.update({
-      name,
-      section: section || category.section
+      name_category: name
     });
 
     return response(res, 200, {

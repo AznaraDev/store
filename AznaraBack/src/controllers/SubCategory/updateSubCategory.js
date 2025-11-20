@@ -21,17 +21,17 @@ module.exports = async (req, res) => {
     }
 
     // Verificar que el nuevo nombre no esté duplicado en la misma categoría
-    const targetCategoryId = categoryId || subCategory.categoryId;
+    const targetCategoryId = categoryId || subCategory.id_category;
     
-    if (name !== subCategory.name || categoryId) {
+    if (name !== subCategory.name_SB || categoryId) {
       const existingSubCategory = await SubCategory.findOne({
         where: { 
-          name,
-          categoryId: targetCategoryId
+          name_SB: name,
+          id_category: targetCategoryId
         }
       });
 
-      if (existingSubCategory && existingSubCategory.id_subCategory !== id) {
+      if (existingSubCategory && existingSubCategory.id_SB !== id) {
         return response(res, 400, { 
           error: `Ya existe una subcategoría con el nombre "${name}" en esta categoría` 
         });
@@ -40,8 +40,8 @@ module.exports = async (req, res) => {
 
     // Actualizar
     await subCategory.update({
-      name,
-      categoryId: categoryId || subCategory.categoryId
+      name_SB: name,
+      id_category: categoryId || subCategory.id_category
     });
 
     return response(res, 200, {

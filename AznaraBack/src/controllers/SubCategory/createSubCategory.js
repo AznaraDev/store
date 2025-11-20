@@ -18,8 +18,8 @@ module.exports = async (req, res) => {
     // Verificar que no exista una subcategoría con el mismo nombre en la misma categoría
     const existingSubCategory = await SubCategory.findOne({
       where: { 
-        name,
-        categoryId 
+        name_SB: name,
+        id_category: categoryId 
       }
     });
 
@@ -31,8 +31,8 @@ module.exports = async (req, res) => {
 
     // Crear la subcategoría
     const newSubCategory = await SubCategory.create({
-      name,
-      categoryId
+      name_SB: name,
+      id_category: categoryId
     });
 
     return response(res, 201, {
