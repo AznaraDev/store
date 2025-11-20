@@ -14,7 +14,6 @@ import UpdateProduct from "./Components/Product/UpdateProduct";
 import CreateCategory from "./Components/Product/CreateCategory";
 import CreateSB from "./Components/Product/CreateSB";
 import Footer from "./Components/Footer";
-import CartButton from "./Components/CartButton";
 import Landing from "./Components/Landing";
 import CardsAnimated from "./Components/CardsAnimated";
 import ThankYouPage from "./Components/ThankYouPage";
@@ -135,7 +134,6 @@ import StockManagement from "./Components/stock/StockManagement";
           </Routes>
         
         {!isDashboardRoute && <Footer/>}
-        <CartButton /> 
         <WhatsappButton/>
       </div>
     );
