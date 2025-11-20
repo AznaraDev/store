@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {  FaListAlt, FaClock } from 'react-icons/fa';
@@ -16,7 +16,7 @@ const PanelTaxxa = () => {
       <DashboardLayout>
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
           <p>No tienes permisos para acceder a esta sección.</p>
-          <Link to="/dashboard" className="text-blue-500 underline mt-2 inline-block">
+          <Link to="/admin" className="text-blue-500 underline mt-2 inline-block">
             Volver al Dashboard
           </Link>
         </div>

@@ -159,7 +159,7 @@ const OrdersList = () => {
   }
 
   if (error) {
-    return <p className="text-center mt-4 text-red-500">Error al cargar órdenes: {error}</p>;
+    return <p className="text-center mt-4 text-red-500">Error al cargar órdenes: {typeof error === 'string' ? error : JSON.stringify(error)}</p>;
   }
 
   return (
