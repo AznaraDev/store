@@ -10,6 +10,7 @@ const response = require("../../utils/response");
  * - limit: Items por página (default: 20)
  * - search: Búsqueda por nombre de producto
  * - lowStock: Solo productos con stock bajo (true/false)
+ * - section: Filtrar por sección (Dama/Caballero/Unisex)
  */
 module.exports = async (req, res) => {
   try {
@@ -17,7 +18,8 @@ module.exports = async (req, res) => {
       page = 1, 
       limit = 20, 
       search = '', 
-      lowStock = false 
+      lowStock = false,
+      section = ''
     } = req.query;
 
     const offset = (page - 1) * limit;
@@ -29,6 +31,10 @@ module.exports = async (req, res) => {
       where.name = {
         [require('sequelize').Op.iLike]: `%${search}%`
       };
+    }
+
+    if (section) {
+      where.section = section;
     }
 
     // Obtener productos con sus movimientos de stock
@@ -72,6 +78,7 @@ module.exports = async (req, res) => {
     const formattedProducts = filteredProducts.map(product => ({
       id_product: product.id_product,
       name: product.name,
+      section: product.section,
       stock: product.stock,
       price: product.price,
       image: product.Images?.[0]?.url || null,
