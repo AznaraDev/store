@@ -39,6 +39,7 @@ import AdminDashboard from "./Components/Dashboard/AdminDashboard";
 import ProductsDashboard from "./Components/Dashboard/ProductsDashboard";
 import CustomersList from "./Components/Dashboard/CustomersList";
 import CategoriesManager from "./Components/Dashboard/CategoriesManager";
+import StockManagement from "./Components/stock/StockManagement";
 
 
   function App() {
@@ -88,6 +89,9 @@ import CategoriesManager from "./Components/Dashboard/CategoriesManager";
               <DashboardLayout>
                 <ProductsDashboard />
               </DashboardLayout>
+            </PrivateRoute>} />
+            <Route path="/admin/stock" element={<PrivateRoute>
+              <StockManagement />
             </PrivateRoute>} />
             <Route path="/admin/customers" element={<PrivateRoute>
               <DashboardLayout>
