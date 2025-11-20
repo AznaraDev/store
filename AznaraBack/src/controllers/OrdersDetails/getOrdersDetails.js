@@ -16,17 +16,19 @@ module.exports = async (req, res) => {
    whereClause.n_document = n_document;
  }
  
- // Filtro por nombre (buscar en User)
+ // Filtro por nombre (buscar en User - first_name o last_name)
  if (name) {
-   userWhereClause.name = {
-     [Op.iLike]: `%${name}%` // Búsqueda parcial, case insensitive
-   };
+   userWhereClause[Op.or] = [
+     { first_name: { [Op.iLike]: `%${name}%` } },
+     { last_name: { [Op.iLike]: `%${name}%` } }
+   ];
  }
  
  // Filtro de búsqueda general (documento o nombre)
  if (search) {
    userWhereClause[Op.or] = [
-     { name: { [Op.iLike]: `%${search}%` } },
+     { first_name: { [Op.iLike]: `%${search}%` } },
+     { last_name: { [Op.iLike]: `%${search}%` } },
      { n_document: { [Op.iLike]: `%${search}%` } }
    ];
  }
@@ -47,7 +49,7 @@ module.exports = async (req, res) => {
    },
    {
      model: User,
-     attributes: ['n_document', 'name', 'email', 'phone'],
+     attributes: ['n_document', 'first_name', 'last_name', 'email', 'phone'],
      where: Object.keys(userWhereClause).length > 0 ? userWhereClause : undefined,
      required: Object.keys(userWhereClause).length > 0 // Solo hacer INNER JOIN si hay filtro de usuario
    }
@@ -97,7 +99,7 @@ const formattedOrders = orders.map(order => ({
  cart_items: order.cart_items,
  customer: order.User ? {
    n_document: order.User.n_document,
-   name: order.User.name,
+   name: `${order.User.first_name || ''} ${order.User.last_name || ''}`.trim(),
    email: order.User.email,
    phone: order.User.phone
  } : null,
