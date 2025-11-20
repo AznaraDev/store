@@ -68,7 +68,12 @@ const DashboardLayout = ({ children }) => {
           icon: '📦',
           current: location.pathname === '/admin/stock'
         },
-        
+        {
+          name: 'Gestionar Materiales',
+          href: '/admin/materials',
+          icon: '🧵',
+          current: location.pathname === '/admin/materials'
+        }
       ]
     },
     {
@@ -137,18 +142,6 @@ const DashboardLayout = ({ children }) => {
     {
       title: '⚙️ Configuración',
       items: [
-        {
-          name: 'Categorías',
-          href: '/admin/categories',
-          icon: '📁',
-          current: location.pathname === '/admin/categories'
-        },
-        {
-          name: 'Materiales',
-          href: '/admin/materials',
-          icon: '🧵',
-          current: location.pathname === '/admin/materials'
-        },
         {
           name: 'Crear Admin',
           href: '/register',
