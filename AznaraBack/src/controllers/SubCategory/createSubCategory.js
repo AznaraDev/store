@@ -8,12 +8,16 @@ const response = require("../../utils/response");
 module.exports = async (req, res) => {
   try {
     console.log('📝 [createSubCategory] Body recibido:', req.body);
-    const { name, categoryId } = req.body;
+    const { name, categoryId, name_SB, id_category } = req.body;
 
-    console.log('📝 [createSubCategory] name:', name);
-    console.log('📝 [createSubCategory] categoryId:', categoryId);
+    // Aceptar ambos formatos de nombres de campo
+    const subCategoryName = name || name_SB;
+    const categoryIdentifier = categoryId || id_category;
 
-    if (!name || !categoryId) {
+    console.log('📝 [createSubCategory] name:', subCategoryName);
+    console.log('📝 [createSubCategory] categoryId:', categoryIdentifier);
+
+    if (!subCategoryName || !categoryIdentifier) {
       console.log('❌ [createSubCategory] Faltan campos requeridos');
       return response(res, 400, { 
         error: "Nombre y categoryId son requeridos" 
@@ -23,22 +27,22 @@ module.exports = async (req, res) => {
     // Verificar que no exista una subcategoría con el mismo nombre en la misma categoría
     const existingSubCategory = await SubCategory.findOne({
       where: { 
-        name_SB: name,
-        id_category: categoryId 
+        name_SB: subCategoryName,
+        id_category: categoryIdentifier 
       }
     });
 
     if (existingSubCategory) {
       console.log('⚠️ [createSubCategory] Subcategoría duplicada encontrada');
       return response(res, 400, { 
-        error: `Ya existe una subcategoría con el nombre "${name}" en esta categoría` 
+        error: `Ya existe una subcategoría con el nombre "${subCategoryName}" en esta categoría` 
       });
     }
 
     // Crear la subcategoría
     const newSubCategory = await SubCategory.create({
-      name_SB: name,
-      id_category: categoryId
+      name_SB: subCategoryName,
+      id_category: categoryIdentifier
     });
 
     console.log('✅ [createSubCategory] Subcategoría creada:', newSubCategory.toJSON());
