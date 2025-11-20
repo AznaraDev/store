@@ -15,7 +15,11 @@ router.post('/createCategory', authenticate, authorize(['Admin']), controllers.c
 router.put('/:id', authenticate, authorize(['Admin']), controllers.updateCategory);
 
 // Eliminar categoría (Admin)
-router.delete('/:id', authenticate, authorize(['Admin']), controllers.deleteCategory);
+router.delete('/:id', authenticate, authorize(['Admin']), (req, res, next) => {
+  console.log('🛣️ Router DELETE /category/:id recibido - ID:', req.params.id);
+  console.log('👤 Usuario autenticado:', req.user);
+  next();
+}, controllers.deleteCategory);
 
 // ========== SUBCATEGORÍAS ==========
 // Obtener todas las subcategorías (público)
