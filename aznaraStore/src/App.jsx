@@ -39,6 +39,7 @@ import AdminDashboard from "./Components/Dashboard/AdminDashboard";
 import ProductsDashboard from "./Components/Dashboard/ProductsDashboard";
 import CustomersList from "./Components/Dashboard/CustomersList";
 import CategoriesManager from "./Components/Dashboard/CategoriesManager";
+import MaterialsManagement from "./Components/Dashboard/MaterialsManagement";
 import StockManagement from "./Components/stock/StockManagement";
 
   function App() {
@@ -119,6 +120,9 @@ import StockManagement from "./Components/stock/StockManagement";
               <DashboardLayout>
                 <CategoriesManager />
               </DashboardLayout>
+            </PrivateRoute>} />
+            <Route path="/admin/materials" element={<PrivateRoute>
+              <MaterialsManagement />
             </PrivateRoute>} />
             
             {/* Rutas Taxxa - Sistema de Facturación */}

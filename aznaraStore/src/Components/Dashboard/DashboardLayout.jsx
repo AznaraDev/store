@@ -138,6 +138,18 @@ const DashboardLayout = ({ children }) => {
       title: '⚙️ Configuración',
       items: [
         {
+          name: 'Categorías',
+          href: '/admin/categories',
+          icon: '📁',
+          current: location.pathname === '/admin/categories'
+        },
+        {
+          name: 'Materiales',
+          href: '/admin/materials',
+          icon: '🧵',
+          current: location.pathname === '/admin/materials'
+        },
+        {
           name: 'Crear Admin',
           href: '/register',
           icon: '👨‍💼',

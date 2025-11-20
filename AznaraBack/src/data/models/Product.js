@@ -45,17 +45,6 @@ module.exports = (sequelize) => {
           this.setDataValue("colors", JSON.stringify(value));
         },
       },
-      materials: {
-        type: DataTypes.TEXT, // Usar TEXT en lugar de STRING
-        allowNull: true,
-        get() {
-          const value = this.getDataValue("materials");
-          return value ? JSON.parse(value) : [];
-        },
-        set(value) {
-          this.setDataValue("materials", JSON.stringify(value));
-        },
-      },
 
       stock: {
         type: DataTypes.INTEGER,
@@ -115,6 +104,24 @@ module.exports = (sequelize) => {
       unit: {
         type: DataTypes.STRING,
         defaultValue: "94",
+      },
+
+      id_category: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: 'Categories',
+          key: 'id_category'
+        }
+      },
+
+      id_SB: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: 'SubCategories',
+          key: 'id_SB'
+        }
       },
 
       deletedAt: {

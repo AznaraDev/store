@@ -1,4 +1,4 @@
-const { Product, Image, Category, SubCategory } = require('../../data');
+const { Product, Image, Category, SubCategory, Material } = require('../../data');
 const response = require('../../utils/response');
 
 module.exports = async (req, res) => {
@@ -19,6 +19,12 @@ module.exports = async (req, res) => {
         {
           model: SubCategory,
           attributes: ['id_SB', 'name_SB'],
+        },
+        {
+          model: Material,
+          as: 'materials',
+          attributes: ['id_material', 'name', 'description'],
+          through: { attributes: [] } // No incluir campos de la tabla intermedia
         },
       ],
     });
@@ -50,6 +56,12 @@ module.exports = async (req, res) => {
         {
           model: SubCategory,
           attributes: ['id_SB', 'name_SB'],
+        },
+        {
+          model: Material,
+          as: 'materials',
+          attributes: ['id_material', 'name', 'description'],
+          through: { attributes: [] }
         },
       ],
     });

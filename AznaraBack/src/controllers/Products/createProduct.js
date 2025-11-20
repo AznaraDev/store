@@ -1,4 +1,4 @@
-const { Product, Image, StockMovement } = require('../../data');
+const { Product, Image, StockMovement, Material } = require('../../data');
 const response = require('../../utils/response');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
         id_SB,
         sizes,
         colors,
-        materials,
+        materialIds, // Array de IDs de materiales
         section,
         isOffer 
       } = req.body;
@@ -59,10 +59,20 @@ module.exports = async (req, res) => {
         id_SB,
         sizes: sizes ? JSON.parse(sizes) : null,
         colors: colors ? JSON.parse(colors) : null,
-        materials: materials ?JSON.parse(materials): null,
         section,
         isOffer: isOffer === 'true' 
       });
+
+      // Asociar materiales si se proporcionaron
+      if (materialIds) {
+        const materialIdsArray = JSON.parse(materialIds);
+        if (materialIdsArray.length > 0) {
+          const materials = await Material.findAll({
+            where: { id_material: materialIdsArray }
+          });
+          await product.setMaterials(materials);
+        }
+      }
 
       // Registrar movimiento inicial de stock si hay stock
       if (product.stock > 0) {

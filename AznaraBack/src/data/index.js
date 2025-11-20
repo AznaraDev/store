@@ -51,7 +51,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { User, Product,  Category, Delivery, OrderDetail, Payment, Image, Bill, Invoice, Buyer, SubCategory, StockMovement } = sequelize.models;
+const { User, Product, Category, Delivery, OrderDetail, Payment, Image, Bill, Invoice, Buyer, SubCategory, StockMovement, Material, ProductMaterial } = sequelize.models;
 
 OrderDetail.hasMany(Product, {
   foreignKey: 'id_orderDetail',
@@ -104,6 +104,20 @@ Invoice.belongsTo(Bill, { foreignKey: 'billId', as: 'bill' });
 // Product --> StockMovement
 Product.hasMany(StockMovement, { foreignKey: 'id_product', as: 'stockMovements' });
 StockMovement.belongsTo(Product, { foreignKey: 'id_product', as: 'product' });
+
+// Product <--> Material (many-to-many)
+Product.belongsToMany(Material, { 
+  through: ProductMaterial, 
+  foreignKey: 'id_product',
+  otherKey: 'id_material',
+  as: 'materials'
+});
+Material.belongsToMany(Product, { 
+  through: ProductMaterial, 
+  foreignKey: 'id_material',
+  otherKey: 'id_product',
+  as: 'products'
+});
 
 //---------------------------------------------------------------------------------//
 module.exports = {

@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProduct, fetchCategories, fetchSB } from "../../Redux/Actions/actions";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_URL_DEPLOY;
 
 const CreateProduct = () => {
   const [name, setName] = useState("");
@@ -15,7 +18,8 @@ const CreateProduct = () => {
   const [images, setImages] = useState([]);
   const [sizes, setSizes] = useState(""); // Cambiado de arreglo a cadena
   const [color, setColor] = useState(""); // UN SOLO COLOR por producto
-  const [materials, setMaterials] = useState(""); // Cambiado de arreglo a cadena
+  const [materialIds, setMaterialIds] = useState([]); // Array de IDs de materiales seleccionados
+  const [availableMaterials, setAvailableMaterials] = useState([]); // Materiales disponibles desde el backend
   const [isOffer, setIsOffer] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showVariantInfo, setShowVariantInfo] = useState(true);
@@ -28,7 +32,17 @@ const CreateProduct = () => {
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchSB());
+    fetchMaterials();
   }, [dispatch]);
+
+  const fetchMaterials = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/material?limit=100`);
+      setAvailableMaterials(response.data.materials || []);
+    } catch (error) {
+      console.error('Error al cargar materiales:', error);
+    }
+  };
 
   const handleImageChange = (e) => {
     const filesArray = Array.from(e.target.files);
@@ -76,7 +90,7 @@ const CreateProduct = () => {
       images,
       sizes: sizes ? sizes.split(",").map(size => size.trim()).filter(s => s) : [], // Convertir cadena en arreglo
       colors: [colorTrimmed], // UN SOLO COLOR como arreglo
-      materials: materials ? materials.split(",").map(material => material.trim()).filter(m => m) : [], // Convertir cadena en arreglo
+      materialIds: materialIds, // IDs de materiales seleccionados
       isOffer,
     };
     console.log(productData);
@@ -99,7 +113,7 @@ const CreateProduct = () => {
       setImages([]);
       setSizes(""); // Limpiar campo de talles
       setColor(""); // Limpiar campo de color
-      setMaterials(""); // Limpiar campo de materiales
+      setMaterialIds([]); // Limpiar materiales seleccionados
       setSection("");
       setIsOffer(false);
 
@@ -364,17 +378,45 @@ const CreateProduct = () => {
           </div>
 
           <div>
-            <label htmlFor="materials" className="block text-sm font-medium text-gray-700">
-              Materiales <span className="text-gray-400 text-xs">(opcional, separados por coma)</span>
+            <label htmlFor="materials" className="block text-sm font-medium text-gray-700 mb-2">
+              Materiales <span className="text-gray-400 text-xs">(opcional, selección múltiple)</span>
             </label>
-            <input
-              type="text"
-              value={materials}
-              onChange={(e) => setMaterials(e.target.value)}
-              placeholder="ej: Enchapado, Macizo, Acero"
-              className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-blue-500 focus:border-blue-500"
-            />
-            <p className="text-gray-500 text-xs mt-1">💡 Especifica los materiales disponibles para este color</p>
+            <div className="border border-gray-300 rounded-md bg-gray-100 p-3 max-h-40 overflow-y-auto">
+              {availableMaterials.length === 0 ? (
+                <p className="text-gray-500 text-sm">
+                  No hay materiales disponibles. 
+                  <a href="/admin/materials" className="text-blue-600 hover:underline ml-1">
+                    Crear materiales primero
+                  </a>
+                </p>
+              ) : (
+                availableMaterials.map((material) => (
+                  <label key={material.id_material} className="flex items-center mb-2 hover:bg-gray-200 p-1 rounded cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={materialIds.includes(material.id_material)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setMaterialIds([...materialIds, material.id_material]);
+                        } else {
+                          setMaterialIds(materialIds.filter(id => id !== material.id_material));
+                        }
+                      }}
+                      className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span className="text-sm">{material.name}</span>
+                  </label>
+                ))
+              )}
+            </div>
+            <p className="text-gray-500 text-xs mt-1">
+              💡 Selecciona los materiales disponibles. 
+              {materialIds.length > 0 && (
+                <span className="text-blue-600 font-semibold ml-1">
+                  ({materialIds.length} seleccionado{materialIds.length > 1 ? 's' : ''})
+                </span>
+              )}
+            </p>
           </div>
 
           <div>

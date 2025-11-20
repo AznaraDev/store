@@ -1,4 +1,4 @@
-const { Product, Image, Category, SubCategory } = require('../../data');
+const { Product, Image, Category, SubCategory, Material } = require('../../data');
 const response = require('../../utils/response');
 const { Op } = require('sequelize');
 
@@ -59,7 +59,13 @@ module.exports = async (req, res) => {
 
     // Preparar includes con filtros condicionales
     const includeArray = [
-      { model: Image, as: 'Images' }
+      { model: Image, as: 'Images' },
+      {
+        model: Material,
+        as: 'materials',
+        attributes: ['id_material', 'name', 'description'],
+        through: { attributes: [] }
+      }
     ];
 
     // Filtro por nombre de categoría

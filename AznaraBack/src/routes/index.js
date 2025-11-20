@@ -5,6 +5,7 @@ const router = Router();
 router.use("/product", require("./productRouter"));
 router.use("/category", require("./categoryRouter"));
 router.use("/sb", require("./sbRouter"));
+router.use("/material", require("./materialRouter"));
 router.use("/order", require('./orderDetailRouter'))
 router.use("/user", require("./userRouter"))
 router.use("/auth", require("./authRouter"))
