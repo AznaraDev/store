@@ -272,6 +272,7 @@ const CreateProduct = () => {
                       className="object-cover w-full h-full rounded-md"
                     />
                     <button
+                      type="button"
                       onClick={() => handleRemoveImage(index)}
                       className="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center -mt-1 -mr-1 hover:bg-red-600"
                     >
