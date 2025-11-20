@@ -425,7 +425,7 @@ export default function Navbar() {
 
 
           {/* Mobile navigation */}
-          <Disclosure.Panel className="sm:hidden bg-gray-800/60">
+          <Disclosure.Panel className="sm:hidden bg-gray-800/95">
             <div className="space-y-1 px-2 pt-2 pb-3">
               {navigation.map((item) =>
                 item.name === 'Contactanos' ? (
@@ -440,11 +440,11 @@ export default function Navbar() {
                     {showMobileContactMenu && (
                       <div className="pl-4 mt-1 space-y-1"> {/* Indentación para submenú */}
                         <a
-                          href="https://www.instagram.com/aznara.store?igsh=a2lucDlpd3JyMTF0" // Reemplaza con tu URL
+                          href="https://www.instagram.com/aznara.store?igsh=a2lucDlpd3JyMTF0"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center px-3 py-2 rounded-md text-sm font-thin font-nunito text-gray-400 hover:bg-gray-700 hover:text-white"
-                          // onClick={() => close()} // Opcional: cerrar panel al hacer clic
+                          onClick={() => close()}
                         >
                           <FaInstagram className="mr-2" /> Instagram Caballero
                         </a>
@@ -457,20 +457,20 @@ export default function Navbar() {
                               <FaInstagram className="mr-2" /> Instagram Dama
                             </a>
                         <a
-                          href="https://wa.me/573203679240" // Reemplaza con tu número
+                          href="https://wa.me/573203679240"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center px-3 py-2 rounded-md text-sm font-thin font-nunito text-gray-400 hover:bg-gray-700 hover:text-white"
-                          // onClick={() => close()}
+                          onClick={() => close()}
                         >
                           <FaWhatsapp className="mr-2" /> WhatsApp
                         </a>
                         <a
-                          href="https://l.instagram.com/?u=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AuABpUPUV%2F%3Fmibextid%3DwwXIfr&e=AT0pQY4foVPG0sPjUwbEmSrW3SACPfaaGAAfzZQ-xRyhciR_OJprG7L7rnxNYXs7KkiRhqiK9mJSDlwYElsWaSPr7xPdkYgQdPtrKQ" // Reemplaza con tu URL
+                          href="https://l.instagram.com/?u=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AuABpUPUV%2F%3Fmibextid%3DwwXIfr&e=AT0pQY4foVPG0sPjUwbEmSrW3SACPfaaGAAfzZQ-xRyhciR_OJprG7L7rnxNYXs7KkiRhqiK9mJSDlwYElsWaSPr7xPdkYgQdPtrKQ"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center px-3 py-2 rounded-md text-sm font-thin font-nunito text-gray-400 hover:bg-gray-700 hover:text-white"
-                          // onClick={() => close()}
+                          onClick={() => close()}
                         >
                           <FaFacebook className="mr-2" /> Facebook
                         </a>
