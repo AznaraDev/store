@@ -68,12 +68,7 @@ const DashboardLayout = ({ children }) => {
           icon: '📦',
           current: location.pathname === '/admin/stock'
         },
-        {
-          name: 'Stock Bajo',
-          href: '/admin/stock/alerts',
-          icon: '⚠️',
-          current: location.pathname === '/admin/stock/alerts'
-        }
+        
       ]
     },
     {

@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import CreateProduct from "./Components/Product/CreateProduct"
 import ProductsList from "./Components/Product/ProducstList";
 import ProductDetails from "./Components/Product/ProductDetails";
@@ -41,14 +41,31 @@ import CustomersList from "./Components/Dashboard/CustomersList";
 import CategoriesManager from "./Components/Dashboard/CategoriesManager";
 import StockManagement from "./Components/stock/StockManagement";
 
-
   function App() {
     return (
       <SectionProvider>
       <Router>
+        <AppContent />
+      </Router>
+      </SectionProvider>
+    );
+  }
+
+  function AppContent() {
+    const location = useLocation();
+    const isDashboardRoute = location.pathname.startsWith('/admin') || 
+                             location.pathname.startsWith('/taxxa') || 
+                             location.pathname === '/allOrders' ||
+                             location.pathname === '/createProducts' ||
+                             location.pathname === '/pendientInvoices' ||
+                             location.pathname === '/invoices' ||
+                             location.pathname === '/manual-invoice' ||
+                             location.pathname === '/seller-settings' ||
+                             location.pathname === '/register';
     
-        <div>
-         <Navbar/>
+    return (
+      <div>
+       <Navbar/>
          
           <Routes>
           <Route path="/" element={<LandingPrincipal />} />
@@ -112,12 +129,11 @@ import StockManagement from "./Components/stock/StockManagement";
             <Route path="/seller-settings" element={<PrivateRoute><SellerSetting /></PrivateRoute>} />
             <Route path="/taxxa-test" element={<PrivateRoute><TaxxaTestComponent /></PrivateRoute>} />
           </Routes>
-        </div>
-        <Footer/>
+        
+        {!isDashboardRoute && <Footer/>}
         <CartButton /> 
         <WhatsappButton/>
-      </Router>
-      </SectionProvider>
+      </div>
     );
   }
 export default App
