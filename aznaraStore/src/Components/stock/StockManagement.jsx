@@ -13,12 +13,15 @@ const StockManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showLowStockOnly, setShowLowStockOnly] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [sectionFilter, setSectionFilter] = useState('');
+  const [showAddStockModal, setShowAddStockModal] = useState(false);
+  const [stockToAdd, setStockToAdd] = useState({ productId: null, quantity: 0, reason: '' });
   
   const { userInfo } = useSelector(state => state.userLogin);
 
   useEffect(() => {
     fetchProducts();
-  }, [currentPage, searchTerm, showLowStockOnly]);
+  }, [currentPage, searchTerm, showLowStockOnly, sectionFilter]);
 
   const fetchProducts = async () => {
     try {
@@ -27,7 +30,8 @@ const StockManagement = () => {
         page: currentPage,
         limit: 20,
         search: searchTerm,
-        lowStock: showLowStockOnly
+        lowStock: showLowStockOnly,
+        section: sectionFilter
       };
 
       const response = await axios.get(`${BASE_URL}/stock/products`, {
@@ -44,6 +48,29 @@ const StockManagement = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddStock = async () => {
+    try {
+      await axios.post(`${BASE_URL}/stock/${stockToAdd.productId}/add`, {
+        quantity: parseInt(stockToAdd.quantity),
+        reason: stockToAdd.reason || 'Entrada de stock'
+      }, {
+        headers: { Authorization: `Bearer ${userInfo.token}` }
+      });
+
+      setShowAddStockModal(false);
+      setStockToAdd({ productId: null, quantity: 0, reason: '' });
+      fetchProducts();
+      alert('Stock agregado exitosamente');
+    } catch (err) {
+      alert(err.response?.data?.error || 'Error al agregar stock');
+    }
+  };
+
+  const openAddStockModal = (productId) => {
+    setStockToAdd({ productId, quantity: 0, reason: '' });
+    setShowAddStockModal(true);
   };
 
   const getStockStatusColor = (status) => {
@@ -111,6 +138,23 @@ const StockManagement = () => {
                 />
               </div>
 
+              {/* Filtro por sección */}
+              <div>
+                <select
+                  value={sectionFilter}
+                  onChange={(e) => {
+                    setSectionFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Todas las secciones</option>
+                  <option value="Dama">Dama</option>
+                  <option value="Caballero">Caballero</option>
+                  <option value="Unisex">Unisex</option>
+                </select>
+              </div>
+
               {/* Filtro stock bajo */}
               <div className="flex items-center">
                 <label className="flex items-center cursor-pointer">
@@ -161,6 +205,8 @@ const StockManagement = () => {
                             <div>
                               <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
                               <p className="text-sm text-gray-500">
+                                {product.section && <span className="font-medium">{product.section}</span>}
+                                {product.section && (product.category || product.subCategory) && ' • '}
                                 {product.category} {product.subCategory && `• ${product.subCategory}`}
                               </p>
                             </div>
@@ -186,7 +232,13 @@ const StockManagement = () => {
                                 {product.recentMovements.length}
                               </p>
                             </div>
-                            <div className="flex items-end">
+                            <div className="flex items-end gap-2">
+                              <button
+                                onClick={() => openAddStockModal(product.id_product)}
+                                className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg font-medium"
+                              >
+                                + Stock
+                              </button>
                               <button
                                 onClick={() => setSelectedProduct(selectedProduct === product.id_product ? null : product.id_product)}
                                 className="text-sm text-blue-600 hover:text-blue-800 font-medium"
@@ -265,6 +317,63 @@ const StockManagement = () => {
             </>
           )}
         </div>
+
+        {/* Modal para agregar stock */}
+        {showAddStockModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Agregar Stock</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Cantidad a agregar
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={stockToAdd.quantity}
+                    onChange={(e) => setStockToAdd({...stockToAdd, quantity: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Ej: 10"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Motivo (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    value={stockToAdd.reason}
+                    onChange={(e) => setStockToAdd({...stockToAdd, reason: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Ej: Compra de inventario"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    setShowAddStockModal(false);
+                    setStockToAdd({ productId: null, quantity: 0, reason: '' });
+                  }}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleAddStock}
+                  disabled={!stockToAdd.quantity || stockToAdd.quantity <= 0}
+                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Agregar Stock
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
