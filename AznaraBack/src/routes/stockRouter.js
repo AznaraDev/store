@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const stockController = require('../controllers/Stock/stockController');
+const controllers = require('../controllers');
 const isAuth = require('../utils/isAuth');
+
+// 📋 Obtener listado de productos con información de stock (nuevo)
+router.get('/products', isAuth, controllers.getProductsWithStock);
 
 // 📦 Agregar stock a un producto
 router.post('/:id/add', isAuth, stockController.addStock);

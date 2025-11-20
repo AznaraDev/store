@@ -48,6 +48,9 @@ module.exports = {
     createManualInvoice:catchedAsync(require("./Taxxa/TaxxaService").createManualInvoice),
     createCreditNote:catchedAsync(require("./Taxxa/TaxxaService").createCreditNote),
     getManualInvoiceData:catchedAsync(require("./Taxxa/TaxxaService").getManualInvoiceData),
+
+    // ✅ STOCK CONTROLLERS
+    getProductsWithStock:catchedAsync(require("./Stock/getProductsWithStock")),
     searchBuyerForManual:catchedAsync(require("./Taxxa/TaxxaService").searchBuyerForManual),
     
     // ✅ TAXXA CONTROLLERS - SELLER DATA
