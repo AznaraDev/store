@@ -67,12 +67,6 @@ const DashboardLayout = ({ children }) => {
           href: '/admin/stock',
           icon: '📦',
           current: location.pathname === '/admin/stock'
-        },
-        {
-          name: 'Gestionar Materiales',
-          href: '/admin/materials',
-          icon: '🧵',
-          current: location.pathname === '/admin/materials'
         }
       ]
     },
