@@ -4,8 +4,7 @@ import { createProduct, fetchCategories, fetchSB } from "../../Redux/Actions/act
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
-
-const BASE_URL = import.meta.env.VITE_URL_DEPLOY;
+import { BASE_URL } from "../../Config";
 
 const CreateProduct = () => {
   const [name, setName] = useState("");
@@ -29,20 +28,21 @@ const CreateProduct = () => {
   const subCategories = useSelector((state) => state.subCategories.data);
   const navigate = useNavigate();
 
+  const fetchMaterials = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/material?limit=100`);
+      console.log('CreateProduct - fetchMaterials response:', response.data);
+      setAvailableMaterials(response.data.data?.materials || []);
+    } catch (error) {
+      console.error('Error al cargar materiales:', error);
+    }
+  };
+
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchSB());
     fetchMaterials();
   }, [dispatch]);
-
-  const fetchMaterials = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/material?limit=100`);
-      setAvailableMaterials(response.data.materials || []);
-    } catch (error) {
-      console.error('Error al cargar materiales:', error);
-    }
-  };
 
   const handleImageChange = (e) => {
     const filesArray = Array.from(e.target.files);

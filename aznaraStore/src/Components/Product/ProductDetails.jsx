@@ -159,8 +159,7 @@ const getUniqueColorProducts = (products) => {
     const matchingProducts = similarProducts.filter(
       (p) =>
         p.id_SB === selectedProduct.id_SB &&
-        parseJsonField(p.colors).includes(selectedColor) &&
-        p.price === selectedProduct.price
+        parseJsonField(p.colors).includes(selectedColor)
     );
     return [...new Set(matchingProducts.flatMap((p) => parseJsonField(p.sizes)))];
   }, [selectedProduct, similarProducts, selectedColor]);
@@ -629,27 +628,41 @@ const availableColors = getAvailableColors();
 
   {/* Thumbnails */}
   <div className="flex justify-center space-x-2 overflow-x-auto py-2 w-full max-w-md order-last lg:order-none">
-              {/* ... (contenido de thumbnails sin cambios) ... */}
-              {selectedProduct.Images?.map((image, index) => {
-                // --- AJUSTA ESTAS VARIABLES SEGÚN TU ESTRUCTURA DE DATOS ---
-                // Asume que 'image.url' tiene la URL GRANDE
-                const largeImageUrl = image.url;
-                // Asume que tienes una URL pequeña, o usa la grande como fallback si no
-                const thumbnailUrl = image.thumbnailUrl || image.url; // CAMBIA 'thumbnailUrl' si tu propiedad se llama diferente
+              {similarProducts && similarProducts.length > 0 && similarProducts.map((variant) => {
+                // Mostrar la primera imagen de cada variante
+                if (!variant.Images || variant.Images.length === 0) return null;
+                
+                const firstImage = variant.Images[0];
+                const largeImageUrl = firstImage.url;
+                const thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
+                const variantColors = parseJsonField(variant.colors);
+                const variantColor = variantColors.length > 0 ? variantColors[0] : '';
   
                 return (
-                  <img
-                    key={image.id_image || index}
-                    // --- Usa la URL PEQUEÑA para mostrar el thumbnail ---
-                    src={thumbnailUrl}
-                    alt={`Thumbnail ${index + 1}`}
-                    className={`w-14 h-14 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
-                      // --- Compara selectedImage con la URL GRANDE ---
-                      selectedImage === largeImageUrl ? 'border-colorLogo scale-105' : 'border-transparent hover:border-gray-500'
-                    }`}
-                    // --- Actualiza selectedImage con la URL GRANDE al hacer clic ---
-                    onClick={() => setSelectedImage(largeImageUrl)}
-                  />
+                  <div key={variant.id_product} className="flex flex-col items-center">
+                    <img
+                      src={thumbnailUrl}
+                      alt={`Variante ${variantColor}`}
+                      className={`w-14 h-14 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
+                        selectedProduct?.id_product === variant.id_product 
+                          ? 'border-colorLogo scale-105' 
+                          : 'border-transparent hover:border-gray-500'
+                      }`}
+                      onClick={() => {
+                        // Cambiar al producto variante
+                        setSelectedProduct(variant);
+                        setSelectedImage(largeImageUrl);
+                        // Auto-seleccionar el color de esta variante
+                        if (variantColor) {
+                          setSelectedColor(variantColor);
+                        }
+                        setSelectedSize("");
+                      }}
+                    />
+                    {variantColor && (
+                      <span className="text-xs mt-1 text-gray-600">{variantColor}</span>
+                    )}
+                  </div>
                 );
               })}
             </div>

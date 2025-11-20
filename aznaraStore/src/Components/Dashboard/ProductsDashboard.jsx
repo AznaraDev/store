@@ -14,8 +14,7 @@ import {
 } from '../../Redux/Actions/categoryActions';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
-const BASE_URL = import.meta.env.VITE_URL_DEPLOY;
+import { BASE_URL } from '../../Config';
 
 const ProductsDashboard = () => {
   const dispatch = useDispatch();
@@ -23,6 +22,9 @@ const ProductsDashboard = () => {
   const { products = [], stats = {}, loading = false, error = null } = stockState?.dashboard || {};
   const categories = useSelector(state => state.categories?.data || []);
   const subCategories = useSelector(state => state.subCategories?.data || []);
+  
+  console.log('ProductsDashboard - categories:', categories);
+  console.log('ProductsDashboard - categories type:', typeof categories, Array.isArray(categories));
   
   // Estados para pestañas
   const [activeTab, setActiveTab] = useState('products'); // 'products', 'categories', 'subcategories', 'materials'
@@ -192,7 +194,8 @@ const ProductsDashboard = () => {
   const fetchMaterials = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/material?limit=100`);
-      setMaterials(response.data.materials || []);
+      console.log('fetchMaterials response:', response.data);
+      setMaterials(response.data.data?.materials || []);
     } catch (error) {
       console.error('Error al cargar materiales:', error);
       showAlert('Error al cargar materiales', 'error');
@@ -636,14 +639,14 @@ const ProductsDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((category) => (
+            {Array.isArray(categories) && categories.map((category) => (
               <div
-                key={category.id_category}
+                key={category?.id_category}
                 className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-semibold text-lg text-gray-900">{category.name_category}</h3>
+                    <h3 className="font-semibold text-lg text-gray-900">{category?.name_category}</h3>
                     {category.section && (
                       <span className="inline-block mt-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
                         {category.section}

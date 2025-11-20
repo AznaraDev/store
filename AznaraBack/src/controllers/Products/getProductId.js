@@ -37,12 +37,12 @@ module.exports = async (req, res) => {
     const parsedProduct = product.toJSON();
 
     // Obtener los productos que tengan el mismo id_SB, id_category, y section
+    // (permitiendo precios diferentes para variantes)
     const relatedProducts = await Product.findAll({
       where: {
         id_SB: product.id_SB, // Comparar con el id_SB del producto principal
         id_category: product.id_category, // Comparar con el id_category del producto principal
         section: product.section, // Comparar con la section del producto principal
-        price: product.price
       },
       include: [
         {

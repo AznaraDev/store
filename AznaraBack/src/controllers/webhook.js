@@ -126,11 +126,26 @@ async function handleTransactionUpdate(transaction) {
             'PENDING': 'Pendiente'
         };
 
+        // Mapear estados de Wompi para OrderDetail.transaction_status
+        const transactionStatusMap = {
+            'APPROVED': 'Aprobado',
+            'DECLINED': 'Rechazado',
+            'VOIDED': 'Cancelado',
+            'ERROR': 'Fallido',
+            'PENDING': 'Pendiente'
+        };
+
         const payment_state = paymentStateMap[status] || 'Pendiente';
+        const transaction_status = transactionStatusMap[status] || 'Pendiente';
 
         // Buscar el pago por transaction_id o por reference
         let payment = await Payment.findOne({
             where: { transaction_id: id }
+        });
+
+        // Buscar OrderDetail por referencia para actualizar su transaction_status
+        const orderDetail = await OrderDetail.findOne({
+            where: { reference }
         });
 
         if (payment) {
@@ -142,28 +157,30 @@ async function handleTransactionUpdate(transaction) {
                 customer_email
             });
             console.log(`✅ Pago actualizado: ${payment.id_payment}`);
-        } else {
-            // Buscar OrderDetail por referencia para crear el pago
-            const orderDetail = await OrderDetail.findOne({
-                where: { reference }
+        } else if (orderDetail) {
+            // Crear nuevo pago si no existe
+            payment = await Payment.create({
+                transaction_id: id,
+                reference,
+                amount_in_cents,
+                payment_method_type,
+                customer_email,
+                currency,
+                status,
+                payment_state,
+                id_orderDetail: orderDetail.id_orderDetail
             });
+            console.log(`✅ Pago creado: ${payment.id_payment}`);
+        } else {
+            console.warn(`⚠️ No se encontró OrderDetail con referencia: ${reference}`);
+        }
 
-            if (orderDetail) {
-                payment = await Payment.create({
-                    transaction_id: id,
-                    reference,
-                    amount_in_cents,
-                    payment_method_type,
-                    customer_email,
-                    currency,
-                    status,
-                    payment_state,
-                    id_orderDetail: orderDetail.id_orderDetail
-                });
-                console.log(`✅ Pago creado: ${payment.id_payment}`);
-            } else {
-                console.warn(`⚠️ No se encontró OrderDetail con referencia: ${reference}`);
-            }
+        // Actualizar el transaction_status en OrderDetail
+        if (orderDetail) {
+            await orderDetail.update({
+                transaction_status
+            });
+            console.log(`✅ OrderDetail actualizado - transaction_status: ${transaction_status}`);
         }
 
         return payment;

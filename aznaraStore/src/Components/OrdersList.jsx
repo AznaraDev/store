@@ -212,9 +212,27 @@ const OrdersList = () => {
         <div className="grid grid-cols-1 gap-4">
           {sortedOrders.map(order => (
             <div key={order.id_orderDetail} className={`border rounded p-4 ${order.state_order === 'Envío Realizado' ? 'bg-green-100' : 'bg-white'}`}>
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
                 <div className="font-semibold">Fecha: {order.date}</div>
-                <div className="font-semibold bg-gray-700 text-white px-2 py-1 rounded">Estado Pedido: {order.state_order}</div>
+                <div className="flex gap-2 flex-wrap">
+                  <div className="font-semibold bg-gray-700 text-white px-2 py-1 rounded">
+                    Estado: {order.state_order}
+                  </div>
+                  <div className="font-semibold bg-blue-600 text-white px-2 py-1 rounded">
+                    {order.payment_method || 'No especificado'}
+                  </div>
+                  {order.payment_method === 'Pago online (Wompi)' && (
+                    <div className={`font-semibold px-2 py-1 rounded ${
+                      order.transaction_status === 'Aprobado' ? 'bg-green-600 text-white' :
+                      order.transaction_status === 'Pendiente' ? 'bg-yellow-500 text-white' :
+                      order.transaction_status === 'Rechazado' || order.transaction_status === 'Fallido' ? 'bg-red-600 text-white' :
+                      order.transaction_status === 'Cancelado' ? 'bg-gray-500 text-white' :
+                      'bg-gray-400 text-white'
+                    }`}>
+                      Pago: {order.transaction_status || 'Pendiente'}
+                    </div>
+                  )}
+                </div>
               </div>
               
               {/* Información del cliente */}

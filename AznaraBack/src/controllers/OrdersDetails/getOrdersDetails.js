@@ -70,6 +70,7 @@ if (latest === 'true') {
  quantity: latestOrder.quantity,
  state_order: latestOrder.state_order,
  address: latestOrder.address,
+ payment_method: latestOrder.payment_method,
  deliveryAddress: latestOrder.deliveryAddress,
  n_document: latestOrder.n_document,
  products: latestOrder.products.map(product => ({
@@ -88,6 +89,7 @@ const formattedOrders = orders.map(order => ({
  quantity: order.quantity,
  state_order: order.state_order,
  address: order.address,
+ payment_method: order.payment_method,
  deliveryAddress: order.deliveryAddress,
  recipient_name: order.recipient_name,
  recipient_phone: order.recipient_phone,

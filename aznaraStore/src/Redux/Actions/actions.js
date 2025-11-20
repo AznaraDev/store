@@ -117,8 +117,11 @@ export const fetchCategories = () => async (dispatch) => {
 
   try {
     const response = await axios.get(`${BASE_URL}/category/`);
-    dispatch({ type: FETCH_CATEGORIES_SUCCESS, payload: response.data.data.categories });
+    console.log('fetchCategories response:', response.data);
+    console.log('categories array:', response.data.data?.categories);
+    dispatch({ type: FETCH_CATEGORIES_SUCCESS, payload: response.data.data?.categories || [] });
   } catch (error) {
+    console.error('fetchCategories error:', error);
     dispatch({ type: FETCH_CATEGORIES_FAILURE, payload: error.message });
   }
 };

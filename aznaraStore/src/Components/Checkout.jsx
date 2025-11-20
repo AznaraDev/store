@@ -12,6 +12,7 @@ import imgFondo from '../assets/img/banner.png'
 const Checkout = () => {
   const currentDate = new Date().toISOString().split("T")[0];
   const [address, setAddress] = useState("Retira en local");
+  const [paymentMethod, setPaymentMethod] = useState("Pago en local");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [recipientName, setRecipientName] = useState("");
   const [recipientPhone, setRecipientPhone] = useState("");
@@ -36,6 +37,7 @@ const Checkout = () => {
     id_product: cart.items.map((item) => item.id_product),
     cart_items: cart.items,
     address,
+    payment_method: paymentMethod,
     deliveryAddress: address === "Envio a domicilio" ? deliveryAddress : null,
     recipient_name: address === "Envio a domicilio" ? recipientName : null,
     recipient_phone: address === "Envio a domicilio" ? recipientPhone : null,
@@ -75,27 +77,32 @@ const Checkout = () => {
   // Manejar el widget de Wompi después de la creación de la orden
   useEffect(() => {
     if (latestOrder.success && !latestOrder.loading && !latestOrder.error) {
-      const { amount, id_orderDetail } = latestOrder.data.orderDetail;
-      const checkout = new WidgetCheckout({
-        currency: "COP",
-        amountInCents: amount * 100,
-        reference: String(id_orderDetail),
-        publicKey: "pub_test_udFLMPgs8mDyKqs5bRCWhpwDhj2rGgFw",
-        redirectUrl: "http://localhost:5173/pago",
-        integritySignature: latestOrder.data.integritySignature,
-        
-      });
-      console.log(checkout)
-
+      const { amount, id_orderDetail, payment_method } = latestOrder.data.orderDetail;
       
-      checkout.open((result) => {
-        const transaction = result.transaction;
-        if (transaction.status === "APPROVED") {
-          Swal.fire("Success", "Payment successful", "success");
-        } else {
-          Swal.fire("Error", "Payment failed", "error");
-        }
-      });
+      // Solo abrir Wompi si eligió pago online
+      if (payment_method === "Pago online (Wompi)") {
+        const checkout = new window.WidgetCheckout({
+          currency: "COP",
+          amountInCents: amount * 100,
+          reference: String(id_orderDetail),
+          publicKey: "pub_test_udFLMPgs8mDyKqs5bRCWhpwDhj2rGgFw",
+          redirectUrl: "http://localhost:5173/pago",
+          integritySignature: latestOrder.data.integritySignature,
+        });
+        console.log('Opening Wompi widget for online payment:', checkout);
+
+        checkout.open((result) => {
+          const transaction = result.transaction;
+          if (transaction.status === "APPROVED") {
+            Swal.fire("Success", "Payment successful", "success");
+          } else {
+            Swal.fire("Error", "Payment failed", "error");
+          }
+        });
+      } else {
+        // Si es pago en local o contra entrega, no abrir widget
+        console.log(`Order payment method: ${payment_method} - no Wompi widget needed`);
+      }
     }
   }, [latestOrder]);
 
@@ -115,6 +122,7 @@ const Checkout = () => {
     setOrderData((prevData) => ({
       ...prevData,
       address,
+      payment_method: paymentMethod,
       cart_items: cart.items,
       deliveryAddress: address === "Envio a domicilio" ? deliveryAddress : null,
       recipient_name: address === "Envio a domicilio" ? recipientName : null,
@@ -123,10 +131,19 @@ const Checkout = () => {
       postal_code: address === "Envio a domicilio" ? postalCode : null,
       delivery_notes: address === "Envio a domicilio" ? deliveryNotes : null,
     }));
-  }, [address, deliveryAddress, recipientName, recipientPhone, city, postalCode, deliveryNotes]);
+  }, [address, paymentMethod, deliveryAddress, recipientName, recipientPhone, city, postalCode, deliveryNotes, cart.items]);
 
   const handleAddressChange = (e) => {
-    setAddress(e.target.value);
+    const newAddress = e.target.value;
+    setAddress(newAddress);
+    
+    // Cambiar automáticamente el método de pago según la dirección
+    if (newAddress === "Retira en local") {
+      setPaymentMethod("Pago en local");
+    } else {
+      // Por defecto, pago contra entrega para envíos
+      setPaymentMethod("Pago contra entrega");
+    }
   };
 
   const handleDeliveryAddressChange = (e) => {
@@ -201,6 +218,30 @@ const Checkout = () => {
             <option value="Envio a domicilio">Envio a domicilio</option>
           </select>
         </div>
+        
+        {/* Método de pago */}
+        <div className="mb-4">
+          <label className="block text-sm font-semibold font-nunito text-gray-700">
+            Método de pago:
+          </label>
+          <select
+            id="paymentMethod"
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+          >
+            {address === "Retira en local" ? (
+              <option value="Pago en local">Pago en local</option>
+            ) : (
+              <>
+                <option value="Pago contra entrega">Pago contra entrega</option>
+                <option value="Pago online (Wompi)">Pago online (Wompi)</option>
+              </>
+            )}
+          </select>
+        </div>
+        
         {address === "Envio a domicilio" && (
           <>
             <div className="mb-4">

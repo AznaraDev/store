@@ -65,6 +65,12 @@ module.exports = (sequelize) => {
         allowNull: false,
         defaultValue: 'Pedido Realizado',
       },
+      payment_method: {
+        type: DataTypes.ENUM('Pago en local', 'Pago contra entrega', 'Pago online (Wompi)'),
+        allowNull: false,
+        defaultValue: 'Pago en local',
+        comment: 'Método de pago seleccionado por el cliente'
+      },
       integritySignature: {
         type: DataTypes.STRING,
         allowNull: false,
