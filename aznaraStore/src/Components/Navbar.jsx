@@ -393,7 +393,7 @@ export default function Navbar() {
                 {/* User dropdown */}
                 <Menu as="div" className="relative">
                   <Menu.Button
-                    className={`bg-transparent px-3 py-2 rounded-md text-2xl font-thin ${linkTextColorClass} ${linkHoverTextColorClass}`} // Aplicar clases dinámicas
+                    className={`hidden sm:inline-flex bg-transparent px-3 py-2 rounded-md text-2xl font-thin ${linkTextColorClass} ${linkHoverTextColorClass}`} // Aplicar clases dinámicas, oculto en móvil
                   >
                     Menu
                   </Menu.Button>
