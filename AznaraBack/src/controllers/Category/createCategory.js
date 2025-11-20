@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
       standardizedName = standardizedName.charAt(0).toUpperCase() + standardizedName.slice(1).toLowerCase();
       
       // 2. Lógica de pluralización (simplificada - ajustar según necesidad)
-      // Evitar pluralizar si ya parece ser plural o es una palabra específica que no sigue la regla simple.
+      
       const endsWithS = standardizedName.endsWith('s');
       const endsWithEs = standardizedName.endsWith('es');
       // Podrías añadir excepciones aquí, ej: ['Relojes', 'Aretes'] si ya vienen bien.

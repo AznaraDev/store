@@ -1,7 +1,8 @@
-import React from 'react';
+
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+// eslint-disable-next-line react/prop-types
 const DashboardLayout = ({ children }) => {
   const location = useLocation();
   
