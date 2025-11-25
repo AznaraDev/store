@@ -118,12 +118,14 @@ export const updateCategory = (id, categoryData) => async (dispatch, getState) =
       config
     );
 
+    console.log('Update category response:', data);
+
     dispatch({
       type: UPDATE_CATEGORY_SUCCESS,
-      payload: data.category,
+      payload: data.data.category,
     });
 
-    return { success: true, category: data.category };
+    return { success: true, category: data.data.category };
   } catch (error) {
     const message = error.response?.data?.message?.error 
       || error.response?.data?.error 
