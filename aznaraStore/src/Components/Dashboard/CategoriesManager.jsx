@@ -17,7 +17,7 @@ const CategoriesManager = () => {
   const [activeTab, setActiveTab] = useState('categories'); // 'categories' | 'subcategories'
   
   // Estados para categorías
-  const [categoryForm, setCategoryForm] = useState({ name: '', section: 'Caballero' });
+  const [categoryForm, setCategoryForm] = useState({ name: '' });
   const [editingCategory, setEditingCategory] = useState(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   
@@ -42,7 +42,7 @@ const CategoriesManager = () => {
     
     if (result.success) {
       showAlert('Categoría creada exitosamente', 'success');
-      setCategoryForm({ name: '', section: 'Caballero' });
+      setCategoryForm({ name: '' });
       setShowCategoryModal(false);
       dispatch(fetchCategories());
     } else {
@@ -57,7 +57,7 @@ const CategoriesManager = () => {
     if (result.success) {
       showAlert('Categoría actualizada exitosamente', 'success');
       setEditingCategory(null);
-      setCategoryForm({ name: '', section: 'Caballero' });
+      setCategoryForm({ name: '' });
       setShowCategoryModal(false);
       dispatch(fetchCategories());
     } else {
@@ -81,7 +81,7 @@ const CategoriesManager = () => {
 
   const openEditCategory = (category) => {
     setEditingCategory(category);
-    setCategoryForm({ name: category.name, section: category.section });
+    setCategoryForm({ name: category.name });
     setShowCategoryModal(true);
   };
 
@@ -90,7 +90,7 @@ const CategoriesManager = () => {
     setShowSubCategoryModal(false);
     setEditingCategory(null);
     setEditingSubCategory(null);
-    setCategoryForm({ name: '', section: 'Caballero' });
+    setCategoryForm({ name: '' });
     setSubCategoryForm({ name: '', categoryId: '' });
   };
 
@@ -229,9 +229,6 @@ const CategoriesManager = () => {
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <h3 className="font-semibold text-gray-900">{category.name}</h3>
-                          <span className="inline-block mt-1 px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                            {category.section}
-                          </span>
                         </div>
                         <div className="flex gap-2">
                           <button
@@ -347,21 +344,7 @@ const CategoriesManager = () => {
                     required
                   />
                 </div>
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Sección *
-                  </label>
-                  <select
-                    value={categoryForm.section}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, section: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    required
-                  >
-                    <option value="Caballero">Caballero</option>
-                    <option value="Dama">Dama</option>
-                    <option value="Unisex">Unisex</option>
-                  </select>
-                </div>
+
                 <div className="flex gap-3">
                   <button
                     type="button"
@@ -415,7 +398,7 @@ const CategoriesManager = () => {
                     <option value="">Seleccionar categoría</option>
                     {categories.data?.map((cat) => (
                       <option key={cat.id_category} value={cat.id_category}>
-                        {cat.name} ({cat.section})
+                        {cat.name}
                       </option>
                     ))}
                   </select>

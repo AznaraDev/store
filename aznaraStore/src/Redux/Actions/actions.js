@@ -1,6 +1,6 @@
 import { BASE_URL } from "../../Config";
 import {jwtDecode} from 'jwt-decode';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import {
   CREATE_PRODUCT_REQUEST,
   CREATE_PRODUCT_SUCCESS,

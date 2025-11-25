@@ -12,7 +12,7 @@ import {
   updateSubCategory,
   deleteSubCategory,
 } from '../../Redux/Actions/categoryActions';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { BASE_URL } from '../../Config';
 
 const ProductsDashboard = () => {

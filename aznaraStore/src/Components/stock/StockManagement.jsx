@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { BASE_URL } from '../../Config';
 import DashboardLayout from '../Dashboard/DashboardLayout';
 

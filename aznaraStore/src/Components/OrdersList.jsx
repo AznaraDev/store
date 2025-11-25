@@ -2,7 +2,7 @@ import  { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllOrders, updateOrderState } from '../Redux/Actions/actions';
 import Swal from 'sweetalert2';
-import axios from 'axios';
+import axios from '../axiosConfig';
 import { BASE_URL } from '../Config';
 
 const OrdersList = () => {

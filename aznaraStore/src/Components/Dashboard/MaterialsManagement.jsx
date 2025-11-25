@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import DashboardLayout from '../Dashboard/DashboardLayout';

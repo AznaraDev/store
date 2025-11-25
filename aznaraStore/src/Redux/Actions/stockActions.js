@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import {
   FETCH_DASHBOARD_REQUEST,
   FETCH_DASHBOARD_SUCCESS,

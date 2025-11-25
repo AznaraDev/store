@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../axiosConfig';
 import { BASE_URL } from '../../Config';
 import {
   FETCH_CATEGORIES_REQUEST,
