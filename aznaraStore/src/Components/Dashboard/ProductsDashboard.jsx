@@ -199,6 +199,7 @@ const ProductsDashboard = () => {
   // Obtener subcategorías según la categoría seleccionada para filtros
   // Filtrar categorías válidas (que tengan id)
   const validCategories = categories?.filter(cat => cat && cat.id_category) || [];
+  const validSubCategories = subCategories?.filter(sub => sub && sub.id_SB) || [];
   const selectedCategoryData = validCategories.find(cat => cat.id_category === selectedCategory);
   const subCategoriesForFilter = selectedCategoryData?.SubCategories?.filter(sub => sub && sub.id_SB) || [];
 
@@ -610,10 +611,10 @@ const ProductsDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {subCategories
+            {validSubCategories
               .filter((sub) => !filterCategoryId || sub.id_category === filterCategoryId)
               .map((subCategory) => {
-                const category = categories.find((c) => c.id_category === subCategory.id_category);
+                const category = validCategories.find((c) => c.id_category === subCategory.id_category);
                 return (
                   <div
                     key={subCategory.id_SB}

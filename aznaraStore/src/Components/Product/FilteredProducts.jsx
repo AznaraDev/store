@@ -45,7 +45,11 @@ const FilteredProducts = () => {
 
   // Agregar el producto al carrito y redirigir a la página del carrito
   const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+    const productToAdd = {
+      ...product,
+      image: product.Images?.[0]?.url_image || null, // Agregar imagen
+    };
+    dispatch(addToCart(productToAdd));
     navigate('/cart'); // Redirige a la página del carrito
   };
 

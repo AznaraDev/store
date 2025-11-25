@@ -221,12 +221,14 @@ export const createSubCategory = (subCategoryData) => async (dispatch, getState)
       config
     );
 
+    console.log('Create subcategory response:', data);
+
     dispatch({
       type: CREATE_SUBCATEGORY_SUCCESS,
-      payload: data.subCategory,
+      payload: data.data.subCategory,
     });
 
-    return { success: true, subCategory: data.subCategory };
+    return { success: true, subCategory: data.data.subCategory };
   } catch (error) {
     const message = error.response?.data?.error || error.message;
     dispatch({
@@ -259,12 +261,14 @@ export const updateSubCategory = (id, subCategoryData) => async (dispatch, getSt
       config
     );
 
+    console.log('Update subcategory response:', data);
+
     dispatch({
       type: UPDATE_SUBCATEGORY_SUCCESS,
-      payload: data.subCategory,
+      payload: data.data.subCategory,
     });
 
-    return { success: true, subCategory: data.subCategory };
+    return { success: true, subCategory: data.data.subCategory };
   } catch (error) {
     const message = error.response?.data?.error || error.message;
     dispatch({

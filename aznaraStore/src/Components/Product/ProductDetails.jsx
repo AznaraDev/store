@@ -268,6 +268,7 @@ const getUniqueColorProducts = (products) => {
       selectedSize,
       selectedColor,
       selectedMaterial: selectedMaterial || parseJsonField(selectedProduct.materials)[0] || 'No especificado',
+      image: selectedImage || selectedProduct.Images?.[0]?.url_image || null, // Agregar imagen
     };
 
     dispatch(addToCart(productToAdd));
