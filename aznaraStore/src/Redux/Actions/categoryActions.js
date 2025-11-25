@@ -85,7 +85,9 @@ export const createCategory = (categoryData) => async (dispatch, getState) => {
 
     return { success: true, category: data.data.category };
   } catch (error) {
-    const message = error.response?.data?.error || error.message;
+    const message = error.response?.data?.message?.error 
+      || error.response?.data?.error 
+      || error.message;
     dispatch({
       type: CREATE_CATEGORY_FAILURE,
       payload: message,
@@ -123,7 +125,9 @@ export const updateCategory = (id, categoryData) => async (dispatch, getState) =
 
     return { success: true, category: data.category };
   } catch (error) {
-    const message = error.response?.data?.error || error.message;
+    const message = error.response?.data?.message?.error 
+      || error.response?.data?.error 
+      || error.message;
     dispatch({
       type: UPDATE_CATEGORY_FAILURE,
       payload: message,
@@ -159,7 +163,9 @@ export const deleteCategory = (id) => async (dispatch, getState) => {
 
     return { success: true, message: data.message };
   } catch (error) {
-    const message = error.response?.data?.error || error.message;
+    const message = error.response?.data?.message?.error 
+      || error.response?.data?.error 
+      || error.message;
     dispatch({
       type: DELETE_CATEGORY_FAILURE,
       payload: message,
@@ -190,7 +196,9 @@ export const fetchSubCategories = (categoryId = null) => async (dispatch) => {
 
     return { success: true, subCategories: data.subCategories };
   } catch (error) {
-    const message = error.response?.data?.error || error.message;
+    const message = error.response?.data?.message?.error 
+      || error.response?.data?.error 
+      || error.message;
     dispatch({
       type: FETCH_SUBCATEGORIES_FAILURE,
       payload: message,
@@ -230,7 +238,9 @@ export const createSubCategory = (subCategoryData) => async (dispatch, getState)
 
     return { success: true, subCategory: data.data.subCategory };
   } catch (error) {
-    const message = error.response?.data?.error || error.message;
+    const message = error.response?.data?.message?.error 
+      || error.response?.data?.error 
+      || error.message;
     dispatch({
       type: CREATE_SUBCATEGORY_FAILURE,
       payload: message,
@@ -270,7 +280,9 @@ export const updateSubCategory = (id, subCategoryData) => async (dispatch, getSt
 
     return { success: true, subCategory: data.data.subCategory };
   } catch (error) {
-    const message = error.response?.data?.error || error.message;
+    const message = error.response?.data?.message?.error 
+      || error.response?.data?.error 
+      || error.message;
     dispatch({
       type: UPDATE_SUBCATEGORY_FAILURE,
       payload: message,
@@ -306,7 +318,9 @@ export const deleteSubCategory = (id) => async (dispatch, getState) => {
 
     return { success: true, message: data.message };
   } catch (error) {
-    const message = error.response?.data?.error || error.message;
+    const message = error.response?.data?.message?.error 
+      || error.response?.data?.error 
+      || error.message;
     dispatch({
       type: DELETE_SUBCATEGORY_FAILURE,
       payload: message,
