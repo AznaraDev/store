@@ -33,7 +33,7 @@ const ProductsDashboard = () => {
   // Estados para gestión de categorías
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [categoryForm, setCategoryForm] = useState({ name_category: '', section: '' });
+  const [categoryForm, setCategoryForm] = useState({ name_category: '' });
   
   // Estados para gestión de subcategorías
   const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
@@ -71,15 +71,14 @@ const ProductsDashboard = () => {
   // ==================== CATEGORY HANDLERS ====================
   const handleCreateCategory = () => {
     setEditingCategory(null);
-    setCategoryForm({ name_category: '', section: '' });
+    setCategoryForm({ name_category: '' });
     setShowCategoryModal(true);
   };
 
   const handleEditCategory = (category) => {
     setEditingCategory(category);
     setCategoryForm({
-      name_category: category.name_category,
-      section: category.section || ''
+      name_category: category.name_category
     });
     setShowCategoryModal(true);
   };
@@ -674,21 +673,6 @@ const ProductsDashboard = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ej: Anillos, Cadenas, etc."
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Sección
-                </label>
-                <select
-                  value={categoryForm.section}
-                  onChange={(e) => setCategoryForm({ ...categoryForm, section: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Seleccionar sección</option>
-                  <option value="Dama">👗 Dama</option>
-                  <option value="Caballero">🎩 Caballero</option>
-                  <option value="Unisex">🌟 Unisex</option>
-                </select>
               </div>
             </div>
             <div className="flex gap-3 mt-6">
