@@ -191,12 +191,14 @@ export const fetchSubCategories = (categoryId = null) => async (dispatch) => {
 
     const { data } = await axios.get(url);
 
+    console.log('Fetch subcategories response:', data);
+
     dispatch({
       type: FETCH_SUBCATEGORIES_SUCCESS,
-      payload: data.subCategories,
+      payload: data.data.subCategories,
     });
 
-    return { success: true, subCategories: data.subCategories };
+    return { success: true, subCategories: data.data.subCategories };
   } catch (error) {
     const message = error.response?.data?.message?.error 
       || error.response?.data?.error 
