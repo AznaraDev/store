@@ -76,12 +76,14 @@ export const createCategory = (categoryData) => async (dispatch, getState) => {
       config
     );
 
+    console.log('Create category response:', data);
+
     dispatch({
       type: CREATE_CATEGORY_SUCCESS,
-      payload: data.category,
+      payload: data.data.category,
     });
 
-    return { success: true, category: data.category };
+    return { success: true, category: data.data.category };
   } catch (error) {
     const message = error.response?.data?.error || error.message;
     dispatch({

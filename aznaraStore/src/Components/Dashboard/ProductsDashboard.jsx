@@ -539,7 +539,7 @@ const ProductsDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((category) => (
+            {validCategories.map((category) => (
               <div
                 key={category.id_category}
                 className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
@@ -594,7 +594,7 @@ const ProductsDashboard = () => {
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Todas las categorías</option>
-                {categories.map((cat) => (
+                {validCategories.map((cat) => (
                   <option key={cat.id_category} value={cat.id_category}>
                     {cat.name_category}
                   </option>
@@ -723,7 +723,7 @@ const ProductsDashboard = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Seleccionar categoría</option>
-                  {categories.map((cat) => (
+                  {validCategories.map((cat) => (
                     <option key={cat.id_category} value={cat.id_category}>
                       {cat.name_category}
                     </option>
