@@ -12,6 +12,9 @@ import {
   updateSubCategory,
   deleteSubCategory,
 } from '../../Redux/Actions/categoryActions';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { BASE_URL } from '../../Config';
 
 const ProductsDashboard = () => {
   const dispatch = useDispatch();
@@ -20,8 +23,11 @@ const ProductsDashboard = () => {
   const categories = useSelector(state => state.categories?.data || []);
   const subCategories = useSelector(state => state.subCategories?.data || []);
   
+  console.log('ProductsDashboard - categories:', categories);
+  console.log('ProductsDashboard - categories type:', typeof categories, Array.isArray(categories));
+  
   // Estados para pestañas
-  const [activeTab, setActiveTab] = useState('products'); // 'products', 'categories', 'subcategories'
+  const [activeTab, setActiveTab] = useState('products'); // 'products', 'categories', 'subcategories', 'materials'
   
   // Estados para filtros de productos
   const [selectedSection, setSelectedSection] = useState('');
@@ -33,7 +39,7 @@ const ProductsDashboard = () => {
   // Estados para gestión de categorías
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [categoryForm, setCategoryForm] = useState({ name_category: '' });
+  const [categoryForm, setCategoryForm] = useState({ name_category: '', section: '' });
   
   // Estados para gestión de subcategorías
   const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
@@ -41,13 +47,23 @@ const ProductsDashboard = () => {
   const [subCategoryForm, setSubCategoryForm] = useState({ name_SB: '', id_category: '' });
   const [filterCategoryId, setFilterCategoryId] = useState('');
   
+  // Estados para gestión de materiales
+  const [materials, setMaterials] = useState([]);
+  const [showMaterialModal, setShowMaterialModal] = useState(false);
+  const [editingMaterial, setEditingMaterial] = useState(null);
+  const [materialForm, setMaterialForm] = useState({ name: '', description: '' });
+  const [materialSearchTerm, setMaterialSearchTerm] = useState('');
+  
   // Estados para alertas
   const [alert, setAlert] = useState({ show: false, message: '', type: '' });
 
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchSubCategories());
-  }, [dispatch]);
+    if (activeTab === 'materials') {
+      fetchMaterials();
+    }
+  }, [dispatch, activeTab]);
 
   useEffect(() => {
     if (activeTab === 'products') {
@@ -71,14 +87,15 @@ const ProductsDashboard = () => {
   // ==================== CATEGORY HANDLERS ====================
   const handleCreateCategory = () => {
     setEditingCategory(null);
-    setCategoryForm({ name_category: '' });
+    setCategoryForm({ name_category: '', section: '' });
     setShowCategoryModal(true);
   };
 
   const handleEditCategory = (category) => {
     setEditingCategory(category);
     setCategoryForm({
-      name_category: category.name_category
+      name_category: category.name_category,
+      section: category.section || ''
     });
     setShowCategoryModal(true);
   };
@@ -171,6 +188,79 @@ const ProductsDashboard = () => {
     }
   };
 
+  // ==================== MATERIAL HANDLERS ====================
+  const userInfo = useSelector((state) => state.userLogin?.userInfo);
+
+  const fetchMaterials = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/material?limit=100`);
+      console.log('fetchMaterials response:', response.data);
+      setMaterials(response.data.data?.materials || []);
+    } catch (error) {
+      console.error('Error al cargar materiales:', error);
+      showAlert('Error al cargar materiales', 'error');
+    }
+  };
+
+  const handleCreateMaterial = () => {
+    setEditingMaterial(null);
+    setMaterialForm({ name: '', description: '' });
+    setShowMaterialModal(true);
+  };
+
+  const handleEditMaterial = (material) => {
+    setEditingMaterial(material);
+    setMaterialForm({
+      name: material.name,
+      description: material.description || ''
+    });
+    setShowMaterialModal(true);
+  };
+
+  const handleSaveMaterial = async () => {
+    if (!materialForm.name.trim()) {
+      showAlert('El nombre del material es requerido', 'error');
+      return;
+    }
+
+    try {
+      if (editingMaterial) {
+        await axios.put(
+          `${BASE_URL}/material/${editingMaterial.id_material}`,
+          materialForm,
+          { headers: { Authorization: `Bearer ${userInfo.token}` } }
+        );
+        showAlert('✅ Material actualizado exitosamente', 'success');
+      } else {
+        await axios.post(`${BASE_URL}/material`, materialForm, {
+          headers: { Authorization: `Bearer ${userInfo.token}` }
+        });
+        showAlert('✅ Material creado exitosamente', 'success');
+      }
+      setShowMaterialModal(false);
+      fetchMaterials();
+    } catch (error) {
+      const message = error.response?.data?.error || 'Error al guardar el material';
+      showAlert(`❌ ${message}`, 'error');
+    }
+  };
+
+  const handleDeleteMaterial = async (materialId) => {
+    if (!confirm('¿Estás seguro de eliminar este material? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${BASE_URL}/material/${materialId}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` }
+      });
+      showAlert('✅ Material eliminado exitosamente', 'success');
+      fetchMaterials();
+    } catch (error) {
+      showAlert('❌ Error al eliminar material', 'error');
+    }
+  };
+
   // Configuración de colores por sección
   const sectionColors = {
     Dama: {
@@ -199,7 +289,6 @@ const ProductsDashboard = () => {
   // Obtener subcategorías según la categoría seleccionada para filtros
   // Filtrar categorías válidas (que tengan id)
   const validCategories = categories?.filter(cat => cat && cat.id_category) || [];
-  const validSubCategories = subCategories?.filter(sub => sub && sub.id_SB) || [];
   const selectedCategoryData = validCategories.find(cat => cat.id_category === selectedCategory);
   const subCategoriesForFilter = selectedCategoryData?.SubCategories?.filter(sub => sub && sub.id_SB) || [];
 
@@ -270,6 +359,16 @@ const ProductsDashboard = () => {
             }`}
           >
             📂 Gestionar Subcategorías
+          </button>
+          <button
+            onClick={() => setActiveTab('materials')}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+              activeTab === 'materials'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            🧵 Gestionar Materiales
           </button>
         </nav>
       </div>
@@ -540,14 +639,14 @@ const ProductsDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {validCategories.map((category) => (
+            {Array.isArray(categories) && categories.map((category) => (
               <div
-                key={category.id_category}
+                key={category?.id_category}
                 className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-semibold text-lg text-gray-900">{category.name_category}</h3>
+                    <h3 className="font-semibold text-lg text-gray-900">{category?.name_category}</h3>
                     {category.section && (
                       <span className="inline-block mt-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
                         {category.section}
@@ -595,7 +694,7 @@ const ProductsDashboard = () => {
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Todas las categorías</option>
-                {validCategories.map((cat) => (
+                {categories.map((cat) => (
                   <option key={cat.id_category} value={cat.id_category}>
                     {cat.name_category}
                   </option>
@@ -611,10 +710,10 @@ const ProductsDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {validSubCategories
+            {subCategories
               .filter((sub) => !filterCategoryId || sub.id_category === filterCategoryId)
               .map((subCategory) => {
-                const category = validCategories.find((c) => c.id_category === subCategory.id_category);
+                const category = categories.find((c) => c.id_category === subCategory.id_category);
                 return (
                   <div
                     key={subCategory.id_SB}
@@ -675,6 +774,21 @@ const ProductsDashboard = () => {
                   placeholder="Ej: Anillos, Cadenas, etc."
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Sección
+                </label>
+                <select
+                  value={categoryForm.section}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, section: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Seleccionar sección</option>
+                  <option value="Dama">👗 Dama</option>
+                  <option value="Caballero">🎩 Caballero</option>
+                  <option value="Unisex">🌟 Unisex</option>
+                </select>
+              </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button
@@ -724,7 +838,7 @@ const ProductsDashboard = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Seleccionar categoría</option>
-                  {validCategories.map((cat) => (
+                  {categories.map((cat) => (
                     <option key={cat.id_category} value={cat.id_category}>
                       {cat.name_category}
                     </option>
@@ -744,6 +858,132 @@ const ProductsDashboard = () => {
                 className="flex-1 px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
               >
                 {editingSubCategory ? 'Actualizar' : 'Crear'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab Content: Materials */}
+      {activeTab === 'materials' && (
+        <div>
+          {/* Header con botón crear */}
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900">Gestión de Materiales</h3>
+              <p className="text-sm text-gray-600 mt-1">Crea y administra materiales para usar en productos</p>
+            </div>
+            <button
+              onClick={handleCreateMaterial}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              + Nuevo Material
+            </button>
+          </div>
+
+          {/* Búsqueda */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Buscar material..."
+              value={materialSearchTerm}
+              onChange={(e) => setMaterialSearchTerm(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Lista de materiales */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {materials
+              .filter(m => m.name.toLowerCase().includes(materialSearchTerm.toLowerCase()))
+              .map((material) => (
+                <div
+                  key={material.id_material}
+                  className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="mb-3">
+                    <h3 className="font-semibold text-lg text-gray-900">{material.name}</h3>
+                    {material.description && (
+                      <p className="text-sm text-gray-600 mt-1">{material.description}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      onClick={() => handleEditMaterial(material)}
+                      className="flex-1 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
+                    >
+                      ✏️ Editar
+                    </button>
+                    <button
+                      onClick={() => handleDeleteMaterial(material.id_material)}
+                      className="flex-1 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors"
+                    >
+                      🗑️ Eliminar
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
+
+          {materials.length === 0 && (
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <p className="text-gray-600 mb-2">No hay materiales registrados</p>
+              <button
+                onClick={handleCreateMaterial}
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Crear el primer material
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Modal Material */}
+      {showMaterialModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">
+              {editingMaterial ? 'Editar Material' : 'Nuevo Material'}
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nombre *
+                </label>
+                <input
+                  type="text"
+                  value={materialForm.name}
+                  onChange={(e) => setMaterialForm({ ...materialForm, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="ej: Oro Laminado"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Descripción
+                </label>
+                <textarea
+                  value={materialForm.description}
+                  onChange={(e) => setMaterialForm({ ...materialForm, description: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows="3"
+                  placeholder="Descripción opcional del material"
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowMaterialModal(false)}
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveMaterial}
+                className="flex-1 px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+              >
+                {editingMaterial ? 'Actualizar' : 'Crear'}
               </button>
             </div>
           </div>
