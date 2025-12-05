@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchDashboard } from '../../Redux/Actions/stockActions';
-import { fetchCategories } from '../../Redux/Actions/actions';
+import { fetchCategories, deleteProduct } from '../../Redux/Actions/actions';
 import {
   createCategory,
   updateCategory,
@@ -186,6 +186,25 @@ const ProductsDashboard = () => {
     } else {
       showAlert(`❌ ${result.error}`, 'error');
     }
+  };
+
+  // ==================== PRODUCT HANDLERS ====================
+  const handleDeleteProduct = (id_product) => {
+    Swal.fire({
+      title: '¿Eliminar producto?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteProduct(id_product));
+        Swal.fire('¡Eliminado!', 'El producto ha sido eliminado.', 'success');
+      }
+    });
   };
 
   // ==================== MATERIAL HANDLERS ====================
@@ -594,6 +613,13 @@ const ProductsDashboard = () => {
                     >
                       👁️
                     </Link>
+                    <button
+                      onClick={() => handleDeleteProduct(product.id_product)}
+                      className="px-3 py-2 text-red-600 text-sm font-medium bg-red-50 rounded-md hover:bg-red-100 transition-colors"
+                      title="Eliminar producto"
+                    >
+                      🗑️
+                    </button>
                   </div>
                 </div>
               </div>

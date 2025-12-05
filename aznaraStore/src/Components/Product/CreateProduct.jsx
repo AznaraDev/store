@@ -22,6 +22,7 @@ const CreateProduct = () => {
   const [isOffer, setIsOffer] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showVariantInfo, setShowVariantInfo] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.categories.data);
@@ -79,6 +80,14 @@ const CreateProduct = () => {
       return;
     }
 
+    // Prevenir múltiples envíos
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    setAlertMessage("");
+
     const productData = {
       name,
       description,
@@ -104,6 +113,7 @@ const CreateProduct = () => {
         confirmButtonText: "OK",
       });
 
+      // Limpiar formulario
       setName("");
       setDescription("");
       setPrice("");
@@ -127,6 +137,8 @@ const CreateProduct = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -439,9 +451,21 @@ const CreateProduct = () => {
           <div className="text-center">
             <button
               onClick={handleSubmit}
-              className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700"
+              disabled={isLoading}
+              className={`w-full py-2 px-4 font-semibold rounded-lg shadow-md transition-all ${
+                isLoading
+                  ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
             >
-              Crear Producto
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Creando producto...
+                </span>
+              ) : (
+                "Crear Producto"
+              )}
             </button>
           </div>
         </div>
