@@ -203,6 +203,10 @@ const ProductsDashboard = () => {
       if (result.isConfirmed) {
         dispatch(deleteProduct(id_product));
         Swal.fire('¡Eliminado!', 'El producto ha sido eliminado.', 'success');
+        // Refrescar la lista de productos después de eliminar
+        setTimeout(() => {
+          dispatch(fetchDashboard({}));
+        }, 500);
       }
     });
   };

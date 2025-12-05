@@ -266,7 +266,7 @@ export const login = (email, password) => async (dispatch) => {
       const decodedToken = jwtDecode(data.data.token);
       const userInfo = {
         token: data.data.token,
-        role: decodedToken.role,
+        role: decodedToken.role ? decodedToken.role.toLowerCase() : 'user', // Normalizar a minúsculas
         n_document: decodedToken.n_document, // Agregar n_document desde el token decodificado
         message: data.message,
       };
