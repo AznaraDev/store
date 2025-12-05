@@ -277,7 +277,7 @@ const ProductsDashboard = () => {
       {/* Tab Content: Products */}
       {activeTab === 'products' && (
         <div>
-          {/* Filtros */}
+          
       <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           {/* Filtro de Búsqueda */}
@@ -311,7 +311,7 @@ const ProductsDashboard = () => {
             </select>
           </div>
 
-          {/* Filtro de Categoría */}
+        
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Categoría
