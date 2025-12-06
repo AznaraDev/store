@@ -350,7 +350,7 @@ useEffect(() => {
                       currentSection === 'Dama' ? 'text-black' : 'text-colorFooter'} `} /> Añadir al carrito
                   </button>
                 </div>
-                {userInfo && userInfo.role === "Admin" && (
+                {userInfo && userInfo.role === "admin" && (
                   <div className="absolute top-2 right-2 flex space-x-2 z-10">
                     <button
                       className="bg-gray-100 text-gray-700 p-2 rounded-full hover:bg-gray-200"

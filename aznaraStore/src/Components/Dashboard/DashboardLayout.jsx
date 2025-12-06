@@ -10,8 +10,8 @@ const DashboardLayout = ({ children }) => {
   const userLoginState = useSelector(state => state.userLogin || {});
   const { userInfo } = userLoginState;
 
-  // Verificar si el usuario tiene permisos de admin/comercio
-  const hasAdminPermissions = userInfo && (userInfo.role === 'admin' || userInfo.role === 'comercio');
+  // Verificar si el usuario tiene permisos de admin
+  const hasAdminPermissions = userInfo && userInfo.role === 'admin';
 
   if (!hasAdminPermissions) {
     return (

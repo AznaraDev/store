@@ -37,7 +37,7 @@ const Register = () => {
     e.preventDefault();
     console.log('Form Data:', formData); 
     dispatch(registerUser(formData)).then(() => {
-      if (loggedInUserInfo && loggedInUserInfo.role === 'Admin') {
+      if (loggedInUserInfo && loggedInUserInfo.role === 'admin') {
         navigate('/');
       } else {
         navigate('/login');
@@ -142,7 +142,7 @@ const Register = () => {
               <option value="O">Otro</option>
             </select>
           </div>
-          {loggedInUserInfo && loggedInUserInfo.role === 'Admin' && (
+          {loggedInUserInfo && loggedInUserInfo.role === 'admin' && (
             <div>
               <label className="block text-sm font-medium text-gray-700">Rol</label>
               <select

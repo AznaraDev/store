@@ -209,7 +209,7 @@ export default function Navbar() {
           
         </>
       );
-    } else if (userInfo.role === 'User') {
+    } else if (userInfo.role === 'user') {
       return (
         <>
           <Menu.Item>
@@ -241,7 +241,7 @@ export default function Navbar() {
           </Menu.Item>
         </>
       );
-    } else if (userInfo.role === 'Admin' || userInfo.role === 'comercio') {
+    } else if (userInfo.role === 'admin') {
       return (
         <>
           <Menu.Item>
@@ -518,7 +518,7 @@ export default function Navbar() {
                      <Disclosure.Button as={Link} to="/login" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Ingresar</Disclosure.Button>
                      <Disclosure.Button as={Link} to="/register" onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Registrarse</Disclosure.Button>
                    </>
-                 ) : userInfo.role === 'User' ? (
+                 ) : userInfo.role === 'user' ? (
                    <>
                       <Disclosure.Button as={Link} to={`/myOrders/${userInfo.n_document}`} onClick={() => close()} className="block px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Mis Pedidos</Disclosure.Button>
                       <Disclosure.Button as="button" onClick={() => { handleLogout(); close(); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-thin font-nunito text-gray-300 hover:bg-gray-700 hover:text-white">Salir</Disclosure.Button>

@@ -9,7 +9,7 @@ const PanelTaxxa = () => {
   const { userInfo: user } = useSelector(state => state.userLogin || {});
 
   // Verificar si el usuario tiene permisos para acceder (admin)
-  const hasPermission = user && user.role === 'Admin';
+  const hasPermission = user && user.role === 'admin';
 
   if (!hasPermission) {
     return (
