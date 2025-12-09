@@ -627,37 +627,10 @@ const availableColors = getAvailableColors();
 
 
 
-  {/* Thumbnails - Mostrar imágenes del producto actual Y variantes con el mismo nombre */}
+  {/* Thumbnails - Mostrar todas las variantes del mismo producto (mismo nombre) */}
   <div className="flex justify-center space-x-2 overflow-x-auto py-2 w-full max-w-md order-last lg:order-none">
-              {/* Primero: Mostrar todas las imágenes del producto actual si tiene más de una */}
-              {selectedProduct?.Images && selectedProduct.Images.length > 1 && selectedProduct.Images.map((image, index) => {
-                const largeImageUrl = image.url;
-                const thumbnailUrl = image.thumbnailUrl || image.url;
-  
-                return (
-                  <div key={`current-${index}`} className="flex flex-col items-center">
-                    <img
-                      src={thumbnailUrl}
-                      alt={`Vista ${index + 1}`}
-                      className={`w-14 h-14 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
-                        selectedImage === largeImageUrl
-                          ? 'border-colorLogo scale-105' 
-                          : 'border-transparent hover:border-gray-500'
-                      }`}
-                      onClick={() => {
-                        setSelectedImage(largeImageUrl);
-                      }}
-                    />
-                  </div>
-                );
-              })}
-              
-              {/* Segundo: Mostrar variantes del mismo producto (mismo nombre, diferente color) */}
               {similarProducts && similarProducts.length > 0 && similarProducts
-                .filter((variant) => 
-                  variant.name === selectedProduct?.name && 
-                  variant.id_product !== selectedProduct?.id_product // Excluir el producto actual
-                )
+                .filter((variant) => variant.name === selectedProduct?.name) // Todas las variantes con el mismo nombre
                 .map((variant) => {
                   if (!variant.Images || variant.Images.length === 0) return null;
                   
@@ -666,13 +639,18 @@ const availableColors = getAvailableColors();
                   const thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
                   const variantColors = parseJsonField(variant.colors);
                   const variantColor = variantColors.length > 0 ? variantColors[0] : '';
+                  const isCurrentProduct = selectedProduct?.id_product === variant.id_product;
     
                   return (
                     <div key={`variant-${variant.id_product}`} className="flex flex-col items-center">
                       <img
                         src={thumbnailUrl}
                         alt={`${variantColor}`}
-                        className={`w-14 h-14 object-cover rounded cursor-pointer border-2 transition-all duration-200 border-transparent hover:border-gray-500`}
+                        className={`w-14 h-14 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
+                          isCurrentProduct
+                            ? 'border-colorLogo scale-105' 
+                            : 'border-transparent hover:border-gray-500'
+                        }`}
                         onClick={() => {
                           setSelectedProduct(variant);
                           setSelectedImage(largeImageUrl);
