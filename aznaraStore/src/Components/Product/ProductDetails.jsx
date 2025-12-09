@@ -627,45 +627,44 @@ const availableColors = getAvailableColors();
 
 
 
-  {/* Thumbnails */}
+  {/* Thumbnails - Mostrar variantes del mismo producto (mismo nombre) */}
   <div className="flex justify-center space-x-2 overflow-x-auto py-2 w-full max-w-md order-last lg:order-none">
-              {similarProducts && similarProducts.length > 0 && similarProducts.map((variant) => {
-                // Mostrar la primera imagen de cada variante
-                if (!variant.Images || variant.Images.length === 0) return null;
-                
-                const firstImage = variant.Images[0];
-                const largeImageUrl = firstImage.url;
-                const thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
-                const variantColors = parseJsonField(variant.colors);
-                const variantColor = variantColors.length > 0 ? variantColors[0] : '';
-  
-                return (
-                  <div key={variant.id_product} className="flex flex-col items-center">
-                    <img
-                      src={thumbnailUrl}
-                      alt={`Variante ${variantColor}`}
-                      className={`w-14 h-14 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
-                        selectedProduct?.id_product === variant.id_product 
-                          ? 'border-colorLogo scale-105' 
-                          : 'border-transparent hover:border-gray-500'
-                      }`}
-                      onClick={() => {
-                        // Cambiar al producto variante
-                        setSelectedProduct(variant);
-                        setSelectedImage(largeImageUrl);
-                        // Auto-seleccionar el color de esta variante
-                        if (variantColor) {
-                          setSelectedColor(variantColor);
-                        }
-                        setSelectedSize("");
-                      }}
-                    />
-                    {variantColor && (
-                      <span className="text-xs mt-1 text-gray-600">{variantColor}</span>
-                    )}
-                  </div>
-                );
-              })}
+              {similarProducts && similarProducts.length > 0 && similarProducts
+                .filter((variant) => variant.name === selectedProduct?.name) // Filtrar solo variantes con el mismo nombre
+                .map((variant) => {
+                  if (!variant.Images || variant.Images.length === 0) return null;
+                  
+                  const firstImage = variant.Images[0];
+                  const largeImageUrl = firstImage.url;
+                  const thumbnailUrl = firstImage.thumbnailUrl || firstImage.url;
+                  const variantColors = parseJsonField(variant.colors);
+                  const variantColor = variantColors.length > 0 ? variantColors[0] : '';
+    
+                  return (
+                    <div key={variant.id_product} className="flex flex-col items-center">
+                      <img
+                        src={thumbnailUrl}
+                        alt={`${variantColor}`}
+                        className={`w-14 h-14 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
+                          selectedProduct?.id_product === variant.id_product 
+                            ? 'border-colorLogo scale-105' 
+                            : 'border-transparent hover:border-gray-500'
+                        }`}
+                        onClick={() => {
+                          setSelectedProduct(variant);
+                          setSelectedImage(largeImageUrl);
+                          if (variantColor) {
+                            setSelectedColor(variantColor);
+                          }
+                          setSelectedSize("");
+                        }}
+                      />
+                      {variantColor && (
+                        <span className="text-xs mt-1 text-gray-300">{variantColor}</span>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           </div>
         </div>

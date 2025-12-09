@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct, fetchCategories, fetchSB } from "../../Redux/Actions/actions";
@@ -183,11 +184,11 @@ const CreateProduct = () => {
               </ul>
             </div>
             <div className="bg-yellow-100 border border-yellow-300 p-3 rounded-md">
-              <p className="text-sm font-semibold mb-1">📋 Ejemplo: "Anillo Solitario"</p>
+              <p className="text-sm font-semibold mb-1">📋 Ejemplo: &ldquo;Anillo Solitario&rdquo;</p>
               <div className="text-xs space-y-1 ml-2">
-                <p>• Producto 1: Color = <strong>"Oro Amarillo"</strong>, Materiales = "Enchapado, Macizo"</p>
-                <p>• Producto 2: Color = <strong>"Oro Blanco"</strong>, Materiales = "Enchapado, Macizo"</p>
-                <p>• Producto 3: Color = <strong>"Plata"</strong>, Materiales = "Enchapado, Macizo"</p>
+                <p>• Producto 1: Color = <strong>&ldquo;Oro Amarillo&rdquo;</strong>, Materiales = &ldquo;Enchapado, Macizo&rdquo;</p>
+                <p>• Producto 2: Color = <strong>&ldquo;Oro Blanco&rdquo;</strong>, Materiales = &ldquo;Enchapado, Macizo&rdquo;</p>
+                <p>• Producto 3: Color = <strong>&ldquo;Plata&rdquo;</strong>, Materiales = &ldquo;Enchapado, Macizo&rdquo;</p>
               </div>
             </div>
           </div>
