@@ -36,13 +36,12 @@ module.exports = async (req, res) => {
     // El modelo Product ya tiene getters que parsean automáticamente sizes, colors y materials
     const parsedProduct = product.toJSON();
 
-    // Obtener los productos que tengan el mismo id_SB, id_category, y section
-    // (permitiendo precios diferentes para variantes)
+    // Obtener productos relacionados de dos tipos:
+    // 1. Variantes del mismo producto (mismo nombre) - para mostrar colores/talles
+    // 2. Productos de la misma categoría (diferente nombre) - para "similar products"
     const relatedProducts = await Product.findAll({
       where: {
-        id_SB: product.id_SB, // Comparar con el id_SB del producto principal
-        id_category: product.id_category, // Comparar con el id_category del producto principal
-        section: product.section, // Comparar con la section del producto principal
+        id_category: product.id_category, // Misma categoría
       },
       include: [
         {

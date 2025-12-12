@@ -133,10 +133,10 @@ const ProductDetails = () => {
 
   const getAvailableColors = useCallback(() => {
     if (!selectedProduct || !similarProducts) return [];
-    // Obtener todos los colores únicos de todos los productos similares con la misma subcategoría
+    // Obtener todos los colores únicos de productos con el MISMO NOMBRE (variantes)
     const allColors = new Set();
     similarProducts.forEach((p) => {
-      if (p.id_SB === selectedProduct.id_SB) {
+      if (p.name === selectedProduct.name) {
         const colors = parseJsonField(p.colors);
         colors.forEach((color) => allColors.add(color));
       }
@@ -146,10 +146,10 @@ const ProductDetails = () => {
 
   const getAvailableMaterials = useCallback(() => {
     if (!selectedProduct || !similarProducts) return [];
-    // Obtener todos los materiales únicos de todos los productos similares con la misma subcategoría
+    // Obtener todos los materiales únicos de productos con el MISMO NOMBRE (variantes)
     const allMaterials = new Set();
     similarProducts.forEach((p) => {
-      if (p.id_SB === selectedProduct.id_SB) {
+      if (p.name === selectedProduct.name) {
         const materials = parseJsonField(p.materials);
         materials.forEach((material) => allMaterials.add(material));
       }
@@ -161,7 +161,7 @@ const ProductDetails = () => {
     if (!selectedProduct || !similarProducts || !selectedColor) return []; // Necesita un color seleccionado
     const matchingProducts = similarProducts.filter(
       (p) =>
-        p.id_SB === selectedProduct.id_SB &&
+        p.name === selectedProduct.name &&
         parseJsonField(p.colors).includes(selectedColor)
     );
     return [
@@ -187,7 +187,7 @@ const ProductDetails = () => {
         const pColors = parseJsonField(p.colors);
         const pMaterials = parseJsonField(p.materials);
         return (
-          p.id_SB === selectedProduct.id_SB &&
+          p.name === selectedProduct.name &&
           pColors.includes(color) &&
           (!selectedMaterial || pMaterials.includes(selectedMaterial))
         );
@@ -216,7 +216,7 @@ const ProductDetails = () => {
         const pMaterials = parseJsonField(p.materials);
         const pColors = parseJsonField(p.colors);
         return (
-          p.id_SB === selectedProduct.id_SB &&
+          p.name === selectedProduct.name &&
           pMaterials.includes(material) &&
           (!selectedColor || pColors.includes(selectedColor))
         );
@@ -481,7 +481,7 @@ const ProductDetails = () => {
                   // Encontrar el producto con este color para mostrar su imagen
                   const colorProduct = similarProducts.find(
                     (p) =>
-                      p.id_SB === selectedProduct.id_SB &&
+                      p.name === selectedProduct.name &&
                       parseJsonField(p.colors).includes(color)
                   );
                   const colorImage =
@@ -709,7 +709,7 @@ const ProductDetails = () => {
               // Encontrar el producto con este color para mostrar su imagen (misma lógica que arriba)
               const colorProduct = similarProducts.find(
                 (p) =>
-                  p.id_SB === selectedProduct.id_SB &&
+                  p.name === selectedProduct.name &&
                   parseJsonField(p.colors).includes(color)
               );
               const colorImage =
