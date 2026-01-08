@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFilteredProducts, addToCart } from '../../Redux/Actions/actions';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -15,6 +16,7 @@ const FilteredProducts = () => {
   const navigate = useNavigate(); // Para redirigir a otras rutas
   const { categoryName } = useParams();
   const products = useSelector((state) => state.products || []);
+  const cart = useSelector((state) => state.cart || { items: [] });
 
   // Seleccionar la imagen del banner según la categoría
   const categoryBanner = (categoryName) => {
@@ -46,7 +48,27 @@ const FilteredProducts = () => {
   // Agregar el producto al carrito y redirigir a la página del carrito
   const handleAddToCart = (product) => {
     if (Number(product.stock) <= 0) {
-      alert('Producto sin stock.');
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Producto sin stock.',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+    const existingItem = cart.items.find((it) => it.id_product === product.id_product);
+    const existingQty = existingItem ? existingItem.quantity : 0;
+    if (existingQty + 1 > Number(product.stock)) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: `Solo quedan ${product.stock} unidades en stock.`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
       return;
     }
     const productToAdd = {

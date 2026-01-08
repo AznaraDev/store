@@ -165,6 +165,11 @@ export const addToCart = (id_product) => ({
   payload: id_product,
 });
 
+export const setCartQuantity = (productId, quantity) => ({
+  type: SET_CART_QUANTITY,
+  payload: { productId, quantity },
+});
+
 export const removeFromCart = (id_product) => ({
   type: REMOVE_FROM_CART,
   payload: id_product,

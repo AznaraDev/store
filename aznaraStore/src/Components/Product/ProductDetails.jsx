@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
+import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById, addToCart } from "../../Redux/Actions/actions";
 import { useParams, useNavigate } from "react-router-dom";
@@ -46,6 +47,7 @@ const ProductDetails = () => {
     loading: state.loading,
     error: state.error,
   }));
+  const cart = useSelector((state) => state.cart);
   // Filtrar productos de la misma categoría excluyendo variantes del producto actual
   const getRelatedProducts = (products) => {
     if (!selectedProduct) return [];
@@ -280,16 +282,52 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     const outOfStock = selectedProduct && Number(selectedProduct.stock) <= 0;
     if (outOfStock) {
-      alert('Producto sin stock. No se puede añadir al carrito.');
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Producto sin stock. No se puede añadir al carrito.',
+        showConfirmButton: false,
+        timer: 2500,
+      });
+      return;
+    }
+
+    // Comprobar cantidad existente en carrito para este producto
+    const existingItem = cart.items.find((it) => it.id_product === selectedProduct.id_product);
+    const existingQty = existingItem ? existingItem.quantity : 0;
+    if (existingQty + 1 > Number(selectedProduct.stock)) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: `Solo quedan ${selectedProduct.stock} unidades en stock.`,
+        showConfirmButton: false,
+        timer: 2500,
+      });
       return;
     }
 
     if (!selectedSize) {
-      alert("Por favor, selecciona un talle.");
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: 'Por favor, selecciona un talle.',
+        showConfirmButton: false,
+        timer: 2000,
+      });
       return;
     }
     if (!selectedColor) {
-      alert("Por favor, selecciona un color.");
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: 'Por favor, selecciona un color.',
+        showConfirmButton: false,
+        timer: 2000,
+      });
       return;
     }
 

@@ -1,8 +1,9 @@
 
-const { OrderDetail, Product, StockMovement } = require("../../data");
+const { OrderDetail, Product, StockMovement, sequelize } = require("../../data");
 const response = require("../../utils/response");
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
+const { Op } = require('sequelize');
 
 const secretoIntegridad = 'test_integrity_VMVZ36lyoQot5DsN0fBXAmp4onT5T86G'; 
 
@@ -71,63 +72,91 @@ module.exports = async (req, res) => {
       integritySignature,
     };
 
-    const orderDetail = await OrderDetail.create(orderDetailData);
-    
-    // Descontar stock automáticamente cuando se crea el pedido
-    // Validar stock antes de crear el pedido
-    if (cart_items && Array.isArray(cart_items) && cart_items.length > 0) {
-      const insufficient = [];
-      for (const item of cart_items) {
-        if (item.id_product && item.quantity) {
-          const product = await Product.findByPk(item.id_product);
-          if (!product) {
-            insufficient.push({ id_product: item.id_product, reason: 'Producto no encontrado' });
-          } else {
-            const previousStock = product.stock || 0;
+    // Usar transacción para validar y decrementar stock de forma atómica
+    const t = await sequelize.transaction();
+    try {
+      const orderDetail = await OrderDetail.create(orderDetailData, { transaction: t });
+
+      if (cart_items && Array.isArray(cart_items) && cart_items.length > 0) {
+        const insufficient = [];
+        for (const item of cart_items) {
+          if (item.id_product && item.quantity) {
             const quantityToReduce = parseInt(item.quantity);
-            if (previousStock < quantityToReduce) {
-              insufficient.push({ id_product: item.id_product, available: previousStock, requested: quantityToReduce });
+
+            // Intentar decrementar stock de forma atómica solo si hay suficiente
+            const [updatedRows] = await Product.update(
+              { stock: sequelize.literal(`stock - ${quantityToReduce}`) },
+              {
+                where: {
+                  id_product: item.id_product,
+                  stock: { [Op.gte]: quantityToReduce },
+                },
+                transaction: t,
+              }
+            );
+
+            if (updatedRows === 0) {
+              // No se pudo decrementar porque no hay suficiente stock o producto no existe
+              const prod = await Product.findByPk(item.id_product, { transaction: t });
+              const available = prod ? prod.stock : 0;
+              insufficient.push({ id_product: item.id_product, available, requested: quantityToReduce });
+            } else {
+              // Obtener nuevo stock para registrar movimiento
+              const prodAfter = await Product.findByPk(item.id_product, { transaction: t });
+              const newStock = prodAfter.stock || 0;
+              const previousStock = newStock + quantityToReduce;
+
+              await StockMovement.create({
+                id_product: item.id_product,
+                movement_type: 'venta',
+                quantity: -quantityToReduce,
+                previous_stock: previousStock,
+                new_stock: newStock,
+                reason: 'Venta - Pedido creado',
+                performed_by: n_document || 'Sistema',
+                reference_id: orderDetail.id_orderDetail,
+                notes: `Pedido ${orderDetail.id_orderDetail} - ${item.name || 'Producto'}`
+              }, { transaction: t });
+
+              console.log(`Stock descontado: ${item.name}, cantidad: ${quantityToReduce}, nuevo stock: ${newStock}`);
             }
           }
         }
-      }
 
-      if (insufficient.length > 0) {
-        console.warn('Stock insuficiente para algunos productos:', insufficient);
-        return response(res, 400, { error: 'Stock insuficiente', details: insufficient });
-      }
-    }
-
-    // Procesar descuento de stock si hay cart_items (ya validados)
-    if (cart_items && Array.isArray(cart_items) && cart_items.length > 0) {
-      for (const item of cart_items) {
-        if (item.id_product && item.quantity) {
-          const product = await Product.findByPk(item.id_product);
-          if (product) {
-            const previousStock = product.stock || 0;
-            const quantityToReduce = parseInt(item.quantity);
-            const newStock = previousStock - quantityToReduce;
-
-            // Actualizar stock del producto
-            await product.update({ stock: newStock });
-
-            // Registrar movimiento de stock
-            await StockMovement.create({
-              id_product: item.id_product,
-              movement_type: 'venta',
-              quantity: -quantityToReduce,
-              previous_stock: previousStock,
-              new_stock: newStock,
-              reason: 'Venta - Pedido creado',
-              performed_by: n_document || 'Sistema',
-              reference_id: orderDetail.id_orderDetail,
-              notes: `Pedido ${orderDetail.id_orderDetail} - ${item.name || 'Producto'}`
-            });
-
-            console.log(`Stock descontado: ${item.name}, cantidad: ${quantityToReduce}, nuevo stock: ${newStock}`);
-          }
+        if (insufficient.length > 0) {
+          await t.rollback();
+          console.warn('Stock insuficiente para algunos productos:', insufficient);
+          return response(res, 400, { error: 'Stock insuficiente', details: insufficient });
         }
       }
+
+      // Asociar productos al pedido
+      const productUpdates = id_product.map(productId => ({
+        id_orderDetail: orderDetail.id_orderDetail,
+        id_product: productId
+      }));
+
+      await Promise.all(productUpdates.map(async ({ id_orderDetail, id_product }) => {
+        await Product.update({ id_orderDetail }, { where: { id_product }, transaction: t });
+      }));
+
+      await t.commit();
+
+      const updatedOrderDetail = await OrderDetail.findOne({
+        where: { id_orderDetail: orderDetail.id_orderDetail },
+        include: {
+          model: Product,
+          as: 'products',
+          attributes: ['id_product'],
+        }
+      });
+      console.log("Order created:", updatedOrderDetail);
+      console.log("Order created:", orderDetail);
+      return response(res, 201, { orderDetail });
+    } catch (txError) {
+      await t.rollback();
+      console.error('Error en transacción de orden:', txError);
+      return response(res, 500, { error: txError.message });
     }
     
     const productUpdates = id_product.map(productId => ({

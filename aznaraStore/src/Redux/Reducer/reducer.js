@@ -660,6 +660,27 @@ const rootReducer = (state = initialState, action) => {
           totalPrice: state.cart.totalPrice - itemToDecrement.price,
         },
       };
+    case SET_CART_QUANTITY: {
+      const { productId, quantity } = action.payload;
+      const item = state.cart.items.find((it) => it.id_product === productId);
+      if (!item) return state;
+      const max = Number(item.stock) || item.quantity;
+      const newQty = Math.max(1, Math.min(quantity, max));
+      const qtyDiff = newQty - item.quantity;
+      if (qtyDiff === 0) return state;
+
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          items: state.cart.items.map((it) =>
+            it.id_product === productId ? { ...it, quantity: newQty } : it
+          ),
+          totalItems: state.cart.totalItems + qtyDiff,
+          totalPrice: state.cart.totalPrice + qtyDiff * item.price,
+        },
+      };
+    }
     case CLEAR_CART:
       return {
         ...state,
