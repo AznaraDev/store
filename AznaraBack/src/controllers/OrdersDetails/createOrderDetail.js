@@ -74,39 +74,57 @@ module.exports = async (req, res) => {
     const orderDetail = await OrderDetail.create(orderDetailData);
     
     // Descontar stock automáticamente cuando se crea el pedido
-    // Procesar descuento de stock si hay cart_items
+    // Validar stock antes de crear el pedido
+    if (cart_items && Array.isArray(cart_items) && cart_items.length > 0) {
+      const insufficient = [];
+      for (const item of cart_items) {
+        if (item.id_product && item.quantity) {
+          const product = await Product.findByPk(item.id_product);
+          if (!product) {
+            insufficient.push({ id_product: item.id_product, reason: 'Producto no encontrado' });
+          } else {
+            const previousStock = product.stock || 0;
+            const quantityToReduce = parseInt(item.quantity);
+            if (previousStock < quantityToReduce) {
+              insufficient.push({ id_product: item.id_product, available: previousStock, requested: quantityToReduce });
+            }
+          }
+        }
+      }
+
+      if (insufficient.length > 0) {
+        console.warn('Stock insuficiente para algunos productos:', insufficient);
+        return response(res, 400, { error: 'Stock insuficiente', details: insufficient });
+      }
+    }
+
+    // Procesar descuento de stock si hay cart_items (ya validados)
     if (cart_items && Array.isArray(cart_items) && cart_items.length > 0) {
       for (const item of cart_items) {
         if (item.id_product && item.quantity) {
           const product = await Product.findByPk(item.id_product);
-          
           if (product) {
             const previousStock = product.stock || 0;
             const quantityToReduce = parseInt(item.quantity);
-            
-            if (previousStock >= quantityToReduce) {
-              const newStock = previousStock - quantityToReduce;
-              
-              // Actualizar stock del producto
-              await product.update({ stock: newStock });
-              
-              // Registrar movimiento de stock
-              await StockMovement.create({
-                id_product: item.id_product,
-                movement_type: 'venta',
-                quantity: -quantityToReduce,
-                previous_stock: previousStock,
-                new_stock: newStock,
-                reason: 'Venta - Pedido creado',
-                performed_by: n_document || 'Sistema',
-                reference_id: orderDetail.id_orderDetail,
-                notes: `Pedido ${orderDetail.id_orderDetail} - ${item.name || 'Producto'}`
-              });
-              
-              console.log(`Stock descontado: ${item.name}, cantidad: ${quantityToReduce}, nuevo stock: ${newStock}`);
-            } else {
-              console.warn(`Stock insuficiente para producto ${item.id_product}: disponible ${previousStock}, solicitado ${quantityToReduce}`);
-            }
+            const newStock = previousStock - quantityToReduce;
+
+            // Actualizar stock del producto
+            await product.update({ stock: newStock });
+
+            // Registrar movimiento de stock
+            await StockMovement.create({
+              id_product: item.id_product,
+              movement_type: 'venta',
+              quantity: -quantityToReduce,
+              previous_stock: previousStock,
+              new_stock: newStock,
+              reason: 'Venta - Pedido creado',
+              performed_by: n_document || 'Sistema',
+              reference_id: orderDetail.id_orderDetail,
+              notes: `Pedido ${orderDetail.id_orderDetail} - ${item.name || 'Producto'}`
+            });
+
+            console.log(`Stock descontado: ${item.name}, cantidad: ${quantityToReduce}, nuevo stock: ${newStock}`);
           }
         }
       }

@@ -44,50 +44,61 @@ const ProductCarousel = () => {
     }}
   >
     {filteredProducts.length > 0
-      ? filteredProducts.map((product) => (
-          <SwiperSlide key={product.id_product}>
-            <Link to={`/product/${product.id_product}`}>
-              <div
-                className={`w-full max-w-xs mx-auto p-2 ${
-                  currentSection === 'Dama' ? 'shadow-silver-soft' : 'bg-colorFooter'
-                } rounded-xl shadow-lg text-center`}
+      ? filteredProducts.map((product) => {
+          const isOut = Number(product.stock) <= 0;
+          return (
+            <SwiperSlide key={product.id_product}>
+              <Link
+                to={isOut ? '#' : `/product/${product.id_product}`}
+                className={`${isOut ? 'pointer-events-none opacity-60' : ''}`}
               >
-                {product.isOffer && (
-                  <span
-                    className={`absolute font-semibold top-0 left-8 ${
+                <div
+                  className={`w-full max-w-xs mx-auto p-2 ${
+                    currentSection === 'Dama' ? 'shadow-silver-soft' : 'bg-colorFooter'
+                  } rounded-xl shadow-lg text-center relative`}
+                >
+                  {isOut && (
+                    <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-medium px-2 py-1 rounded">
+                      Sin stock
+                    </div>
+                  )}
+                  {product.isOffer && (
+                    <span
+                      className={`absolute font-semibold top-0 left-8 ${
+                        currentSection === 'Dama'
+                          ? 'bg-gray-800  text-white'
+                          : 'bg-gray-500 text-colorLogo'
+                      } text-xl px-2 py-0 rounded-md`}
+                    >
+                      OFERTA
+                    </span>
+                  )}
+                  <h3
+                    className={` -mb-4 text-2xl font-thin font-nunito uppercase ${
                       currentSection === 'Dama'
-                        ? 'bg-gray-800  text-white'
-                        : 'bg-gray-500 text-colorLogo'
-                    } text-xl px-2 py-0 rounded-md`}
+                        ? 'bg-women text-black text-opacity-70'
+                        : 'bg-yellow-600 text-slate-800'
+                    } p-2 rounded`}
                   >
-                    OFERTA
-                  </span>
-                )}
-                <h3
-                  className={` -mb-4 text-2xl font-thin font-nunito uppercase ${
-                    currentSection === 'Dama'
-                      ? 'bg-women text-black text-opacity-70'
-                      : 'bg-yellow-600 text-slate-800'
-                  } p-2 rounded`}
-                >
-                  {product.name}
-                </h3>
-                <img
-                  src={product.Images[0]?.url || 'https://via.placeholder.com/150'}
-                  alt={product.name}
-                  className="w-full h-80 object-contain  rounded-2xl mb-2"
-                />
-                <p
-                  className={`${
-                    currentSection === 'Dama' ? 'text-black text-opacity-70' : 'text-gray-400'
-                  } font-nunito text-2xl font-thin`}
-                >
-                   ${new Intl.NumberFormat('es-ES').format(product.price)}
-                </p>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))
+                    {product.name}
+                  </h3>
+                  <img
+                    src={product.Images[0]?.url || 'https://via.placeholder.com/150'}
+                    alt={product.name}
+                    className="w-full h-80 object-contain  rounded-2xl mb-2"
+                  />
+                  <p
+                    className={`${
+                      currentSection === 'Dama' ? 'text-black text-opacity-70' : 'text-gray-400'
+                    } font-nunito text-2xl font-thin`}
+                  >
+                     ${new Intl.NumberFormat('es-ES').format(product.price)}
+                  </p>
+                </div>
+              </Link>
+            </SwiperSlide>
+          );
+        })
       : (
         <SwiperSlide>
           <div className="w-full max-w-xs mx-auto  bg-gray-800 rounded-2xl shadow-lg text-center">

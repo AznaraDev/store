@@ -278,6 +278,12 @@ const ProductDetails = () => {
   ]); // Depende de selectedColor
 
   const handleAddToCart = () => {
+    const outOfStock = selectedProduct && Number(selectedProduct.stock) <= 0;
+    if (outOfStock) {
+      alert('Producto sin stock. No se puede añadir al carrito.');
+      return;
+    }
+
     if (!selectedSize) {
       alert("Por favor, selecciona un talle.");
       return;
@@ -650,20 +656,24 @@ const ProductDetails = () => {
           )}
 
           {/* Botón Añadir al carrito */}
-          <div className="flex items-center space-x-4 pt-4">
-            <button
-              onClick={handleAddToCart}
-              className={`w-full flex items-center justify-center py-2 px-6 rounded font-semibold transition duration-300 ${
-                currentSection === "Dama"
-                  ? "bg-women text-black hover:bg-white font-thin font-nunito"
-                  : "bg-colorLogo text-black hover:bg-yellow-500 font-thin font-nunito"
-              }`}
-              disabled={!selectedColor || !selectedSize}
-            >
-              <FiShoppingCart className="mr-2" />
-              Añadir al carrito
-            </button>
-          </div>
+                  <div className="flex items-center space-x-4 pt-4">
+                    <button
+                      onClick={handleAddToCart}
+                      className={`w-full flex items-center justify-center py-2 px-6 rounded font-semibold transition duration-300 ${
+                        currentSection === "Dama"
+                          ? "bg-women text-black hover:bg-white font-thin font-nunito"
+                          : "bg-colorLogo text-black hover:bg-yellow-500 font-thin font-nunito"
+                      } ${
+                        selectedProduct && Number(selectedProduct.stock) <= 0
+                          ? 'opacity-60 cursor-not-allowed hover:!bg-colorLogo'
+                          : ''
+                      }`}
+                      disabled={!selectedColor || !selectedSize || (selectedProduct && Number(selectedProduct.stock) <= 0)}
+                    >
+                      <FiShoppingCart className="mr-2" />
+                      {selectedProduct && Number(selectedProduct.stock) <= 0 ? 'Sin stock' : 'Añadir al carrito'}
+                    </button>
+                  </div>
 
           {/* Texto Pago Contraentrega */}
           <p className="text-sm text-center font-thin font-nunito text-gray-400 pt-2">

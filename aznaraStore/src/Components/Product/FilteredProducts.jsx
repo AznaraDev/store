@@ -45,6 +45,10 @@ const FilteredProducts = () => {
 
   // Agregar el producto al carrito y redirigir a la página del carrito
   const handleAddToCart = (product) => {
+    if (Number(product.stock) <= 0) {
+      alert('Producto sin stock.');
+      return;
+    }
     const productToAdd = {
       ...product,
       image: product.Images?.[0]?.url_image || null, // Agregar imagen
@@ -72,7 +76,7 @@ const FilteredProducts = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.length > 0 ? (
             products.map((product) => (
-              <div key={product.id_product} className=" p-6 rounded-lg shadow-lg">
+              <div key={product.id_product} className=" p-6 rounded-lg shadow-lg relative">
                 {/* Hacer clic en la imagen o nombre del producto lleva al detalle */}
                 <div
                   onClick={() => handleProductClick(product.id_product)}
@@ -90,12 +94,20 @@ const FilteredProducts = () => {
 
                 <p className="text-gray-200 font-nunito text-xl text-end font-semibold">${product.price}</p>
                 
+                {/* Badge sin stock */}
+                {Number(product.stock) <= 0 && (
+                  <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-medium px-2 py-1 rounded">
+                    Sin stock
+                  </div>
+                )}
+
                 {/* Botón de añadir al carrito */}
                 <button
                   onClick={() => handleAddToCart(product)}
-                  className="mt-4 flex items-center justify-center w-full bg-colorLogo text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors duration-300"
+                  className={`mt-4 flex items-center justify-center w-full py-2 px-4 rounded-lg transition-colors duration-300 ${Number(product.stock) <= 0 ? 'bg-gray-500 text-gray-200 cursor-not-allowed' : 'bg-colorLogo text-white hover:bg-yellow-700'}`}
+                  disabled={Number(product.stock) <= 0}
                 >
-                  <FiShoppingCart className="mr-2" /> Añadir al carrito
+                  <FiShoppingCart className="mr-2" /> {Number(product.stock) <= 0 ? 'Sin stock' : 'Añadir al carrito'}
                 </button>
               </div>
             ))
