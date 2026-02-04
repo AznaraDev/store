@@ -84,8 +84,10 @@ export const createProduct = (productData) => async (dispatch) => {
     if (productData.colors) {
       formData.append('colors', JSON.stringify(productData.colors));
     }
-    if (productData.materials) {
-      formData.append('materials', JSON.stringify(productData.materials));
+
+    // Agregar materialIds al FormData
+    if (productData.materialIds && productData.materialIds.length > 0) {
+      formData.append('materialIds', JSON.stringify(productData.materialIds));
     }
 
     productData.images.forEach((image) => {
@@ -439,7 +441,15 @@ export const updateProduct = (id, productFormData) => async (dispatch) => {
     
     const response = await axios.put(`${BASE_URL}/product/updateProducts/${id}`, productFormData);
     
-    dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: response.data.product }); 
+    // Manejar diferentes estructuras de respuesta
+    const productData = response.data.data?.product || response.data.product;
+    
+    if (!productData) {
+      console.error("Error: No se encontró el producto en la respuesta:", response.data);
+      throw new Error("Estructura de respuesta inválida");
+    }
+    
+    dispatch({ type: UPDATE_PRODUCT_SUCCESS, payload: productData }); 
   
   } catch (error) {
     console.error("Error in updateProduct action:", error.response ? error.response.data : error.message);

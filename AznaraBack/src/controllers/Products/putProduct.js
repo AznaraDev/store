@@ -1,4 +1,4 @@
-const { Product, Image } = require('../../data'); // Added Image model
+const { Product, Image, Material } = require('../../data'); // Added Material model
 const response = require('../../utils/response');
 const multer = require('multer'); // Added multer
 const { CloudinaryStorage } = require('multer-storage-cloudinary'); // Added
@@ -49,9 +49,13 @@ module.exports = async (req, res) => {
 
     const { id } = req.params;
     const {
-      name, description, price, stock, section, name_SB, sizes, colors, materials, isOffer,
+      name, description, price, stock, section, name_SB, sizes, colors, materials, materialIds, isOffer,
       imagesToDelete, id_category, id_SB 
     } = req.body;
+
+    console.log('📝 Datos recibidos en updateProduct:');
+    console.log('   materialIds:', materialIds);
+    console.log('   materials (legacy):', materials);
 
     const newImageFiles = req.files; // Nuevas imágenes subidas
 
@@ -146,9 +150,31 @@ module.exports = async (req, res) => {
         console.log(`Added ${newImageFiles.length} new images to product ${product.id_product}`);
       }
 
-      // Guardar los cambios en el producto
-      await product.save();
-      console.log('Product updated:', product.id_product);
+      // Actualizar materiales si se proporcionaron
+      if (materialIds) {
+        const materialIdsArray = JSON.parse(materialIds);
+        console.log('✅ Actualizando materiales:', materialIdsArray);
+        
+        if (materialIdsArray.length > 0) {
+          const materialsToAssociate = await Material.findAll({
+            where: { id_material: materialIdsArray }
+          });
+          console.log('✅ Materiales encontrados:', materialsToAssociate.length);
+          await product.setMaterials(materialsToAssociate);
+          console.log('✅ Materiales actualizados');
+        } else {
+          // Si el array está vacío, eliminar todas las asociaciones
+          await product.setMaterials([]);
+          console.log('✅ Materiales eliminados (array vacío)');
+        }
+      }
+
+      // Obtener el producto actualizado con sus imágenes y materiales
+      const updatedProductWithImages = await Product.findByPk(product.id_product, {
+        include: [
+          { model: Image, as: 'Images' },
+          { model: Material, as: 'materials', attributes: ['id_material', 'name', 'description'] }
+        _product);
 
       // Obtener el producto actualizado con sus imágenes
       const updatedProductWithImages = await Product.findByPk(product.id_product, {

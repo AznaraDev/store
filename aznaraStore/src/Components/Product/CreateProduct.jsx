@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct, fetchCategories, fetchSB } from "../../Redux/Actions/actions";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +29,11 @@ const CreateProduct = () => {
   const categories = useSelector((state) => state.categories.data);
   const subCategories = useSelector((state) => state.subCategories.data);
   const navigate = useNavigate();
+
+  // Filtrar subcategorías según la categoría seleccionada
+  const filteredSubCategories = categoryId 
+    ? subCategories.filter(sb => sb.id_category === categoryId)
+    : [];
 
   const fetchMaterials = async () => {
     try {
@@ -305,7 +310,11 @@ const CreateProduct = () => {
             </label>
             <select
               value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
+              onChange={(e) => {
+                setCategoryId(e.target.value);
+                // Resetear subcategoría cuando cambia la categoría
+                setSbId("");
+              }}
               className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
             >
               <option value="">Seleccionar categoría</option>
@@ -325,28 +334,36 @@ const CreateProduct = () => {
 
           <div>
             <label htmlFor="sbId" className="block text-sm font-medium text-gray-700">
-              Subcategoría
+              Subcategoría {!categoryId && <span className="text-gray-400 text-xs">(primero selecciona una categoría)</span>}
             </label>
             <select
               value={sbId}
               onChange={(e) => setSbId(e.target.value)}
               className="w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 mb-4"
+              disabled={!categoryId}
             >
-              <option value="">Seleccionar subcategoría</option>
+              <option value="">
+                {!categoryId 
+                  ? "Primero selecciona una categoría" 
+                  : "Seleccionar subcategoría"}
+              </option>
               { 
-  subCategories && subCategories.length > 0 
-  ? subCategories.map((sb) => (
-      sb && sb.id_SB ? (
-        <option key={sb.id_SB} value={sb.id_SB}>
-          {sb.name_SB}
-        </option>
-      ) : null
-    ))
-  : <option disabled value="">No hay subcategorías disponibles</option>
-}
-
-              
+                categoryId && filteredSubCategories.length > 0 
+                  ? filteredSubCategories.map((sb) => (
+                      sb && sb.id_SB ? (
+                        <option key={sb.id_SB} value={sb.id_SB}>
+                          {sb.name_SB}
+                        </option>
+                      ) : null
+                    ))
+                  : categoryId && <option disabled value="">No hay subcategorías para esta categoría</option>
+              }
             </select>
+            {categoryId && filteredSubCategories.length === 0 && (
+              <p className="text-yellow-600 text-xs mt-1">
+                ⚠️ Esta categoría no tiene subcategorías asignadas
+              </p>
+            )}
           </div>
 
           <div>
