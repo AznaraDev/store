@@ -45,12 +45,18 @@ const UpdateProduct = () => {
       const fetchMaterials = async () => {
         try {
           const BASE_URL = import.meta.env.VITE_BASE_URL;
+          console.log('🔍 Fetching materials from:', `${BASE_URL}/material?limit=100`);
           const response = await axios.get(`${BASE_URL}/material?limit=100`);
+          console.log('📦 Materials response:', response.data);
+          console.log('📦 Materials response type:', typeof response.data, Array.isArray(response.data));
           if (response.data && Array.isArray(response.data)) {
+            console.log('✅ Setting materials:', response.data);
             setAvailableMaterials(response.data);
+          } else {
+            console.log('⚠️ Response.data is not an array:', response.data);
           }
         } catch (error) {
-          console.error('Error fetching materials:', error);
+          console.error('❌ Error fetching materials:', error);
         }
       };
       fetchMaterials();
