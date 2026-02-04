@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductById, updateProduct, fetchCategories, fetchSB } from '../../Redux/Actions/actions'; 
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const UpdateProduct = () => {
     const { id } = useParams();
@@ -21,7 +22,7 @@ const UpdateProduct = () => {
       name_SB: '',
       sizes: '',   
       colors: '',
-      materials: '',
+      materials: [],
       isOffer: false,
       id_category: '', 
       id_SB: '', 
@@ -31,13 +32,29 @@ const UpdateProduct = () => {
     const [existingImages, setExistingImages] = useState([]); 
     const [newImageFiles, setNewImageFiles] = useState([]); 
     const [imagesToDelete, setImagesToDelete] = useState([]);
-    const [alertMessage, setAlertMessage] = useState(''); 
+    const [alertMessage, setAlertMessage] = useState('');
+    const [availableMaterials, setAvailableMaterials] = useState([]);
 
 
     useEffect(() => {
       dispatch(fetchCategories());
       dispatch(fetchSB());
     }, [dispatch]);
+
+    useEffect(() => {
+      const fetchMaterials = async () => {
+        try {
+          const BASE_URL = import.meta.env.VITE_BASE_URL;
+          const response = await axios.get(`${BASE_URL}/material?limit=100`);
+          if (response.data && Array.isArray(response.data)) {
+            setAvailableMaterials(response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching materials:', error);
+        }
+      };
+      fetchMaterials();
+    }, []);
 
     useEffect(() => {
       if (id) {
@@ -57,7 +74,7 @@ const UpdateProduct = () => {
           // Convertir arrays a strings separados por comas para edición
           sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : product.sizes || '',
           colors: Array.isArray(product.colors) ? product.colors.join(', ') : product.colors || '',
-          materials: Array.isArray(product.materials) ? product.materials.join(', ') : product.materials || '',
+          materials: Array.isArray(product.materials) ? product.materials : (product.materials ? product.materials.split(',').map(m => m.trim()) : []),
           isOffer: product.isOffer || false,
           id_category: product.id_category || '', 
           id_SB: product.id_SB || '',     
@@ -76,11 +93,20 @@ const UpdateProduct = () => {
       } else if (name === 'colors' && alertMessage.includes('color')) {
         setAlertMessage('');
       }
-      
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: type === 'checkbox' ? checked : value,
-      }));
+
+      // Manejar selección múltiple de materiales
+      if (name === 'materials') {
+        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+        setFormData((prevState) => ({
+          ...prevState,
+          materials: selectedOptions,
+        }));
+      } else {
+        setFormData((prevState) => ({
+          ...prevState,
+          [name]: type === 'checkbox' ? checked : value,
+        }));
+      }
     };
 
     const handleNewImageChange = (e) => {
@@ -112,7 +138,7 @@ const UpdateProduct = () => {
      
   const sizesArray = formData.sizes.split(',').map(s => s.trim()).filter(Boolean);
   const colorsArray = formData.colors.split(',').map(c => c.trim()).filter(Boolean);
-  const materialsArray = formData.materials.split(',').map(m => m.trim()).filter(Boolean);
+  const materialsArray = Array.isArray(formData.materials) ? formData.materials : [];
 
   dataToSend.append('sizes', JSON.stringify(sizesArray));
   dataToSend.append('colors', JSON.stringify(colorsArray));
@@ -298,18 +324,24 @@ const UpdateProduct = () => {
               </div>
               <div>
                 <label htmlFor="materials" className="block text-sm font-medium text-gray-700">
-                  Materiales <span className="text-gray-400 text-xs">(opcional, separados por coma)</span>
+                  Materiales <span className="text-gray-400 text-xs">(opcional, puedes seleccionar varios)</span>
                 </label>
-                <input 
-                  type="text" 
+                <select 
+                  multiple
                   name="materials" 
                   id="materials" 
                   value={formData.materials} 
-                  onChange={handleChange} 
-                  placeholder='ej: Oro, Plata, Cuero' 
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" 
-                />
-                <p className="text-gray-500 text-xs mt-1">💡 Si usas varios materiales, sepáralos con coma</p>
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
+                  style={{ minHeight: '120px' }}
+                >
+                  {availableMaterials.map((material) => (
+                    <option key={material.id_material} value={material.name_material}>
+                      {material.name_material}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-gray-500 text-xs mt-1">💡 Mantén presionado Ctrl (Windows) o Cmd (Mac) para seleccionar varios materiales</p>
               </div>
                <div className="flex items-center">
                 <input
