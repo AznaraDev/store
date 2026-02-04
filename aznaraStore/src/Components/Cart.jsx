@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import  { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { incrementQuantity, removeFromCart, clearCart, decrementQuantity, setCartQuantity } from '../Redux/Actions/actions';
 import Swal from 'sweetalert2';
@@ -99,19 +99,17 @@ console.log(cart)
                       <div>
                         <h2 className="text-3xl font-thin font-nunito text-gray-700 uppercase">{item.name}</h2>
                         <p className=" font-nunito font-thin text-2xl text-gray-600">Color: {item.selectedColor}</p>
-                        {item.selectedMaterial && (
-                          <p className=" font-nunito font-thin text-2xl text-gray-600">Material: {item.selectedMaterial}</p>
+                        {item.materials && item.materials.length > 0 && (
+                          <p className=" font-nunito font-thin text-2xl text-gray-600">Material: {Array.isArray(item.materials) ? item.materials.join(', ') : item.materials}</p>
                         )}
                         <p className=" font-nunito font-thin text-2xl text-gray-600">Talle: {item.selectedSize}</p>
                         <p className=" font-nunito font-thin text-2xl text-gray-600">Precio: ${new Intl.NumberFormat('es-ES').format(item.price)}</p>
                         <div className="flex items-center space-x-2 mt-2 ">
                           <button
-                            className={`bg-gray-600 text-white px-3 py-1 rounded ${item.quantity >= Number(item.stock) ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-700'}`}
-                            onClick={() => handleIncrementQuantity(item.id_product)}
-                            disabled={item.quantity >= Number(item.stock)}
-                            title={item.quantity >= Number(item.stock) ? 'No hay más stock' : `Quedan ${remaining} unidades`}
+                            className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
+                            onClick={() => handleDecrementQuantity(item.id_product)}
                           >
-                            <SlPlus />
+                            <SlMinus />
                           </button>
                           <input
                             type="number"
@@ -136,10 +134,12 @@ console.log(cart)
                             className="w-16 text-center rounded border border-gray-400 bg-white text-gray-700"
                           />
                           <button
-                            className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
-                            onClick={() => handleDecrementQuantity(item.id_product)}
+                            className={`bg-gray-600 text-white px-3 py-1 rounded ${item.quantity >= Number(item.stock) ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-700'}`}
+                            onClick={() => handleIncrementQuantity(item.id_product)}
+                            disabled={item.quantity >= Number(item.stock)}
+                            title={item.quantity >= Number(item.stock) ? 'No hay más stock' : `Quedan ${remaining} unidades`}
                           >
-                            <SlMinus />
+                            <SlPlus />
                           </button>
                           <button
                             className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
