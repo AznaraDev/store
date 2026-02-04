@@ -78,6 +78,9 @@ const ProductsDashboard = () => {
       if (stockFilter) filters.stockStatus = stockFilter;
       if (searchTerm) filters.search = searchTerm;
       
+      // Traer todos los productos sin límite para la paginación del frontend
+      filters.limit = 1000;
+      
       dispatch(fetchDashboard(filters));
       setCurrentPage(1); // Resetear a la primera página cuando cambien los filtros
     }
