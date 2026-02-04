@@ -57,6 +57,10 @@ const ProductsDashboard = () => {
   // Estados para alertas
   const [alert, setAlert] = useState({ show: false, message: '', type: '' });
 
+  // Estados para paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(20); // 20 productos por página
+
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchSubCategories());
@@ -75,6 +79,7 @@ const ProductsDashboard = () => {
       if (searchTerm) filters.search = searchTerm;
       
       dispatch(fetchDashboard(filters));
+      setCurrentPage(1); // Resetear a la primera página cuando cambien los filtros
     }
   }, [dispatch, activeTab, selectedSection, selectedCategory, selectedSubCategory, stockFilter, searchTerm]);
 
@@ -321,6 +326,7 @@ const ProductsDashboard = () => {
     setSelectedSubCategory('');
     setStockFilter('');
     setSearchTerm('');
+    setCurrentPage(1);
   };
 
   const getStockBadge = (product) => {
@@ -399,8 +405,7 @@ const ProductsDashboard = () => {
       {/* Tab Content: Products */}
       {activeTab === 'products' && (
         <div>
-          
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           {/* Filtro de Búsqueda */}
           <div>
@@ -544,10 +549,27 @@ const ProductsDashboard = () => {
         </div>
       )}
 
-      {/* Grid de Productos */}
-      {!loading && products && products.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {products.map((product) => {
+      {!loading && !error && products && products.length > 0 && (() => {
+        const indexOfLastProduct = currentPage * productsPerPage;
+        const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+        const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+        const totalPages = Math.ceil(products.length / productsPerPage);
+
+        return (
+          <>
+            {/* Información de paginación */}
+            <div className="mb-4 flex justify-between items-center text-sm text-gray-600">
+              <span>
+                Mostrando {indexOfFirstProduct + 1} - {Math.min(indexOfLastProduct, products.length)} de {products.length} productos
+              </span>
+              <span>
+                Página {currentPage} de {totalPages}
+              </span>
+            </div>
+
+            {/* Grid de Productos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {currentProducts.map((product) => {
             const colors = sectionColors[product.section] || sectionColors.Unisex;
             
             return (
@@ -629,10 +651,85 @@ const ProductsDashboard = () => {
               </div>
             );
           })}
-        </div>
-      )}
+            </div>
 
-      {/* Empty State */}
+            {/* Controles de Paginación */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex justify-center items-center gap-2">
+                {/* Botón Primera Página */}
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Primera página"
+                >
+                  ⏮️
+                </button>
+
+                {/* Botón Anterior */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  ← Anterior
+                </button>
+
+                {/* Números de Página */}
+                <div className="flex gap-1">
+                  {(() => {
+                    const pageNumbers = [];
+                    const maxVisible = 5;
+                    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+                    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+                    
+                    if (endPage - startPage < maxVisible - 1) {
+                      startPage = Math.max(1, endPage - maxVisible + 1);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                      pageNumbers.push(
+                        <button
+                          key={i}
+                          onClick={() => setCurrentPage(i)}
+                          className={`px-4 py-2 rounded-md transition-colors ${
+                            currentPage === i
+                              ? 'bg-blue-600 text-white font-semibold'
+                              : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          {i}
+                        </button>
+                      );
+                    }
+                    return pageNumbers;
+                  })()}
+                </div>
+
+                {/* Botón Siguiente */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Siguiente →
+                </button>
+
+                {/* Botón Última Página */}
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Última página"
+                >
+                  ⏭️
+                </button>
+              </div>
+            )}
+          </>
+        );
+      })()}
+
       {!loading && products && products.length === 0 && (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
           <div className="text-6xl mb-4">📭</div>

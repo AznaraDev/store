@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchProducts,
+  
   fetchFilteredProducts,
   deleteProduct,
   setSubCategoryFilter,
@@ -18,7 +18,7 @@ const ProductsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8; 
+  const productsPerPage = 16; 
   const allProductsFromState = useSelector((state) => state.products || []);
   //const products = useSelector((state) => state.products || []);
   const loading = useSelector((state) => state.loading);

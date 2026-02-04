@@ -17,37 +17,38 @@ import image5a from '../../assets/img/Dama/animada/dama3.jpg';
 import image5b from '../../assets/img/Dama/animada/dama4.jpg';
 import image5c from '../../assets/img/Dama/animada/portada.jpg';
 
+// Datos estáticos de las secciones (movidos fuera del componente)
+const sections = [
+  {
+    title: "Anillos",
+    images: [image1a, image1b, image1c],
+    categoryName: "Anillos",
+  },
+  {
+    title: "Aretes",
+    images: [image2a, image2b, image2c],
+    categoryName: "Pendientes",
+  },
+  {
+    title: "Cadenas",
+    images: [image3a, image3b, image3c],
+    categoryName: "Cadenas",
+  },
+  {
+    title: "Manillas",
+    images: [image4a, image4b, image4c],
+    categoryName: "Manillas",
+  },
+  {
+    title: "Relojes",
+    images: [image5a, image5b, image5c],
+    categoryName: "Relojes",
+  },
+];
+
 const SeccionAnimada = () => {
   const dispatch = useDispatch();
   const [imageIndices, setImageIndices] = useState([0, 0, 0, 0, 0, 0]);
-
-  const sections = [
-    {
-      title: "Anillos",
-      images: [image1a, image1b, image1c],
-      categoryName: "Anillos",
-    },
-    {
-      title: "Pendientes",
-      images: [image2a, image2b, image2c],
-      categoryName: "Pendientes",
-    },
-    {
-      title: "Cadenas",
-      images: [image3a, image3b, image3c],
-      categoryName: "Cadenas",
-    },
-    {
-      title: "Manillas",
-      images: [image4a, image4b, image4c],
-      categoryName: "Manillas",
-    },
-    {
-      title: "Relojes",
-      images: [image5a, image5b, image5c],
-      categoryName: "Relojes",
-    },
-  ];
 
   useEffect(() => {
     const intervals = sections.map((_, index) =>
@@ -61,7 +62,7 @@ const SeccionAnimada = () => {
     );
 
     return () => intervals.forEach((interval) => clearInterval(interval));
-  }, [sections]);
+  }, []); // Array vacío porque sections es constante fuera del componente
 
   // Manejar el clic en una imagen para filtrar productos
   const handleCategoryClick = (categoryName) => {
