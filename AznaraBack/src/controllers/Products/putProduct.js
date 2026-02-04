@@ -174,11 +174,7 @@ module.exports = async (req, res) => {
         include: [
           { model: Image, as: 'Images' },
           { model: Material, as: 'materials', attributes: ['id_material', 'name', 'description'] }
-        _product);
-
-      // Obtener el producto actualizado con sus imágenes
-      const updatedProductWithImages = await Product.findByPk(product.id_product, {
-        include: [{ model: Image, as: 'Images' }]
+        ]
       });
 
       return response(res, 200, { message: "Product updated successfully", product: updatedProductWithImages });
