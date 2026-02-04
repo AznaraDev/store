@@ -331,14 +331,16 @@ const ProductDetails = () => {
       return;
     }
 
+    const materialToUse = selectedMaterial ||
+        parseJsonField(selectedProduct.materials)[0] ||
+        "No especificado";
+    
     const productToAdd = {
       ...selectedProduct,
       selectedSize,
       selectedColor,
-      selectedMaterial:
-        selectedMaterial ||
-        parseJsonField(selectedProduct.materials)[0] ||
-        "No especificado",
+      selectedMaterial: materialToUse,
+      materials: materialToUse !== "No especificado" ? [materialToUse] : [],
       image: selectedImage || selectedProduct.Images?.[0]?.url_image || null, // Agregar imagen
     };
 

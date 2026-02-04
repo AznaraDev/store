@@ -11,8 +11,8 @@ import imgFondo from '../assets/img/banner.png'
 
 const Checkout = () => {
   const currentDate = new Date().toISOString().split("T")[0];
-  const [address, setAddress] = useState("Retira en local");
-  const [paymentMethod, setPaymentMethod] = useState("Pago en local");
+  const [address, setAddress] = useState("Envio a domicilio");
+  const [paymentMethod, setPaymentMethod] = useState("Pago contra entrega");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [recipientName, setRecipientName] = useState("");
   const [recipientPhone, setRecipientPhone] = useState("");
