@@ -50,61 +50,97 @@ const Checkout = () => {
   useEffect(() => {
     if (orderCreate.success && !orderCreate.loading && !orderCreate.error) {
       dispatch(fetchLatestOrder());
-      Swal.fire({
-        title: "Success",
-        text: "¡Compra exitosa!",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then(() => {
-        dispatch(clearOrderState());
-        // Restablecer datos de la orden
-        setOrderData({
-          date: currentDate,
-          amount: 0,
-          quantity: 0,
-          state_order: "Pedido Realizado",
-          n_document: "",
-          id_product: [],
-          address: "Retira en local",
-          deliveryAddress: null,
+      
+      // NO mostrar mensaje de éxito aún si es pago con Wompi
+      // Solo mostrar para pagos locales o contra entrega
+      if (orderData.payment_method !== "Pago online (Wompi)") {
+        Swal.fire({
+          title: "Success",
+          text: "¡Compra exitosa!",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          dispatch(clearOrderState());
+          // Restablecer datos de la orden
+          setOrderData({
+            date: currentDate,
+            amount: 0,
+            quantity: 0,
+            state_order: "Pedido Realizado",
+            n_document: "",
+            id_product: [],
+            address: "Envio a domicilio",
+            deliveryAddress: null,
+          });
+         
+          navigate("/gracias");
         });
-       
-        navigate("/gracias"); //deberiamos hacer un componente explicando los pasos siguientes, como que va a recibir un mail y que luego puede revisar en el perfil y bla bla bla
-      });
+      }
     }
-  }, [orderCreate.success, dispatch, navigate]);
+  }, [orderCreate.success, dispatch, navigate, orderData.payment_method, currentDate]);
 
   // Manejar el widget de Wompi después de la creación de la orden
   useEffect(() => {
     if (latestOrder.success && !latestOrder.loading && !latestOrder.error) {
       const { amount, id_orderDetail, payment_method } = latestOrder.data.orderDetail;
       
+      console.log('📦 latestOrder data:', latestOrder.data);
+      console.log('💳 payment_method:', payment_method);
+      
       // Solo abrir Wompi si eligió pago online
       if (payment_method === "Pago online (Wompi)") {
+        console.log('🚀 Abriendo widget de Wompi...');
+        
         const checkout = new window.WidgetCheckout({
           currency: "COP",
           amountInCents: amount * 100,
           reference: String(id_orderDetail),
           publicKey: "pub_test_udFLMPgs8mDyKqs5bRCWhpwDhj2rGgFw",
-          redirectUrl: "http://localhost:5173/pago",
+          redirectUrl: "http://localhost:5173/gracias",
           integritySignature: latestOrder.data.integritySignature,
         });
-        console.log('Opening Wompi widget for online payment:', checkout);
+        
+        console.log('✅ Widget configurado:', checkout);
 
         checkout.open((result) => {
+          console.log('💰 Resultado del pago:', result);
           const transaction = result.transaction;
+          
           if (transaction.status === "APPROVED") {
-            Swal.fire("Success", "Payment successful", "success");
+            Swal.fire({
+              title: "Success",
+              text: "¡Pago exitoso!",
+              icon: "success",
+              confirmButtonText: "OK",
+            }).then(() => {
+              dispatch(clearOrderState());
+              setOrderData({
+                date: currentDate,
+                amount: 0,
+                quantity: 0,
+                state_order: "Pedido Realizado",
+                n_document: "",
+                id_product: [],
+                address: "Envio a domicilio",
+                deliveryAddress: null,
+              });
+              navigate("/gracias");
+            });
           } else {
-            Swal.fire("Error", "Payment failed", "error");
+            Swal.fire({
+              title: "Error",
+              text: `Pago ${transaction.status}. Por favor intenta de nuevo.`,
+              icon: "error",
+              confirmButtonText: "OK",
+            });
           }
         });
       } else {
         // Si es pago en local o contra entrega, no abrir widget
-        console.log(`Order payment method: ${payment_method} - no Wompi widget needed`);
+        console.log(`✅ Orden creada con: ${payment_method} - no requiere Wompi widget`);
       }
     }
-  }, [latestOrder]);
+  }, [latestOrder, dispatch, navigate, currentDate]);
 
   // Actualizar datos de la orden cuando cambian los artículos del carrito
   useEffect(() => {
