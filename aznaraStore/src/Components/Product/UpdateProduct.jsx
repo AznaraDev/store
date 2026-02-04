@@ -48,12 +48,11 @@ const UpdateProduct = () => {
           console.log('🔍 Fetching materials from:', `${BASE_URL}/material?limit=100`);
           const response = await axios.get(`${BASE_URL}/material?limit=100`);
           console.log('📦 Materials response:', response.data);
-          console.log('📦 Materials response type:', typeof response.data, Array.isArray(response.data));
-          if (response.data && Array.isArray(response.data)) {
-            console.log('✅ Setting materials:', response.data);
-            setAvailableMaterials(response.data);
+          if (response.data?.data?.materials && Array.isArray(response.data.data.materials)) {
+            console.log('✅ Setting materials:', response.data.data.materials);
+            setAvailableMaterials(response.data.data.materials);
           } else {
-            console.log('⚠️ Response.data is not an array:', response.data);
+            console.log('⚠️ Materials not found in expected structure:', response.data);
           }
         } catch (error) {
           console.error('❌ Error fetching materials:', error);
@@ -342,8 +341,8 @@ const UpdateProduct = () => {
                   style={{ minHeight: '120px' }}
                 >
                   {availableMaterials.map((material) => (
-                    <option key={material.id_material} value={material.name_material}>
-                      {material.name_material}
+                    <option key={material.id_material} value={material.name}>
+                      {material.name}
                     </option>
                   ))}
                 </select>
