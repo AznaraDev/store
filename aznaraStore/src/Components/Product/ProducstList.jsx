@@ -111,10 +111,17 @@ useEffect(() => {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   // Aplicar paginación a los productos ya filtrados y agrupados
   const currentProducts = useMemo(() => {
-    return uniqueProducts.slice(
+    console.log('📄 currentProducts - currentPage:', currentPage);
+    console.log('📄 currentProducts - productsPerPage:', productsPerPage);
+    console.log('📄 currentProducts - indexOfFirstProduct:', indexOfFirstProduct);
+    console.log('📄 currentProducts - indexOfLastProduct:', indexOfLastProduct);
+    const sliced = uniqueProducts.slice(
       indexOfFirstProduct,
       indexOfLastProduct
     );
+    console.log('📄 currentProducts - sliced length:', sliced.length);
+    console.log('📄 currentProducts - Total pages:', Math.ceil(uniqueProducts.length / productsPerPage));
+    return sliced;
   }, [uniqueProducts, indexOfFirstProduct, indexOfLastProduct]);
 
 
