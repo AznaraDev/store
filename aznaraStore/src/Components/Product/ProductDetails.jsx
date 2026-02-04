@@ -22,6 +22,19 @@ const parseJsonField = (field) => {
   return [];
 };
 
+// Helper para extraer nombres de materiales (maneja tanto strings como objetos)
+const getMaterialNames = (materials) => {
+  const parsed = parseJsonField(materials);
+  return parsed.map(m => {
+    // Si es un objeto con propiedad 'name', retornar el nombre
+    if (typeof m === 'object' && m !== null && m.name) {
+      return m.name;
+    }
+    // Si es un string, retornarlo directamente
+    return String(m);
+  });
+};
+
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -81,7 +94,7 @@ const ProductDetails = () => {
       }
 
       // Auto-seleccionar el material si solo hay uno
-      const productMaterials = parseJsonField(product.materials);
+      const productMaterials = getMaterialNames(product.materials);
       if (productMaterials.length === 1) {
         setSelectedMaterial(productMaterials[0]);
       } else {
@@ -152,7 +165,7 @@ const ProductDetails = () => {
     const allMaterials = new Set();
     similarProducts.forEach((p) => {
       if (p.name === selectedProduct.name) {
-        const materials = parseJsonField(p.materials);
+        const materials = getMaterialNames(p.materials);
         materials.forEach((material) => allMaterials.add(material));
       }
     });
@@ -187,7 +200,7 @@ const ProductDetails = () => {
       // Buscar el primer producto que tenga este color y material (si está seleccionado)
       const matchingProduct = similarProducts.find((p) => {
         const pColors = parseJsonField(p.colors);
-        const pMaterials = parseJsonField(p.materials);
+        const pMaterials = getMaterialNames(p.materials);
         return (
           p.name === selectedProduct.name &&
           pColors.includes(color) &&
@@ -215,7 +228,7 @@ const ProductDetails = () => {
 
       // Buscar el primer producto que tenga este material y color (si está seleccionado)
       const matchingProduct = similarProducts.find((p) => {
-        const pMaterials = parseJsonField(p.materials);
+        const pMaterials = getMaterialNames(p.materials);
         const pColors = parseJsonField(p.colors);
         return (
           p.name === selectedProduct.name &&
@@ -332,7 +345,7 @@ const ProductDetails = () => {
     }
 
     const materialToUse = selectedMaterial ||
-        parseJsonField(selectedProduct.materials)[0] ||
+        getMaterialNames(selectedProduct.materials)[0] ||
         "No especificado";
     
     const productToAdd = {
@@ -494,12 +507,12 @@ const ProductDetails = () => {
               <p>No hay descripción disponible.</p>
             )}
             {/* Mostrar materiales si existen */}
-            {parseJsonField(selectedProduct.materials).length > 0 && (
+            {getMaterialNames(selectedProduct.materials).length > 0 && (
               <p className="pt-2">
                 <span className="font-thin font-nunito text-gray-100">
                   Material:
                 </span>{" "}
-                {parseJsonField(selectedProduct.materials).join(", ")}
+                {getMaterialNames(selectedProduct.materials).join(", ")}
               </p>
             )}
           </div>
