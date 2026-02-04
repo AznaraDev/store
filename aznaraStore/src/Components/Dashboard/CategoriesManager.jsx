@@ -13,16 +13,17 @@ import {
 
 const CategoriesManager = () => {
   const dispatch = useDispatch();
-  const { categories, subCategories } = useSelector((state) => state);
+  const categories = useSelector((state) => state.categories || { loading: false, data: [], error: null });
+  const subCategories = useSelector((state) => state.subCategories || { loading: false, data: [], error: null });
   const [activeTab, setActiveTab] = useState('categories'); // 'categories' | 'subcategories'
   
   // Estados para categorías
-  const [categoryForm, setCategoryForm] = useState({ name: '' });
+  const [categoryForm, setCategoryForm] = useState({ name_category: '' });
   const [editingCategory, setEditingCategory] = useState(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   
   // Estados para subcategorías
-  const [subCategoryForm, setSubCategoryForm] = useState({ name: '', categoryId: '' });
+  const [subCategoryForm, setSubCategoryForm] = useState({ name: '', id_category: '' });
   const [editingSubCategory, setEditingSubCategory] = useState(null);
   const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('');
@@ -42,7 +43,7 @@ const CategoriesManager = () => {
     
     if (result.success) {
       showAlert('Categoría creada exitosamente', 'success');
-      setCategoryForm({ name: '' });
+      setCategoryForm({ name_category: '' });
       setShowCategoryModal(false);
       dispatch(fetchCategories());
     } else {
@@ -57,7 +58,7 @@ const CategoriesManager = () => {
     if (result.success) {
       showAlert('Categoría actualizada exitosamente', 'success');
       setEditingCategory(null);
-      setCategoryForm({ name: '' });
+      setCategoryForm({ name_category: '' });
       setShowCategoryModal(false);
       dispatch(fetchCategories());
     } else {
@@ -81,7 +82,7 @@ const CategoriesManager = () => {
 
   const openEditCategory = (category) => {
     setEditingCategory(category);
-    setCategoryForm({ name: category.name });
+    setCategoryForm({ name_category: category.name_category });
     setShowCategoryModal(true);
   };
 
@@ -90,8 +91,8 @@ const CategoriesManager = () => {
     setShowSubCategoryModal(false);
     setEditingCategory(null);
     setEditingSubCategory(null);
-    setCategoryForm({ name: '' });
-    setSubCategoryForm({ name: '', categoryId: '' });
+    setCategoryForm({ name_category: '' });
+    setSubCategoryForm({ name: '', id_category: '' });
   };
 
   // ==================== SUBCATEGORÍAS ====================
@@ -102,7 +103,7 @@ const CategoriesManager = () => {
     
     if (result.success) {
       showAlert('Subcategoría creada exitosamente', 'success');
-      setSubCategoryForm({ name: '', categoryId: '' });
+      setSubCategoryForm({ name: '', id_category: '' });
       setShowSubCategoryModal(false);
       dispatch(fetchSubCategories());
     } else {
@@ -117,7 +118,7 @@ const CategoriesManager = () => {
     if (result.success) {
       showAlert('Subcategoría actualizada exitosamente', 'success');
       setEditingSubCategory(null);
-      setSubCategoryForm({ name: '', categoryId: '' });
+      setSubCategoryForm({ name: '', id_category: '' });
       setShowSubCategoryModal(false);
       dispatch(fetchSubCategories());
     } else {
@@ -141,8 +142,8 @@ const CategoriesManager = () => {
   const openEditSubCategory = (subCategory) => {
     setEditingSubCategory(subCategory);
     setSubCategoryForm({ 
-      name: subCategory.name, 
-      categoryId: subCategory.categoryId 
+      name: subCategory.name_SB, 
+      id_category: subCategory.id_category 
     });
     setShowSubCategoryModal(true);
   };
@@ -153,8 +154,8 @@ const CategoriesManager = () => {
   };
 
   const filteredSubCategories = selectedCategoryFilter
-    ? subCategories.data?.filter(sub => sub.categoryId === selectedCategoryFilter)
-    : subCategories.data;
+    ? (subCategories.data || []).filter(sub => sub.id_category === selectedCategoryFilter)
+    : (subCategories.data || []);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -224,11 +225,11 @@ const CategoriesManager = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {categories.data?.map((category) => (
+                  {(categories.data || []).map((category) => (
                     <div key={category.id_category} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                          <h3 className="font-semibold text-gray-900">{category.name_category}</h3>
                         </div>
                         <div className="flex gap-2">
                           <button
@@ -239,7 +240,7 @@ const CategoriesManager = () => {
                             ✏️
                           </button>
                           <button
-                            onClick={() => handleDeleteCategory(category.id_category, category.name)}
+                            onClick={() => handleDeleteCategory(category.id_category, category.name_category)}
                             className="text-red-600 hover:text-red-800"
                             title="Eliminar"
                           >
@@ -269,9 +270,9 @@ const CategoriesManager = () => {
                     className="px-3 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">Todas las categorías</option>
-                    {categories.data?.map((cat) => (
+                    {(categories.data || []).map((cat) => (
                       <option key={cat.id_category} value={cat.id_category}>
-                        {cat.name}
+                        {cat.name_category}
                       </option>
                     ))}
                   </select>
@@ -290,13 +291,13 @@ const CategoriesManager = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredSubCategories?.map((subCategory) => (
+                  {filteredSubCategories.map((subCategory) => (
                     <div key={subCategory.id_subCategory} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h3 className="font-semibold text-gray-900">{subCategory.name}</h3>
+                          <h3 className="font-semibold text-gray-900">{subCategory.name_SB}</h3>
                           <p className="text-sm text-gray-600 mt-1">
-                            {subCategory.category?.name}
+                            {subCategory.Category?.name_category}
                           </p>
                         </div>
                         <div className="flex gap-2">
@@ -308,7 +309,7 @@ const CategoriesManager = () => {
                             ✏️
                           </button>
                           <button
-                            onClick={() => handleDeleteSubCategory(subCategory.id_subCategory, subCategory.name)}
+                            onClick={() => handleDeleteSubCategory(subCategory.id_subCategory, subCategory.name_SB)}
                             className="text-red-600 hover:text-red-800"
                             title="Eliminar"
                           >
@@ -338,8 +339,8 @@ const CategoriesManager = () => {
                   </label>
                   <input
                     type="text"
-                    value={categoryForm.name}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+                    value={categoryForm.name_category}
+                    onChange={(e) => setCategoryForm({ ...categoryForm, name_category: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -390,15 +391,15 @@ const CategoriesManager = () => {
                     Categoría *
                   </label>
                   <select
-                    value={subCategoryForm.categoryId}
-                    onChange={(e) => setSubCategoryForm({ ...subCategoryForm, categoryId: e.target.value })}
+                    value={subCategoryForm.id_category}
+                    onChange={(e) => setSubCategoryForm({ ...subCategoryForm, id_category: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     required
                   >
                     <option value="">Seleccionar categoría</option>
-                    {categories.data?.map((cat) => (
+                    {(categories.data || []).map((cat) => (
                       <option key={cat.id_category} value={cat.id_category}>
-                        {cat.name}
+                        {cat.name_category}
                       </option>
                     ))}
                   </select>
