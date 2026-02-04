@@ -69,6 +69,14 @@ const UpdateProduct = () => {
 
     useEffect(() => {
       if (product) {
+        // Extraer IDs de materiales si vienen como objetos del backend
+        let materialIds = [];
+        if (Array.isArray(product.materials)) {
+          materialIds = product.materials.map(m => 
+            typeof m === 'object' && m.id_material ? m.id_material : m
+          );
+        }
+        
         setFormData({
           name: product.name || '',
           description: product.description || '',
@@ -79,7 +87,7 @@ const UpdateProduct = () => {
           // Convertir arrays a strings separados por comas para edición
           sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : product.sizes || '',
           colors: Array.isArray(product.colors) ? product.colors.join(', ') : product.colors || '',
-          materials: Array.isArray(product.materials) ? product.materials : (product.materials ? product.materials.split(',').map(m => m.trim()) : []),
+          materials: materialIds, // Array de IDs de materiales
           isOffer: product.isOffer || false,
           id_category: product.id_category || '', 
           id_SB: product.id_SB || '',     
@@ -99,12 +107,12 @@ const UpdateProduct = () => {
         setAlertMessage('');
       }
 
-      // Manejar selección múltiple de materiales
+      // Manejar selección múltiple de materiales (ahora por IDs)
       if (name === 'materials') {
-        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+        const selectedIds = Array.from(e.target.selectedOptions, option => option.value);
         setFormData((prevState) => ({
           ...prevState,
-          materials: selectedOptions,
+          materials: selectedIds,
         }));
       } else {
         setFormData((prevState) => ({
@@ -143,11 +151,12 @@ const UpdateProduct = () => {
      
   const sizesArray = formData.sizes.split(',').map(s => s.trim()).filter(Boolean);
   const colorsArray = formData.colors.split(',').map(c => c.trim()).filter(Boolean);
-  const materialsArray = Array.isArray(formData.materials) ? formData.materials : [];
+  const materialIds = Array.isArray(formData.materials) ? formData.materials : [];
 
   dataToSend.append('sizes', JSON.stringify(sizesArray));
   dataToSend.append('colors', JSON.stringify(colorsArray));
-  dataToSend.append('materials', JSON.stringify(materialsArray));
+  // Enviar materialIds en lugar de materials
+  dataToSend.append('materialIds', JSON.stringify(materialIds));
 
 
       // Añadir nuevas imágenes
@@ -341,7 +350,7 @@ const UpdateProduct = () => {
                   style={{ minHeight: '120px' }}
                 >
                   {availableMaterials.map((material) => (
-                    <option key={material.id_material} value={material.name}>
+                    <option key={material.id_material} value={material.id_material}>
                       {material.name}
                     </option>
                   ))}
