@@ -326,6 +326,9 @@ export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName, isO
     let url = `${BASE_URL}/product?`;
     const params = [];
 
+    // Agregar límite alto para traer todos los productos
+    params.push('limit=1000');
+
     if (searchTerm) {
       params.push(`search=${encodeURIComponent(searchTerm)}`);
     }
@@ -354,19 +357,26 @@ export const fetchFilteredProducts = (searchTerm, priceFilter, categoryName, isO
         url = url.slice(0, -1);
     }
 
+    console.log('🔍 fetchFilteredProducts - URL:', url);
+
     // Considera usar axios consistentemente si ya lo usas en otras partes
     const response = await axios.get(url); // Cambiado a axios para consistencia
     // const response = await fetch(url);
     // const data = await response.json();
 
+    console.log('📦 fetchFilteredProducts - Response:', response.data);
+
     // Con axios, la data está en response.data
     if (!response.data.error && response.data.data && response.data.data.products) {
+      console.log('✅ fetchFilteredProducts - Products count:', response.data.data.products.length);
       dispatch({ type: FETCH_PRODUCTS_SUCCESS, payload: response.data.data.products });
     } else {
+      console.log('⚠️ fetchFilteredProducts - Error in response:', response.data);
       // Si usas axios y esperas un error de la API, puede estar en response.data.message o response.data.error
       dispatch({ type: FETCH_PRODUCTS_FAILURE, payload: response.data.message || 'Error fetching filtered products' });
     }
   } catch (error) {
+    console.error('❌ fetchFilteredProducts - Error:', error);
     // El error de Axios suele tener error.response.data.message
     dispatch({ 
         type: FETCH_PRODUCTS_FAILURE, 

@@ -76,14 +76,19 @@ useEffect(() => {
   // Filtrar productos localmente por la sección actual (Dama, Caballero, Unisex)
   // Esto se aplica DESPUÉS de que los productos hayan sido filtrados por categoría/subcategoría/búsqueda desde el backend.
   const sectionFilteredProducts = useMemo(() => {
-    return allProductsFromState.filter(
+    console.log('🔍 sectionFilteredProducts - allProductsFromState length:', allProductsFromState.length);
+    console.log('🔍 sectionFilteredProducts - currentSection:', currentSection);
+    const filtered = allProductsFromState.filter(
       (product) => product.section === currentSection || product.section === "Unisex"
     );
+    console.log('✅ sectionFilteredProducts - filtered length:', filtered.length);
+    return filtered;
   }, [allProductsFromState, currentSection]);
 
   // Agrupar productos por variantes (mismo nombre + subcategoría)
   // Solo mostrar UN producto por cada grupo de variantes
   const uniqueProducts = useMemo(() => {
+    console.log('🔄 uniqueProducts - sectionFilteredProducts length:', sectionFilteredProducts.length);
     const seen = new Map();
     const unique = [];
     
@@ -97,6 +102,8 @@ useEffect(() => {
       }
     });
     
+    console.log('✅ uniqueProducts - unique products length:', unique.length);
+    console.log('📊 uniqueProducts - Total duplicates removed:', sectionFilteredProducts.length - unique.length);
     return unique;
   }, [sectionFilteredProducts]);
   
