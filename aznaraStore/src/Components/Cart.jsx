@@ -1,6 +1,6 @@
 import  { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { incrementQuantity, removeFromCart, clearCart, decrementQuantity, setCartQuantity } from '../Redux/Actions/actions';
+import { incrementQuantity, removeFromCart, decrementQuantity, setCartQuantity } from '../Redux/Actions/actions';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
 import { SlTrash, SlMinus, SlPlus } from "react-icons/sl";
@@ -43,16 +43,24 @@ console.log(cart)
   //   dispatch(clearCart());
   // };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!userInfo) {
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
+      const result = await Swal.fire({
         icon: 'info',
-        title: 'Debes iniciar sesión o registrarte para realizar la compra.',
-        showConfirmButton: false,
-        timer: 2000,
+        title: 'Para continuar con la compra',
+        text: 'Necesitas iniciar sesión o registrarte.',
+        confirmButtonText: 'Ir a registrarme',
+        showDenyButton: true,
+        denyButtonText: 'Ir a iniciar sesión',
+        showCancelButton: true,
+        cancelButtonText: 'Ahora no',
       });
+
+      if (result.isConfirmed) {
+        navigate('/register');
+      } else if (result.isDenied) {
+        navigate('/login');
+      }
     } else {
       navigate('/checkout');
     }
